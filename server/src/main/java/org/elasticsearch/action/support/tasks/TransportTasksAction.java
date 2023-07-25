@@ -98,6 +98,8 @@ public abstract class TransportTasksAction<
                     return;
                 }
 
+                System.out.println(String.format("I am action %s, I am sending request to node %s", transportNodeAction, nodeId));
+
                 transportService.sendChildRequest(
                     discoveryNode,
                     transportNodeAction,
@@ -160,6 +162,7 @@ public abstract class TransportTasksAction<
 
             @Override
             protected void sendItemRequest(OperationTask operationTask, ActionListener<TaskResponse> listener) {
+                System.out.println(String.format("I am task %d, I am call task manager cancel api to %d", nodeTask.getId(), operationTask.getId()));
                 ActionListener.run(listener, l -> taskOperation(nodeTask, request, operationTask, l));
             }
 

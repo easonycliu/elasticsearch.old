@@ -8,6 +8,9 @@
 
 package org.elasticsearch.action.search;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.elasticsearch.tasks.CancellableTask;
 import org.elasticsearch.tasks.TaskId;
 
@@ -22,6 +25,8 @@ public class SearchTask extends CancellableTask {
     private final Supplier<String> descriptionSupplier;
     private SearchProgressListener progressListener = SearchProgressListener.NOOP;
 
+    private static final Logger logger = LogManager.getLogger();
+
     public SearchTask(
         long id,
         String type,
@@ -32,6 +37,11 @@ public class SearchTask extends CancellableTask {
     ) {
         super(id, type, action, null, parentTaskId, headers);
         this.descriptionSupplier = descriptionSupplier;
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
     }
 
     @Override

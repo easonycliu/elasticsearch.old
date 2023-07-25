@@ -311,6 +311,7 @@ public final class IndicesRequestCache implements RemovalListener<IndicesRequest
     synchronized void cleanCache() {
         final Set<CleanupKey> currentKeysToClean = new HashSet<>();
         final Set<Object> currentFullClean = new HashSet<>();
+        System.out.println("Start cleaning cache");
         for (Iterator<CleanupKey> iterator = keysToClean.iterator(); iterator.hasNext();) {
             CleanupKey cleanupKey = iterator.next();
             iterator.remove();
@@ -335,6 +336,7 @@ public final class IndicesRequestCache implements RemovalListener<IndicesRequest
         }
 
         cache.refresh();
+        System.out.println("Cleaning cache completed");
     }
 
     /**

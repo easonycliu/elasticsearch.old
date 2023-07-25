@@ -68,3 +68,7 @@ testfixtures_shared/
 
 # Generated
 checkstyle_ide.xml
+
+.VSCodeCounter
+benchmarks/bin
+server/src/main/java/org/elasticsearch/autocancel

@@ -39,6 +39,14 @@ public class CancellableTask extends Task {
             this.isCancelled = true;
             this.reason = reason;
         }
+
+        String parentInfo = getParentTaskId().isSet() ? String.format("My parent id is %d", getParentTaskId().getId()) : "I have no parent";
+        System.out.println(String.format("I will be cancelled by task manager. I am %s and my task id is %d. %s", this.getClass().getName(), getId(), parentInfo));
+        System.out.println(String.format("First I will notify %d listeners", listeners.size()));
+        for (CancellationListener listener : listeners) {
+            System.out.println(String.format("I will notify listener %s onCancelled", listener.getClass().getName()));
+        }
+
         listeners.forEach(CancellationListener::onCancelled);
         onCancelled();
     }
