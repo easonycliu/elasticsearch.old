@@ -1,6 +1,8 @@
-package org.elasticsearch.autocancel.utils;
+package org.elasticsearch.autocancel.utils.id;
 
-public class JavaThreadID {
+import org.elasticsearch.autocancel.utils.id.ID;
+
+public class JavaThreadID implements ID {
 
     private Long id;
 
@@ -20,6 +22,7 @@ public class JavaThreadID {
 
     @Override
     public boolean equals(Object o) {
+        // TODO: Class should be the same
         return this.id == ((JavaThreadID) o).id;
     }
 

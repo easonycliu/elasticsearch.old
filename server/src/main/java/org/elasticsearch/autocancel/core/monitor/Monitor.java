@@ -1,8 +1,9 @@
 package org.elasticsearch.autocancel.core.monitor;
 
-import org.elasticsearch.autocancel.utils.CancellableID;
+import org.elasticsearch.autocancel.core.utils.OperationRequest;
+import org.elasticsearch.autocancel.utils.id.CancellableID;
 
 public interface Monitor {
 
-    public void updateResource(CancellableID cid);
+    public OperationRequest updateResource(CancellableID cid);
 }

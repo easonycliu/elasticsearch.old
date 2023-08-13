@@ -38,6 +38,7 @@ import org.elasticsearch.transport.TcpTransportChannel;
 import org.elasticsearch.transport.Transport;
 import org.elasticsearch.transport.TransportChannel;
 import org.elasticsearch.transport.TransportService;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -144,7 +145,7 @@ public class TaskManager implements ClusterStateApplier {
             }
         }
         Task task = request.createTask(taskIdGenerator.incrementAndGet(), type, action, request.getParentTask(), headers);
-        System.out.println(String.format("Created Task %s on thread id %d", task.toString(), Thread.currentThread().getId()));
+        AutoCancel.onTaskCreate(task);
         Objects.requireNonNull(task);
         assert task.getParentTaskId().equals(request.getParentTask()) : "Request [ " + request + "] didn't preserve it parentTaskId";
         if (logger.isTraceEnabled()) {
@@ -336,6 +337,7 @@ public class TaskManager implements ClusterStateApplier {
                 return removedTask;
             }
         } finally {
+            AutoCancel.onTaskExit(task);
             tracer.stopTrace(task);
             for (RemovedTaskListener listener : removedTaskListeners) {
                 listener.onRemoved(task);

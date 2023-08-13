@@ -1,5 +1,5 @@
 package org.elasticsearch.autocancel.core.utils;
 
-public enum OperationType {
-
+public class ResourcePool {
+    
 }

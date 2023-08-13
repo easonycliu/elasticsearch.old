@@ -1,8 +1,11 @@
 package org.elasticsearch.autocancel.core.monitor;
 
 import org.elasticsearch.autocancel.core.monitor.Monitor;
+import org.elasticsearch.autocancel.core.utils.OperationRequest;
+import org.elasticsearch.autocancel.core.utils.OperationMethod;
 import org.elasticsearch.autocancel.manager.MainManager;
-import org.elasticsearch.autocancel.utils.CancellableID;
+import org.elasticsearch.autocancel.utils.Resource.ResourceType;
+import org.elasticsearch.autocancel.utils.id.CancellableID;
 
 public class MemoryMonitor implements Monitor {
 
@@ -12,11 +15,13 @@ public class MemoryMonitor implements Monitor {
         this.mainManager = mainManager;
     }
 
-    public void updateResource(CancellableID cid) {
-
+    public OperationRequest updateResource(CancellableID cid) {
+        OperationRequest request = new OperationRequest(OperationMethod.UPDATE, cid, ResourceType.MEMORY);
+        request.addRequestParam("set_value", this.getResource(cid));
+        return request;
     }
 
     private Double getResource(CancellableID cid) {
-        return 0.0;
+        return this.mainManager.getSpecifiedTypeResource(cid, ResourceType.MEMORY);
     }
 }

@@ -1,8 +1,8 @@
-package org.elasticsearch.autocancel.utils;
-
-import org.elasticsearch.autocancel.utils.CancellableID;
+package org.elasticsearch.autocancel.utils.id;
 
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.elasticsearch.autocancel.utils.id.CancellableID;
 
 public class CancellableIDGenerator {
 

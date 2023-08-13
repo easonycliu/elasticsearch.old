@@ -6,8 +6,7 @@ import java.util.concurrent.locks.Lock;
 public class ReleasableLock implements Closeable {
     private final Lock lock;
 
-    // a per-thread count indicating how many times the thread has entered the lock;
-    // only works if assertions are enabled
+    // a per-thread count indicating how many times the thread has entered the lock; only works if assertions are enabled
     private final ThreadLocal<Integer> holdingThreads;
 
     public ReleasableLock(Lock lock) {

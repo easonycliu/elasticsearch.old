@@ -218,6 +218,7 @@ import org.elasticsearch.upgrades.SystemIndexMigrationExecutor;
 import org.elasticsearch.usage.UsageService;
 import org.elasticsearch.watcher.ResourceWatcherService;
 import org.elasticsearch.xcontent.NamedXContentRegistry;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -1555,6 +1556,8 @@ public class Node implements Closeable {
         logger.info("started {}", transportService.getLocalNode());
 
         pluginsService.filterPlugins(ClusterPlugin.class).forEach(ClusterPlugin::onNodeStarted);
+
+        AutoCancel.start();
 
         return this;
     }

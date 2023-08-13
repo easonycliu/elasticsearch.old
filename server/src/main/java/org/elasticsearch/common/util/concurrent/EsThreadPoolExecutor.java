@@ -11,11 +11,12 @@ package org.elasticsearch.common.util.concurrent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.core.SuppressForbidden;
+import org.elasticsearch.autocancel.app.elasticsearch.ThreadPoolExecutorWrapper;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
+// import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -24,7 +25,7 @@ import static org.elasticsearch.core.Strings.format;
 /**
  * An extension to thread pool executor, allowing (in the future) to add specific additional stats to it.
  */
-public class EsThreadPoolExecutor extends ThreadPoolExecutor {
+public class EsThreadPoolExecutor extends ThreadPoolExecutorWrapper {
 
     private static final Logger logger = LogManager.getLogger(EsThreadPoolExecutor.class);
 

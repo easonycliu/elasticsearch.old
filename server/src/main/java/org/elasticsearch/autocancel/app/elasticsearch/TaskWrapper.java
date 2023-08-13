@@ -1,7 +1,7 @@
 package org.elasticsearch.autocancel.app.elasticsearch;
 
 public class TaskWrapper {
-
+    
     private Object task;
 
     public TaskWrapper(Object task) throws AssertionError {
