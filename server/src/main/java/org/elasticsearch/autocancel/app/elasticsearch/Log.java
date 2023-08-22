@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.elasticsearch.autocancel.manager.MainManager;
+import org.elasticsearch.autocancel.utils.Settings;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.IDInfo;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
@@ -18,7 +19,7 @@ public class Log {
 
     public Log(MainManager mainManager) {
         this.mainManager = mainManager;
-        this.logger = new Logger("/tmp/logs", "cidinfo", 10000);
+        this.logger = new Logger((String) Settings.getSetting("path_to_logs"), "cidinfo", 10000);
     }
 
     public void stop() {
@@ -28,7 +29,6 @@ public class Log {
     public void logCancellableJavaThreadIDInfo(CancellableID cid, Object task) {
         List<IDInfo<JavaThreadID>> javaThreadIDInfos = this.mainManager.getAllJavaThreadIDInfoOfCancellableID(cid);
 
-        // TODO: add config to jidinfo save path
         this.logger.log(String.format("========== Cancellable %s %s ==========\n", cid.toString(), task.toString()));
         for (IDInfo<JavaThreadID> javaThreadIDInfo : javaThreadIDInfos) {
             this.logger.log(javaThreadIDInfo.toString() + "\n");

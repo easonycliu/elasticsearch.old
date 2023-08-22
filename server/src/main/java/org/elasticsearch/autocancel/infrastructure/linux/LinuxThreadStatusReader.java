@@ -8,6 +8,7 @@ import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.ID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadID;
+import org.elasticsearch.autocancel.utils.Settings;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -49,8 +50,14 @@ public class LinuxThreadStatusReader extends AbstractInfrastructure {
     }
 
     public List<ResourceType> getRequiredResourceTypes() {
-        // TODO: set which resource types to update by settings
-        return new ArrayList<ResourceType>(Arrays.asList(ResourceType.CPU, ResourceType.MEMORY));
+        Map<?, ?> monitorResources = (Map<?, ?>) Settings.getSetting("monitor_resources");
+        List<ResourceType> requiredResources = new ArrayList<ResourceType>();
+        for (Map.Entry<?, ?> entries : monitorResources.entrySet()) {
+            if (((String) entries.getValue()).equals("Linux")) {
+                requiredResources.add(ResourceType.valueOf((String) entries.getKey()));
+            }
+        }
+        return requiredResources;
     }
 
     @Override

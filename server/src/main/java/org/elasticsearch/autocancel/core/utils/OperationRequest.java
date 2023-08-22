@@ -7,6 +7,7 @@ import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 import java.util.Map;
 import java.util.HashMap;
 
+// TODO: Find a better representaion
 public class OperationRequest {
     OperationMethod operation;
 
@@ -16,11 +17,14 @@ public class OperationRequest {
 
     Map<String, Object> params;
 
+    Long nanoTime;
+
     public OperationRequest(OperationMethod operation, CancellableID target) {
         this.operation = operation;
         this.target = target;
         this.resourceType = ResourceType.NULL;
         this.params = new HashMap<String, Object>();
+        this.nanoTime = System.nanoTime();
     }
 
     public OperationRequest(OperationMethod operation, CancellableID target, ResourceType resourceType) {
@@ -28,6 +32,7 @@ public class OperationRequest {
         this.target = target;
         this.resourceType = resourceType;
         this.params = new HashMap<String, Object>();
+        this.nanoTime = System.nanoTime();
     }
 
     public OperationRequest(OperationMethod operation, CancellableID target, ResourceType resourceType, Map<String, Object> params) {
@@ -35,6 +40,7 @@ public class OperationRequest {
         this.target = target;
         this.resourceType = resourceType;
         this.params = params;
+        this.nanoTime = System.nanoTime();
     }
 
     public void addRequestParam(String key, Object value) {
@@ -63,7 +69,7 @@ public class OperationRequest {
 
     @Override
     public String toString() {
-        String strRequest = String.format("%s %s %s. ", this.operation.toString(), this.target.toString(), this.resourceType.toString());
+        String strRequest = String.format("Time: %d, %s %s %s. ", this.nanoTime, this.operation.toString(), this.target.toString(), this.resourceType.toString());
         for (Map.Entry<String, Object> entry : this.params.entrySet()) {
             strRequest = strRequest + String.format("%s: %s; ", entry.getKey(), entry.getValue().toString());
         }

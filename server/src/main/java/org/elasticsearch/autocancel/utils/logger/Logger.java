@@ -22,7 +22,7 @@ public class Logger implements Closeable {
     public Logger(String rootPath, String fileBaseName, Integer maxLine) {
         this.rootPath = rootPath;
         this.fileBaseName = fileBaseName;
-        this.maxLine = maxLine;
+        this.maxLine = 300000;
         this.currentLine = 0;
         this.writer = this.createFileWriter();
     }

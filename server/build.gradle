@@ -56,6 +56,7 @@ dependencies {
   // utilities
   api project(":libs:elasticsearch-cli")
   implementation 'com.carrotsearch:hppc:0.8.1'
+  implementation 'org.apache.commons:commons-collections4:4.4'
 
   // percentiles aggregation
   api 'com.tdunning:t-digest:3.2'

@@ -13,7 +13,6 @@ public class ResourceUsage {
     }
 
     public void setUsage(Double usage) throws AssertionError {
-        assert usage <= 1.0 && usage >= 0.0 : "Usage should be uniformed to range(0.0, 1.0)";
         this.usage = usage;
     }
 

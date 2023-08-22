@@ -16,13 +16,13 @@ public class CPUTimeInfo {
         this.cpuTime = 0L;
     }
 
-    public CPUTimeInfo(Integer version, Long CPUTime) {
-        assert version > 0 && CPUTime > 0L : "version and cpu time should be a positive value.";
+    public CPUTimeInfo(Integer version, Long cpuTime) {
+        assert version > 0 && cpuTime > 0L : "version and cpu time should be a positive value.";
 
         this.previousVersion = 0;
         this.version = version;
         this.previousCPUTime = 0L;
-        this.cpuTime = CPUTime;
+        this.cpuTime = cpuTime;
     }
 
     public void update(Integer version, Long cpuTime) {
