@@ -48,14 +48,14 @@ public class AutoCancelCore {
     public void start() {
         while (!Thread.interrupted()) {
             try {
+                this.refreshCancellableGroups();
+
                 this.logger.log(String.format("Current time: %d", System.currentTimeMillis()));
                 Integer requestBufferSize = this.mainManager.getManagerRequestToCoreBufferSize();
                 for (Integer ignore = 0; ignore < requestBufferSize; ++ignore) {
                     OperationRequest request = this.mainManager.getManagerRequestToCore();
                     this.requestParser.parse(request);
                 }
-
-                this.refreshCancellableGroups();
 
                 this.mainMonitor.updateTasksResources();
 

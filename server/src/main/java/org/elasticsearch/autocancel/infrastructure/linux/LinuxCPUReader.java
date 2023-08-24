@@ -14,6 +14,7 @@ import java.util.Arrays;
 import org.elasticsearch.autocancel.infrastructure.CPUTimeInfo;
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
 import org.elasticsearch.autocancel.utils.id.ID;
+import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadID;
 
 public class LinuxCPUReader extends ResourceReader {
@@ -118,7 +119,8 @@ public class LinuxCPUReader extends ResourceReader {
             }
         }
         catch (IOException e) {
-            assert false : String.format("Failed to open file %s", threadInfo);
+            // assert false : String.format("Failed to open file %s", threadInfo);
+            Logger.systemWarn(String.format("Failed to open file %s: %s", threadInfo, e.getMessage()));
         }
 
         return threadCPUTime;

@@ -129,7 +129,7 @@ public class MainManager {
 
         boolean cidEqual = cid.equals(cidReadFromManager);
         if (!cidEqual) {
-            Logger.systemWarn("Input " + cid.toString() + " is not running on the current " + jid.toString() + " whose " + cidReadFromManager.toString());
+            Logger.systemTrace("Input " + cid.toString() + " is not running on the current " + jid.toString() + " whose " + cidReadFromManager.toString());
         }
         // assert cidEqual : "Input cancellable id is not running on the current java thread id";
 

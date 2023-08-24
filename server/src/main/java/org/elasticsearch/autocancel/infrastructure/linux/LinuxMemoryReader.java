@@ -3,6 +3,7 @@ package org.elasticsearch.autocancel.infrastructure.linux;
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
 import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 import org.elasticsearch.autocancel.utils.id.ID;
+import org.elasticsearch.autocancel.utils.logger.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,8 +36,9 @@ public class LinuxMemoryReader extends ResourceReader {
                 }
             }
         }
-        catch (FileNotFoundException e) {
-            assert false : String.format("Failed to open %s", fileName);
+        catch (IOException e) {
+            // assert false : String.format("Failed to open %s", fileName);
+            Logger.systemWarn(String.format("Failed to open file %s: %s", fileName, e.getMessage()));
         }
 
         Long totalMemoryKB = this.getTotalMemory();
@@ -60,7 +62,7 @@ public class LinuxMemoryReader extends ResourceReader {
             }
         }
         catch (IOException e) {
-            assert false : String.format("Failed to open file %s", memInfo);
+            assert false : String.format("Failed to open file %s: %s", memInfo, e.getMessage());
         }
 
         return totalMemoryKB;
