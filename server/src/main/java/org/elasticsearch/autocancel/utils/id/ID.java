@@ -6,4 +6,6 @@ public interface ID {
     public boolean equals(Object o);
 
     public int hashCode();
+
+    public Boolean isValid();
 }

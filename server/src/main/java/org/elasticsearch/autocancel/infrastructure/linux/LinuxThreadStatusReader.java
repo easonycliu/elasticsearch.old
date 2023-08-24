@@ -7,6 +7,7 @@ import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.ID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
+import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadID;
 import org.elasticsearch.autocancel.utils.Settings;
 
@@ -68,17 +69,27 @@ public class LinuxThreadStatusReader extends AbstractInfrastructure {
         }
         else {
             linuxThreadID = this.getLinuxThreadIDFromJavaThreadID((JavaThreadID) id);
-            assert !linuxThreadID.equals(new LinuxThreadID()) : "Failed to find linux thread id of java thread id";
-            this.javaThreadIDToLinuxThreadID.put((JavaThreadID) id, linuxThreadID);
+            // TODO: add isValid()
+            if (linuxThreadID.isValid()) {
+                Logger.systemTrace(id.toString() + " is running on " + linuxThreadID.toString());
+                this.javaThreadIDToLinuxThreadID.put((JavaThreadID) id, linuxThreadID);
+            }
+            else {
+                Logger.systemTrace("Failed to find linux thread id of " + id.toString());
+            }
         }
         
-        ResourceBatch resourceBatch = new ResourceBatch(version);
-        for (ResourceType type : this.resourceTypes) {
-            Double value = this.resourceReaders.get(type).readResource(linuxThreadID, version);
-            resourceBatch.setResourceValue(type, value);
+        if (linuxThreadID.isValid()) {
+            ResourceBatch resourceBatch = new ResourceBatch(version);
+            for (ResourceType type : this.resourceTypes) {
+                Double value = this.resourceReaders.get(type).readResource(linuxThreadID, version);
+                resourceBatch.setResourceValue(type, value);
+            }
+            this.setResourceBatch(id, resourceBatch);
         }
-
-        this.setResourceBatch(id, resourceBatch);
+        else {
+            Logger.systemTrace("Skip updating version " + version.toString());
+        }
     }
 
     private LinuxThreadID getLinuxThreadIDFromJavaThreadID(JavaThreadID jid) {

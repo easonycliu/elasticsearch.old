@@ -6,13 +6,15 @@ public class CancellableID implements ID {
     
     private Long id;
 
+    private static final Long INVALID_ID = -1L;
+
     public CancellableID(Long id) {
         this.id = id;
     }
 
     // Invalid CancellableID
     public CancellableID() {
-        this.id = -1L;
+        this.id = INVALID_ID;
     }
 
     @Override
@@ -31,5 +33,10 @@ public class CancellableID implements ID {
     @Override
     public int hashCode() {
         return this.id.intValue();
+    }
+
+    @Override
+    public Boolean isValid() {
+        return this.id != INVALID_ID;
     }
 }

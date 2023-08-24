@@ -42,20 +42,11 @@ public class InfrastructureManager {
     }
 
     private AbstractInfrastructure getInfrastructure(ResourceType type) {
-        AbstractInfrastructure infrastructure;
-        switch (type) {
-            case CPU:
-                infrastructure = this.infrastructures.get((String)((Map<?, ?>)Settings.getSetting("monitor_resources")).get("CPU"));
-                break;
-            case MEMORY:
-                infrastructure = this.infrastructures.get((String)((Map<?, ?>)Settings.getSetting("monitor_resources")).get("MEMORY"));
-                break;
-            case NULL:
-                infrastructure = null;
-                break;
-            default:
-                infrastructure = null;
-                break;
+        AbstractInfrastructure infrastructure = this.infrastructures.get((String)((Map<?, ?>)Settings.getSetting("monitor_resources")).get(type.toString()));
+        
+        if (infrastructure == null) {
+            System.out.println("Invalid infrastructure type " + type.toString());
+            // TODO: do something more
         }
 
         return infrastructure;

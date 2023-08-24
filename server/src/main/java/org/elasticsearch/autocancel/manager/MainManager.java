@@ -18,6 +18,7 @@ import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.CancellableIDGenerator;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
+import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.utils.id.IDInfo;
 
 import java.io.File;
@@ -101,7 +102,7 @@ public class MainManager {
     public void registerCancellableIDOnCurrentJavaThreadID(CancellableID cid) {
         JavaThreadID jid = new JavaThreadID(Thread.currentThread().getId());
 
-        assert !cid.equals(new CancellableID()) : "Cannot register an invalid cancellable id.";
+        assert cid.isValid() : "Cannot register an invalid cancellable id.";
 
         this.idManager.setCancellableIDAndJavaThreadID(cid, jid, IDInfo.Status.RUN);
     }
@@ -110,7 +111,7 @@ public class MainManager {
         JavaThreadID jid = new JavaThreadID(Thread.currentThread().getId());
         CancellableID cid = this.idManager.getCancellableIDOfJavaThreadID(jid);
 
-        assert !cid.equals(new CancellableID()) : "Task must be running before finishing.";
+        assert cid.isValid() : "Task must be running before finishing.";
 
         this.idManager.setCancellableIDAndJavaThreadID(cid, jid, IDInfo.Status.EXIT);
     }
@@ -127,7 +128,10 @@ public class MainManager {
         CancellableID cidReadFromManager = this.idManager.getCancellableIDOfJavaThreadID(jid);
 
         boolean cidEqual = cid.equals(cidReadFromManager);
-        assert cidEqual : "Input cancellable id is not running on the current java thread id";
+        if (!cidEqual) {
+            Logger.systemWarn("Input " + cid.toString() + " is not running on the current " + jid.toString() + " whose " + cidReadFromManager.toString());
+        }
+        // assert cidEqual : "Input cancellable id is not running on the current java thread id";
 
         this.idManager.setCancellableIDAndJavaThreadID(cidReadFromManager, jid, IDInfo.Status.EXIT);
         
@@ -168,9 +172,25 @@ public class MainManager {
         Double resource = 0.0;
         List<JavaThreadID> javaThreadIDs = this.idManager.getJavaThreadIDOfCancellableID(cid);
         for (JavaThreadID javaThreadID : javaThreadIDs) {
-            resource += this.infrastructureManager.getSpecifiedTypeResourceLatest(javaThreadID, type);
+            if (javaThreadID.isValid()) {
+                resource += this.infrastructureManager.getSpecifiedTypeResourceLatest(javaThreadID, type);
+            }
         }
         return resource;
+    }
+
+    public void updateAppResource(String name, Double value) {
+        JavaThreadID jid = new JavaThreadID(Thread.currentThread().getId());
+        CancellableID cid = this.idManager.getCancellableIDOfJavaThreadID(jid);
+        if (cid.isValid()) {
+            OperationRequest request = new OperationRequest(OperationMethod.UPDATE, cid, ResourceType.valueOf(name));
+            request.addRequestParam("add_group_resource", value);
+            this.putManagerRequestToCore(request);
+        }
+        else {
+            System.out.println("Cannot find cancellable id from current " + jid.toString());
+            // TODO: do something more
+        }
     }
 
 }

@@ -15,6 +15,7 @@ import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.elasticsearch.autocancel.manager.MainManager;
 import org.elasticsearch.autocancel.utils.ReleasableLock;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
+import org.elasticsearch.autocancel.utils.logger.Logger;
 
 public class TaskTracker {
 
@@ -23,6 +24,8 @@ public class TaskTracker {
     private Map<CancellableID, List<Runnable>> cancellableIDToAsyncRunnables;
 
     private BidiMap<CancellableID, TaskWrapper.TaskID> cancellableIDTaskIDBiMap;
+
+    private Map<TaskWrapper.TaskID, List<Object>> danglingTaskBuffer;
     
     private ReadWriteLock autoCancelReadWriteLock;
 
@@ -38,6 +41,8 @@ public class TaskTracker {
         this.cancellableIDToAsyncRunnables = new HashMap<CancellableID, List<Runnable>>();
 
         this.cancellableIDTaskIDBiMap = new DualHashBidiMap<CancellableID, TaskWrapper.TaskID>();
+
+        this.danglingTaskBuffer = new HashMap<TaskWrapper.TaskID, List<Object>>();
 
         this.autoCancelReadWriteLock = new ReentrantReadWriteLock();
 
@@ -58,9 +63,31 @@ public class TaskTracker {
         CancellableID parentCancellableID = null;
 
         if (wrappedTask.getParentTaskID().isValid()) {
-            try (ReleasableLock ignored = this.readLock.acquire()) {
-                assert this.cancellableIDTaskIDBiMap.containsValue(wrappedTask.getParentTaskID()) : "Can't find parent task";
-                parentCancellableID = this.cancellableIDTaskIDBiMap.getKey(wrappedTask.getParentTaskID());
+            try (ReleasableLock ignored = this.writeLock.acquire()) {
+                if (this.cancellableIDTaskIDBiMap.containsValue(wrappedTask.getParentTaskID())) {
+                    parentCancellableID = this.cancellableIDTaskIDBiMap.getKey(wrappedTask.getParentTaskID());
+                }
+                else {
+                    if (wrappedTask.getTaskID().equals(wrappedTask.getParentTaskID())) {
+                        // It IS root task
+                        parentCancellableID = new CancellableID();
+                    }
+                    if (wrappedTask.getTaskID().compareTo(wrappedTask.getParentTaskID()) < 0) {
+                        // parent task id is bigger than task id
+                        // which means currently parent task hasn't been created yet
+                        if (this.danglingTaskBuffer.containsKey(wrappedTask.getParentTaskID())) {
+                            this.danglingTaskBuffer.get(wrappedTask.getParentTaskID()).add(task);
+                        }
+                        else {
+                            this.danglingTaskBuffer.put(wrappedTask.getParentTaskID(), new ArrayList<>(Arrays.asList(task)));
+                        }
+                        // leave parentCancellableID to null so it will skip the next step
+                        // once its parentCancellableID has been registered, it will be created
+                    }
+                    else {
+                        assert false : "Can't find parent task of " + task.toString();
+                    }
+                }
             }
         }
         else {
@@ -70,12 +97,28 @@ public class TaskTracker {
         if (parentCancellableID != null) {
             CancellableID cid = this.mainManager.createCancellableIDOnCurrentJavaThreadID(true, task.toString(), parentCancellableID);
 
-            System.out.println("Created " + cid.toString() + " for " + wrappedTask.getTaskID().toString());
-
             try (ReleasableLock ignored = this.writeLock.acquire()) {
                 assert !this.cancellableIDTaskIDBiMap.containsKey(cid) : "Do not register one task twice.";
 
                 this.cancellableIDTaskIDBiMap.put(cid, wrappedTask.getTaskID());
+            }
+
+            Logger.systemTrace("Created " + task.toString());
+
+            // handling dangling child cancellables
+            if (!parentCancellableID.isValid()) {
+                List<Object> danglingTasks = null;
+                try (ReleasableLock ignore = this.writeLock.acquire()) {
+                    danglingTasks = this.danglingTaskBuffer.get(wrappedTask.getTaskID());
+                    if (danglingTasks != null) {
+                        this.danglingTaskBuffer.remove(wrappedTask.getTaskID());
+                    }
+                }
+                if (danglingTasks != null) {
+                    for (Object danglingTask : danglingTasks) {
+                        AutoCancel.onTaskCreate(danglingTask);
+                    }
+                }
             }
         }
         else {
@@ -90,32 +133,30 @@ public class TaskTracker {
         TaskWrapper wrappedTask = new TaskWrapper(task);
         CancellableID cid = null;
 
+        Logger.systemTrace("Exit " + task.toString());
+
         try (ReleasableLock ignored = this.readLock.acquire()) {
             cid = this.cancellableIDTaskIDBiMap.getKey(wrappedTask.getTaskID());
         }
 
-        System.out.println("Exit " + wrappedTask.getTaskID().toString());
-        System.out.println("Exit " + cid.toString());
-
-        assert cid != null : "Cannot exit an uncreated task.";
-
-        try (ReleasableLock ignored = this.writeLock.acquire()) {
-            assert this.cancellableIDTaskIDBiMap.containsKey(cid) : "Maps should contains the cid to be removed.";
-            if (!this.cancellableIDToAsyncRunnables.containsKey(cid)) {
-                // task has not been created when runnable starts on the first thread
-                // TODO: maybe there is a better way to identify the status
+        if (cid != null) {
+            try (ReleasableLock ignored = this.writeLock.acquire()) {
+                assert this.cancellableIDTaskIDBiMap.containsKey(cid) : "Maps should contains the cid to be removed.";
+                this.removeCancellableIDFromMaps(cid);
             }
-            this.removeCancellableIDFromMaps(cid);
+
+            this.mainManager.destoryCancellableIDOnCurrentJavaThreadID(cid);
+
+            this.log.logCancellableJavaThreadIDInfo(cid, task);
         }
-
-        this.mainManager.destoryCancellableIDOnCurrentJavaThreadID(cid);
-
-        this.log.logCancellableJavaThreadIDInfo(cid, task);
+        else {
+            Logger.systemWarn("Cannot find " + task.toString() + " , check whether it has exited before.");
+        }
     }
 
     public void onTaskFinishInThread() throws AssertionError {
         CancellableID cid = this.mainManager.getCancellableIDOnCurrentJavaThreadID();
-        if (cid.equals(new CancellableID())) {
+        if (!cid.isValid()) {
             // task has exited
             // TODO: maybe there is a better way to identify the status
             return;
@@ -129,8 +170,8 @@ public class TaskTracker {
 
         CancellableID cid = this.mainManager.getCancellableIDOnCurrentJavaThreadID();
 
-        // assert !cid.equals(new CancellableID()) : "Task must be running before queuing into threadpool.";
-        if (cid.equals(new CancellableID())) {
+        // assert cid.isValid() : "Task must be running before queuing into threadpool.";
+        if (!cid.isValid()) {
             // task has not been created yet
             // TODO: maybe there is a better way to identify the status
             return;

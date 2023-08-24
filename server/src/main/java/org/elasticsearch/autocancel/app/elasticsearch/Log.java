@@ -19,7 +19,7 @@ public class Log {
 
     public Log(MainManager mainManager) {
         this.mainManager = mainManager;
-        this.logger = new Logger((String) Settings.getSetting("path_to_logs"), "cidinfo", 10000);
+        this.logger = new Logger("cidinfo");
     }
 
     public void stop() {
@@ -29,9 +29,9 @@ public class Log {
     public void logCancellableJavaThreadIDInfo(CancellableID cid, Object task) {
         List<IDInfo<JavaThreadID>> javaThreadIDInfos = this.mainManager.getAllJavaThreadIDInfoOfCancellableID(cid);
 
-        this.logger.log(String.format("========== Cancellable %s %s ==========\n", cid.toString(), task.toString()));
+        this.logger.log(String.format("========== Cancellable %s %s ==========", cid.toString(), task.toString()));
         for (IDInfo<JavaThreadID> javaThreadIDInfo : javaThreadIDInfos) {
-            this.logger.log(javaThreadIDInfo.toString() + "\n");
+            this.logger.log(javaThreadIDInfo.toString());
         }
     }
 

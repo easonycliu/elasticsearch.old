@@ -11,6 +11,8 @@ public class Settings {
         "path_to_logs", "/usr/share/elasticsearch/logs",
         "core_update_cycle_ms", 100L,
         "max_child_cancellable_level", 1000,
+        "log_file_max_line", 100000,
+        "system_log_level", "INFO",
         "monitor_resources", Map.of(
             "CPU", "JVM",
             "MEMORY", "Linux"

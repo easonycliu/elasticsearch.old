@@ -6,6 +6,8 @@ public class JavaThreadID implements ID {
 
     private Long id;
 
+    private static final Long INVALID_ID = -1L;
+
     public JavaThreadID(Long id) {
         this.id = id;
     }
@@ -29,6 +31,11 @@ public class JavaThreadID implements ID {
     @Override
     public int hashCode() {
         return this.id.intValue();
+    }
+
+    @Override
+    public Boolean isValid() {
+        return this.id != INVALID_ID;
     }
 
     public Long unwrap() {

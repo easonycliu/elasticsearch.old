@@ -114,7 +114,7 @@ public class CancellableGroup {
         Integer maxLevel = (Integer) Settings.getSetting("max_child_cancellable_level");
         do {
             tmp = cancellable.getParentID();
-            if (tmp.equals(new CancellableID())) {
+            if (!tmp.isValid()) {
                 // In case someone use this function to calculate the level of root cancellable
                 break;
             }

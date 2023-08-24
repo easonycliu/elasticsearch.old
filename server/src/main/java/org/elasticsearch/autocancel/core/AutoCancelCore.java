@@ -42,20 +42,20 @@ public class AutoCancelCore {
         this.rootCancellableToCancellableGroup = new HashMap<CancellableID, CancellableGroup>();
         this.mainMonitor = new MainMonitor(this.mainManager, this.cancellables, this.rootCancellableToCancellableGroup);
         this.requestParser = new RequestParser();
-        this.logger = new Logger((String) Settings.getSetting("path_to_logs"), "corerequest", 10000);
+        this.logger = new Logger("corerequest");
     }
 
     public void start() {
         while (!Thread.interrupted()) {
             try {
-                this.logger.log(String.format("Current time: %d\n", System.currentTimeMillis()));
+                this.logger.log(String.format("Current time: %d", System.currentTimeMillis()));
                 Integer requestBufferSize = this.mainManager.getManagerRequestToCoreBufferSize();
                 for (Integer ignore = 0; ignore < requestBufferSize; ++ignore) {
                     OperationRequest request = this.mainManager.getManagerRequestToCore();
                     this.requestParser.parse(request);
                 }
 
-                
+                this.refreshCancellableGroups();
 
                 this.mainMonitor.updateTasksResources();
 
@@ -64,8 +64,6 @@ public class AutoCancelCore {
                     OperationRequest request = this.mainMonitor.getMonitorUpdateToCoreWithoutLock();
                     this.requestParser.parse(request);
                 }
-
-                this.refreshCancellableGroups();
 
                 Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
             }
@@ -90,7 +88,7 @@ public class AutoCancelCore {
 
             Set<ResourceType> resourceTypes = entries.getValue().getResourceTypes();
             for (ResourceType type : resourceTypes) {
-                this.logger.log(String.format("Cancellable group with root %s used %s resource %s\n", entries.getKey().toString(), type.toString(), entries.getValue().getResourceUsage(type)));
+                this.logger.log(String.format("Cancellable group with root %s used %s resource %s", entries.getKey().toString(), type.toString(), entries.getValue().getResourceUsage(type)));
                 OperationRequest request = new OperationRequest(OperationMethod.UPDATE, entries.getKey(), type);
                 request.addRequestParam("set_group_resource", 0.0);
                 requestParser.parse(request);
@@ -100,6 +98,8 @@ public class AutoCancelCore {
 
     protected void addCancellable(Cancellable cancellable) {
         this.cancellables.put(cancellable.getID(), cancellable);
+
+        Logger.systemTrace("Add cancellable with " + cancellable.toString());
 
         if (cancellable.isRoot()) {
             this.rootCancellableToCancellableGroup.put(cancellable.getID(), new CancellableGroup(cancellable));
@@ -139,7 +139,7 @@ public class AutoCancelCore {
         }
 
         public void parse(OperationRequest request) {
-            logger.log(request.toString() + "\n");
+            logger.log(request.toString());
             switch (request.getOperation()) {
                 case CREATE:
                     create(request);
@@ -299,11 +299,11 @@ public class AutoCancelCore {
         private CancellableID parentCancellableID(OperationRequest request) {
             CancellableID parentID = (CancellableID) request.getParams().get("parent_cancellable_id");
             CancellableID rootID = null;
-            if (parentID.equals(new CancellableID())) {
+            if (!parentID.isValid()) {
                 // Itself is a root cancellable
                 rootID = request.getTarget();
             }
-            else{
+            else {
                 rootID = cancellables.get(parentID).getID();
             }
             return rootID;

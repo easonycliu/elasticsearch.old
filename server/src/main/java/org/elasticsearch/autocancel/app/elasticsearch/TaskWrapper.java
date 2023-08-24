@@ -2,6 +2,7 @@ package org.elasticsearch.autocancel.app.elasticsearch;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.lang.Comparable;
 
 import org.elasticsearch.autocancel.app.AppID;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
@@ -74,7 +75,7 @@ public class TaskWrapper {
         return this.hashCode() == o.hashCode();
     }
 
-    public class TaskID implements AppID {
+    public class TaskID implements AppID, Comparable<TaskID> {
 
         private Long id;
 
@@ -95,6 +96,23 @@ public class TaskWrapper {
         @Override
         public boolean equals(Object o) {
             return TaskID.class.equals(o.getClass()) && this.hashCode() == o.hashCode();
+        }
+
+        private Long unwrap() {
+            return this.id;
+        }
+
+        @Override
+        public int compareTo(TaskID o) {
+            if (this.id < o.unwrap()) {
+                return -1;
+            }
+            else if (this.id == o.unwrap()) {
+                return 0;
+            }
+            else {
+                return 1;
+            }
         }
 
         public Boolean isValid() {

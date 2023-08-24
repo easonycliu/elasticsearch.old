@@ -5,6 +5,8 @@ import org.elasticsearch.autocancel.utils.id.ID;
 class LinuxThreadID implements ID {
 
     private Long id;
+
+    private static final Long INVALID_ID = -1L;
     
     public LinuxThreadID(Long id) {
         this.id = id;
@@ -29,6 +31,11 @@ class LinuxThreadID implements ID {
     @Override
     public int hashCode() {
         return this.id.intValue();
+    }
+
+    @Override
+    public Boolean isValid() {
+        return this.id != INVALID_ID;
     }
 
     public Long unwrap() {

@@ -10,6 +10,7 @@ import org.elasticsearch.autocancel.utils.ReleasableLock;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.utils.id.IDInfo;
+import org.elasticsearch.autocancel.utils.logger.Logger;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -63,7 +64,10 @@ public class IDManager {
                             break;
                     }
                 }
-                assert javaThreadIDs.size() > 0 : String.format("%s is alive but not running on any java threads", cid.toString());
+                if (javaThreadIDs.size() == 0) {
+                    Logger.systemTrace(String.format("%s is alive but not running on any java threads", cid.toString()));
+                    javaThreadIDs.add(new JavaThreadID());
+                }
             }
             else {
                 javaThreadIDs.add(new JavaThreadID());
