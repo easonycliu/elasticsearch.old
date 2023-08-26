@@ -7,7 +7,7 @@ import org.elasticsearch.autocancel.core.utils.OperationRequest;
 import org.elasticsearch.autocancel.core.monitor.CPUMonitor;
 import org.elasticsearch.autocancel.core.monitor.MemoryMonitor;
 import org.elasticsearch.autocancel.manager.MainManager;
-import org.elasticsearch.autocancel.utils.Resource.ResourceType;
+import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import java.util.Queue;
 import java.util.Set;
 
 public class MainMonitor {
-    
+
     private Queue<OperationRequest> monitorUpdateToCoreBuffer;
 
     private final Map<CancellableID, Cancellable> cancellables;
@@ -26,31 +26,34 @@ public class MainMonitor {
 
     private final MainManager mainManager;
 
-    private Map<ResourceType, Monitor> monitors;
+    private Map<ResourceName, Monitor> monitors;
 
-    public MainMonitor(MainManager mainManager, Map<CancellableID, Cancellable> cancellables, Map<CancellableID, CancellableGroup> rootCancellableToCancellableGroup) {
+    public MainMonitor(MainManager mainManager, Map<CancellableID, Cancellable> cancellables,
+            Map<CancellableID, CancellableGroup> rootCancellableToCancellableGroup) {
         this.monitorUpdateToCoreBuffer = new LinkedList<OperationRequest>();
         this.mainManager = mainManager;
         this.cancellables = cancellables;
         this.rootCancellableToCancellableGroup = rootCancellableToCancellableGroup;
 
-        this.monitors = new HashMap<ResourceType, Monitor>();
-        this.monitors.put(ResourceType.CPU, new CPUMonitor(this.mainManager));
-        this.monitors.put(ResourceType.MEMORY, new MemoryMonitor(this.mainManager));
+        this.monitors = new HashMap<ResourceName, Monitor>();
+        this.monitors.put(ResourceName.CPU, new CPUMonitor(this.mainManager));
+        this.monitors.put(ResourceName.MEMORY, new MemoryMonitor(this.mainManager));
 
     }
 
     public void updateTasksResources() {
         this.mainManager.startNewVersion();
         for (Cancellable cancellable : this.cancellables.values()) {
-            assert this.rootCancellableToCancellableGroup.containsKey(cancellable.getRootID()) : String.format("Ungrouped cancellable %d", cancellable.getID());
+            assert this.rootCancellableToCancellableGroup.containsKey(cancellable.getRootID())
+                    : String.format("Ungrouped cancellable %d", cancellable.getID());
             // TODO: Problematic point: nullptr
-            for (ResourceType resourceType : this.rootCancellableToCancellableGroup.get(cancellable.getRootID()).getResourceTypes()) {
-                if (this.monitors.containsKey(resourceType)) {
-                    this.monitorUpdateToCoreBuffer.add(this.monitors.get(resourceType).updateResource(cancellable.getID()));
-                }
-                else {
-                    // Unsupported type in monitor
+            for (ResourceName resourceName : this.rootCancellableToCancellableGroup.get(cancellable.getRootID())
+                    .getResourceNames()) {
+                if (this.monitors.containsKey(resourceName)) {
+                    this.monitorUpdateToCoreBuffer
+                            .add(this.monitors.get(resourceName).updateResource(cancellable.getID()));
+                } else {
+                    // Unsupported name in monitor
                     // But may be updated by app
                     // So there is nothing to do
                     // TODO: Add proper checking to make sure this resource is updated by app

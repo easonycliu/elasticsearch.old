@@ -1,7 +1,7 @@
 package org.elasticsearch.autocancel.core.utils;
 
 import org.elasticsearch.autocancel.core.utils.Cancellable;
-import org.elasticsearch.autocancel.utils.Resource.ResourceType;
+import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.Settings;
 
@@ -14,10 +14,10 @@ import java.util.List;
 public class CancellableGroup {
 
     private final Cancellable root;
-    
+
     private Map<CancellableID, Cancellable> cancellables;
 
-    private Map<ResourceType, ResourceUsage> resourceMap;
+    private Map<ResourceName, ResourceUsage> resourceMap;
 
     private Boolean isCancellable;
 
@@ -29,11 +29,11 @@ public class CancellableGroup {
 
         this.cancellables = new HashMap<CancellableID, Cancellable>();
         this.cancellables.put(root.getID(), root);
-        this.resourceMap = new HashMap<ResourceType, ResourceUsage>();
-        
+        this.resourceMap = new HashMap<ResourceName, ResourceUsage>();
+
         // These are "built-in" monitored resources
-        this.resourceMap.put(ResourceType.CPU, new ResourceUsage());
-        this.resourceMap.put(ResourceType.MEMORY, new ResourceUsage());
+        this.resourceMap.put(ResourceName.CPU, new ResourceUsage());
+        this.resourceMap.put(ResourceName.MEMORY, new ResourceUsage());
 
         this.isCancellable = null;
 
@@ -48,35 +48,32 @@ public class CancellableGroup {
         return this.exited;
     }
 
-    public Set<ResourceType> getResourceTypes() {
+    public Set<ResourceName> getResourceNames() {
         return this.resourceMap.keySet();
     }
 
-    public void setResourceUsage(ResourceType type, Double usage) {
-        if (this.resourceMap.containsKey(type)) {
-            this.resourceMap.get(type).setUsage(usage);
-        }
-        else {
-            this.resourceMap.put(type, new ResourceUsage(usage));
-        }
-    }
-
-    public void addResourceUsage(ResourceType type, Double usageAdd) {
-        if (this.resourceMap.containsKey(type)) {
-            Double previousUsage = this.resourceMap.get(type).getUsage();
-            this.resourceMap.get(type).setUsage(previousUsage + usageAdd);
-        }
-        else {
-            this.resourceMap.put(type, new ResourceUsage(usageAdd));
+    public void setResourceUsage(ResourceName resourceName, Double usage) {
+        if (this.resourceMap.containsKey(resourceName)) {
+            this.resourceMap.get(resourceName).setUsage(usage);
+        } else {
+            this.resourceMap.put(resourceName, new ResourceUsage(usage));
         }
     }
 
-    public Double getResourceUsage(ResourceType type) {
+    public void addResourceUsage(ResourceName resourceName, Double usageAdd) {
+        if (this.resourceMap.containsKey(resourceName)) {
+            Double previousUsage = this.resourceMap.get(resourceName).getUsage();
+            this.resourceMap.get(resourceName).setUsage(previousUsage + usageAdd);
+        } else {
+            this.resourceMap.put(resourceName, new ResourceUsage(usageAdd));
+        }
+    }
+
+    public Double getResourceUsage(ResourceName resourceName) {
         Double usage = null;
-        if (this.resourceMap.containsKey(type)) {
-            usage = this.resourceMap.get(type).getUsage();
-        }
-        else {
+        if (this.resourceMap.containsKey(resourceName)) {
+            usage = this.resourceMap.get(resourceName).getUsage();
+        } else {
             usage = 0.0;
         }
         return usage;
@@ -92,15 +89,16 @@ public class CancellableGroup {
     }
 
     public void putCancellable(Cancellable cancellable) {
-        assert cancellable.getRootID().equals(this.root.getID()) : 
-            String.format("Putting a cancellable with id %d into a wrong group with root cancellable id %d", cancellable.getID(), this.root.getID());
+        assert cancellable.getRootID().equals(this.root.getID())
+                : String.format("Putting a cancellable with id %d into a wrong group with root cancellable id %d",
+                        cancellable.getID(), this.root.getID());
 
-        assert !this.cancellables.containsKey(cancellable.getID()) : 
-            String.format("Cancellable %d has been putted into this group %d", cancellable.getID(), this.root.getID());
+        assert !this.cancellables.containsKey(cancellable.getID()) : String
+                .format("Cancellable %d has been putted into this group %d", cancellable.getID(), this.root.getID());
 
         Integer level = this.getCancellableLevel(cancellable);
         cancellable.setLevel(level);
-            
+
         this.cancellables.put(cancellable.getID(), cancellable);
     }
 
@@ -125,9 +123,9 @@ public class CancellableGroup {
                 level = -1;
                 break;
             }
-        } while(!tmp.equals(this.root.getID()));
+        } while (!tmp.equals(this.root.getID()));
 
         return level;
     }
-    
+
 }

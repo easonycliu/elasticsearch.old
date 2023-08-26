@@ -1,7 +1,7 @@
 package org.elasticsearch.autocancel.core.utils;
 
 import org.elasticsearch.autocancel.core.utils.ResourceUsage;
-import org.elasticsearch.autocancel.utils.Resource.ResourceType;
+import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 
 import java.util.HashMap;
@@ -11,9 +11,9 @@ import java.util.Set;
 /*
  * root cancellable: id = id, parentID = -1, rootID = id
  * others: id = id, parentID = parentID, rootID = rootID
- */ 
+ */
 public class Cancellable {
-    
+
     private final CancellableID id;
 
     private final CancellableID parentID;
@@ -76,7 +76,7 @@ public class Cancellable {
         return this.id.hashCode();
     }
 
-    @Override 
+    @Override
     public String toString() {
         return this.id.toString() + " Parent " + this.parentID.toString() + " Root " + this.rootID.toString();
     }

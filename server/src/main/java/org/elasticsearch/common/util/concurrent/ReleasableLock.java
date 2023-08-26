@@ -12,6 +12,7 @@ import org.elasticsearch.core.Assertions;
 import org.elasticsearch.core.Releasable;
 import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.index.engine.EngineException;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 
 import java.util.concurrent.locks.Lock;
 
@@ -36,11 +37,14 @@ public class ReleasableLock implements Releasable {
     @Override
     public void close() {
         lock.unlock();
+        AutoCancel.onLockRelease(lock.toString());
         assert removeCurrentThread();
     }
 
     public ReleasableLock acquire() throws EngineException {
+        AutoCancel.onLockWait(lock.toString());
         lock.lock();
+        AutoCancel.onLockGet(lock.toString());
         assert addCurrentThread();
         return this;
     }

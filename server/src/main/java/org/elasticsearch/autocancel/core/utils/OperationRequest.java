@@ -2,65 +2,83 @@ package org.elasticsearch.autocancel.core.utils;
 
 import org.elasticsearch.autocancel.core.utils.OperationMethod;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
+import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 
 import java.util.Map;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 
 // TODO: Find a better representaion
 public class OperationRequest {
-    OperationMethod operation;
 
-    CancellableID target;
+    private OperationMethod operation;
 
-    ResourceType resourceType;
+    private Map<String, Object> params;
 
-    Map<String, Object> params;
+    private final Long nanoTime;
 
-    Long nanoTime;
+    private static final List<String> acceptedBasicInfoKeywords = Arrays.asList(
+        "cancellable_id",
+        "parent_cancellable_id",
+        "resource_name",
+        "resource_type"
+    );
 
-    public OperationRequest(OperationMethod operation, CancellableID target) {
+    public OperationRequest(OperationMethod operation, Map<String, Object> basicInfo) {
         this.operation = operation;
-        this.target = target;
-        this.resourceType = ResourceType.NULL;
-        this.params = new HashMap<String, Object>();
+        // The iterate order of LinkedHashMap is same as input order
+        this.params = new LinkedHashMap<String, Object>();
         this.nanoTime = System.nanoTime();
-    }
-
-    public OperationRequest(OperationMethod operation, CancellableID target, ResourceType resourceType) {
-        this.operation = operation;
-        this.target = target;
-        this.resourceType = resourceType;
-        this.params = new HashMap<String, Object>();
-        this.nanoTime = System.nanoTime();
-    }
-
-    public OperationRequest(OperationMethod operation, CancellableID target, ResourceType resourceType, Map<String, Object> params) {
-        this.operation = operation;
-        this.target = target;
-        this.resourceType = resourceType;
-        this.params = params;
-        this.nanoTime = System.nanoTime();
+        this.params.put("basic_info", basicInfo);
     }
 
     public void addRequestParam(String key, Object value) {
         this.params.put(key, value);
     }
 
-    public void addRequestParam(Map<String, Object> params) {
-        this.params.putAll(params);
-    }
-
     public OperationMethod getOperation() {
         return this.operation;
     }
 
-    public CancellableID getTarget() {
-        return this.target;
+    public CancellableID getCancellableID() {
+        CancellableID cid = (CancellableID) this.getBasicInfoParam("cancellable_id");
+        if (cid == null) {
+            cid = new CancellableID();
+        }
+        return cid;
+    }
+
+    public CancellableID getParentCancellableID() {
+        // This has to be null if the is key is unset because invalid value indicates the cancellable has no parent
+        CancellableID parentCID = (CancellableID) this.getBasicInfoParam("parent_cancellable_id");
+        return parentCID;
+    }
+
+    public ResourceName getResourceName() {
+        ResourceName resourceName = (ResourceName) this.getBasicInfoParam("resource_name");
+        if (resourceName == null) {
+            resourceName = ResourceName.NULL;
+        }
+        return resourceName;
     }
 
     public ResourceType getResourceType() {
-        return this.resourceType;
+        ResourceType resourceType = (ResourceType) this.getBasicInfoParam("resource_type");
+        if (resourceType == null) {
+            resourceType = ResourceType.NULL;
+        }
+        return resourceType;
+    }
+
+    private Object getBasicInfoParam(String key) {
+        assert OperationRequest.acceptedBasicInfoKeywords.contains(key) : key + " is not accepted";
+        Object basicInfoValue = null;
+        if (((Map<?, ?>) this.params.get("basic_info")).containsKey(key)) {
+            basicInfoValue = ((Map<?, ?>) this.params.get("basic_info")).get(key);
+        }
+        return basicInfoValue;
     }
 
     public Map<String, Object> getParams() {
@@ -69,7 +87,7 @@ public class OperationRequest {
 
     @Override
     public String toString() {
-        String strRequest = String.format("Time: %d, %s %s %s. ", this.nanoTime, this.operation.toString(), this.target.toString(), this.resourceType.toString());
+        String strRequest = String.format("Time: %d, %s. ", this.nanoTime, this.operation.toString());
         for (Map.Entry<String, Object> entry : this.params.entrySet()) {
             strRequest = strRequest + String.format("%s: %s; ", entry.getKey(), entry.getValue().toString());
         }

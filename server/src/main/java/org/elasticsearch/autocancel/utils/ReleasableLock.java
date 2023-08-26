@@ -11,6 +11,7 @@ public class ReleasableLock implements Closeable {
 
     public ReleasableLock(Lock lock) {
         this.lock = lock;
+        this.lock.toString();
         this.holdingThreads = new ThreadLocal<>();
     }
 

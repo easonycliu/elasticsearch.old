@@ -9,6 +9,7 @@ import org.elasticsearch.autocancel.infrastructure.AbstractInfrastructure;
 import org.elasticsearch.autocancel.infrastructure.jvm.JavaThreadStatusReader;
 import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadStatusReader;
 import org.elasticsearch.autocancel.utils.Settings;
+import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
@@ -21,19 +22,18 @@ public class InfrastructureManager {
     private AtomicInteger version;
 
     private final Map<String, AbstractInfrastructure> infrastructures;
-    
+
     public InfrastructureManager() {
         this.version = new AtomicInteger();
         this.infrastructures = Map.of(
-            "JVM", new JavaThreadStatusReader(),
-            "Linux", new LinuxThreadStatusReader()
-        );
+                "JVM", new JavaThreadStatusReader(),
+                "Linux", new LinuxThreadStatusReader());
     }
 
-    public Double getSpecifiedTypeResourceLatest(JavaThreadID jid, ResourceType type) {
-        AbstractInfrastructure infrastructure = this.getInfrastructure(type);
-        assert infrastructure != null : String.format("Unsupported resource type: %s", type.toString());
-        Double resource = infrastructure.getResource(jid, type, this.version.get());
+    public Double getSpecifiedResourceLatest(JavaThreadID jid, ResourceName resourceName) {
+        AbstractInfrastructure infrastructure = this.getInfrastructure(resourceName);
+        assert infrastructure != null : String.format("Unsupported resource name: %s", resourceName.toString());
+        Double resource = infrastructure.getResource(jid, resourceName, this.version.get());
         return resource;
     }
 
@@ -41,11 +41,12 @@ public class InfrastructureManager {
         this.version.incrementAndGet();
     }
 
-    private AbstractInfrastructure getInfrastructure(ResourceType type) {
-        AbstractInfrastructure infrastructure = this.infrastructures.get((String)((Map<?, ?>)Settings.getSetting("monitor_resources")).get(type.toString()));
-        
+    private AbstractInfrastructure getInfrastructure(ResourceName resourceName) {
+        AbstractInfrastructure infrastructure = this.infrastructures
+                .get((String) ((Map<?, ?>) Settings.getSetting("monitor_physical_resources")).get(resourceName.toString()));
+
         if (infrastructure == null) {
-            System.out.println("Invalid infrastructure type " + type.toString());
+            System.out.println("Invalid infrastructure name " + resourceName.toString());
             // TODO: do something more
         }
 

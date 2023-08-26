@@ -3,7 +3,7 @@ package org.elasticsearch.autocancel.infrastructure;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.elasticsearch.autocancel.utils.Resource.ResourceType;
+import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.ID;
 
 public abstract class AbstractInfrastructure {
@@ -13,11 +13,11 @@ public abstract class AbstractInfrastructure {
         this.resourceMap = new HashMap<ID, ResourceBatch>();
     }
 
-    public Double getResource(ID id, ResourceType type, Integer version) {
+    public Double getResource(ID id, ResourceName resourceName, Integer version) {
         if (this.outOfDate(id, version)) {
             this.updateResource(id, version);
         }
-        Double resourceValue = this.getResourceValue(id, type);
+        Double resourceValue = this.getResourceValue(id, resourceName);
         return resourceValue;
     }
 
@@ -26,12 +26,10 @@ public abstract class AbstractInfrastructure {
         if (this.resourceMap.containsKey(id)) {
             if (!this.resourceMap.get(id).getVersion().equals(version)) {
                 outOfDate = true;
-            }
-            else {
+            } else {
                 outOfDate = false;
             }
-        }
-        else {
+        } else {
             outOfDate = true;
         }
         return outOfDate;
@@ -43,12 +41,11 @@ public abstract class AbstractInfrastructure {
         this.resourceMap.put(id, resourceBatch);
     }
 
-    private Double getResourceValue(ID id, ResourceType type) {
+    private Double getResourceValue(ID id, ResourceName resourceName) {
         Double resource;
         if (this.resourceMap.containsKey(id)) {
-            resource = this.resourceMap.get(id).getResourceValue(type);
-        }
-        else {
+            resource = this.resourceMap.get(id).getResourceValue(resourceName);
+        } else {
             resource = 0.0;
         }
         return resource;
