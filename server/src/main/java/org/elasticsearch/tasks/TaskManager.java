@@ -145,7 +145,7 @@ public class TaskManager implements ClusterStateApplier {
             }
         }
         Task task = request.createTask(taskIdGenerator.incrementAndGet(), type, action, request.getParentTask(), headers);
-        AutoCancel.onTaskCreate(task);
+        AutoCancel.onTaskCreate(task, task instanceof CancellableTask);
         Objects.requireNonNull(task);
         assert task.getParentTaskId().equals(request.getParentTask()) : "Request [ " + request + "] didn't preserve it parentTaskId";
         if (logger.isTraceEnabled()) {

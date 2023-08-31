@@ -31,4 +31,6 @@ public abstract class Resource {
     public abstract void setResourceUpdateInfo(Map<String, Object> resourceUpdateInfo);
 
     public abstract void reset();
+
+    public abstract String toString();
 }

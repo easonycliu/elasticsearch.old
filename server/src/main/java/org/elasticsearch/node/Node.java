@@ -21,6 +21,7 @@ import org.elasticsearch.action.ActionModule;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.ActionType;
+import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.cluster.repositories.reservedstate.ReservedRepositoryAction;
 import org.elasticsearch.action.admin.indices.template.reservedstate.ReservedComposableIndexTemplateAction;
 import org.elasticsearch.action.ingest.ReservedPipelineAction;
@@ -204,6 +205,7 @@ import org.elasticsearch.snapshots.SnapshotShardsService;
 import org.elasticsearch.snapshots.SnapshotsInfoService;
 import org.elasticsearch.snapshots.SnapshotsService;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.CancellableTask;
 import org.elasticsearch.tasks.TaskCancellationService;
 import org.elasticsearch.tasks.TaskManager;
 import org.elasticsearch.tasks.TaskResultsService;
@@ -1185,6 +1187,13 @@ public class Node implements Closeable {
             actionModule.initRestHandlers(() -> clusterService.state().nodesIfRecovered());
             logger.info("initialized");
 
+            AutoCancel.start((taskID, reason) -> {
+                CancellableTask task = taskManager.getCancellableTask(taskID);
+                if (task != null) {
+                    taskManager.cancelTaskAndDescendants(task, reason, false, ActionListener.noop());
+                } 
+            });
+
             success = true;
         } catch (IOException ex) {
             throw new ElasticsearchException("failed to bind service", ex);
@@ -1556,8 +1565,6 @@ public class Node implements Closeable {
         logger.info("started {}", transportService.getLocalNode());
 
         pluginsService.filterPlugins(ClusterPlugin.class).forEach(ClusterPlugin::onNodeStarted);
-
-        AutoCancel.start();
 
         return this;
     }

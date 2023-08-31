@@ -6,6 +6,7 @@ import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 import org.elasticsearch.autocancel.utils.logger.Logger;
 
 import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
@@ -15,111 +16,97 @@ public class Resource {
 
     private final MainManager mainManager;
 
+    private ConcurrentMap<String, Boolean> monitoredLock;
+
     private static final Map<String, BiFunction<String, StackTraceElement, Boolean>> lockInfoParser = Map.of(
         "file_name", (name, stackTraceElement) -> stackTraceElement.getFileName().equals(name),
         "line_number", (name, stackTraceElement) -> name.matches("^[0-9]+$") && stackTraceElement.getLineNumber() == Integer.valueOf(name),
-        "class_name", (name, stackTraceElement) -> stackTraceElement.getClassName().equals(name),
+        "class_name", (name, stackTraceElement) -> {
+            if (name.endsWith("...")) {
+                return stackTraceElement.getClassName().contains(name.substring(0, name.length() - 3));
+            }
+            else {
+                return stackTraceElement.getClassName().endsWith(name);
+            }
+        },
         "method_name", (name, stackTraceElement) -> stackTraceElement.getMethodName().equals(name)
-    );
-
-
-    private final Map<String, ConcurrentMap<String, Long>> resourceEventStartTime = Map.of(
-        "wait", new ConcurrentHashMap<String, Long>(),
-        "occupy", new ConcurrentHashMap<String, Long>()
     );
 
     public Resource(MainManager mainManager) {
         this.mainManager = mainManager;
+        this.monitoredLock = new ConcurrentHashMap<String, Boolean>();
     }
     
     public void addResourceUsage(String name, Double value) {
         this.mainManager.updateCancellableGroup(name, value);
     }
 
-    private void addResourceEventDuration(String name, String event, Double value) {
+    private void addResourceEventDuration(String name, String event, Long value) {
         switch (event) {
             case "wait": 
                 this.mainManager.updateResource(ResourceType.LOCK, name, Map.of("wait_time", value));
                 break;
             case "occupy":
-                this.addResourceUsage(name, value);
+                this.addResourceUsage(name, Double.valueOf(value));
                 break;
             default:
                 break;
         }
     }
 
-    public void startResourceEvent(String name, String event) {
-        if (this.resourceEventStartTime.containsKey(event)) {
-            if (this.resourceEventStartTime.get(event).containsKey(name)) {
-                Long startTime = this.resourceEventStartTime.get(event).get(name);
-                if (startTime.equals(-1L)) {
-                    this.resourceEventStartTime.get(event).put(name, System.nanoTime());
+    public Long startResourceEvent(String name, String event) {
+        // System.out.println("Start " + event + " for resource " + name);
+        return System.nanoTime();
+    }
+
+    public void endResourceEvent(String name, String event, Long timestamp) {
+        // System.out.println("End " + event + " for resource " + name);
+        Long duration = System.nanoTime() - timestamp;
+        this.addResourceEventDuration(name, event, duration);
+    }
+
+    public Long onLockWait(String name) {
+        Long timestamp = -1L;
+
+        if (!this.monitoredLock.containsKey(name)) {
+            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+            // getStackTrace() <-- Resource.onLockWait() <-- Autocancel.onLockWait() <-- ReleasableLock.acquire() <-- Target <-- ...
+            // to reach the target, it must have at least 5 elements
+            // position sensitive! Do not use it in the plase other than ReleasableLock.acquire()
+            // if want to track the lock waiting time of other types of locks, using startResourceWait(String name)
+
+            if (stackTraceElements.length >= 5) {
+                // System.out.println("Classname: " + stackTraceElements[4].getClassName() + 
+                // " Filename: " + stackTraceElements[4].getFileName() + 
+                // " Methodname: " + stackTraceElements[4].getMethodName() +
+                // " Linenumber: " + stackTraceElements[4].getLineNumber());
+                if (this.isMonitorTarget(stackTraceElements[4])) {
+                    // System.out.println("Find lock at " + stackTraceElements[4].toString());
+                    timestamp = this.startResourceEvent(name, "wait");
+                    this.monitoredLock.put(name, true);
                 }
-                else {
-                    System.out.println("Resource " + event + " hasn't finished last time.");
-                    // TODO: do something more
-                }
-            }
-            else {
-                this.resourceEventStartTime.get(event).put(name, System.nanoTime());
             }
         }
         else {
-            Logger.systemWarn("Event " + event + " not supported, candidates: " + this.resourceEventStartTime.keySet().toString());
+            timestamp = this.startResourceEvent(name, "wait");
         }
+
+        return timestamp;
     }
 
-    public void endResourceEvent(String name, String event) {
-        if (this.resourceEventStartTime.get(event).containsKey(name)) {
-            Long startTime = this.resourceEventStartTime.get(event).get(name);
-            if (startTime.equals(-1L)) {
-                this.resourceEventStartTime.get(event).put(name, System.nanoTime());
-                System.out.println("Resource " + event + " has finished, don't finish it again.");
-                // TODO: do something more
-            }
-            else {
-                Long duration = System.nanoTime() - startTime;
-                this.addResourceEventDuration(name, event, Double.valueOf(duration));
-            }
+    public Long onLockGet(String name, Long timestamp) {
+        Long nextTimestamp = -1L;
+        if (timestamp > 0) {
+            this.endResourceEvent(name, "wait", timestamp);
+            nextTimestamp = this.startResourceEvent(name, "occupy");
         }
-        else {
-            System.out.println("Resource " + event + " didn't start yet.");
-            // TODO: do something more
+        return nextTimestamp;
+    }
+
+    public void onLockRelease(String name, Long timestamp) {
+        if (timestamp > 0) {
+            this.endResourceEvent(name, "occupy", timestamp);
         }
-    }
-
-    public void onLockWait(String name) {
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        // getStackTrace() <-- Resource.onLockWait() <-- Autocancel.onLockWait() <-- ReleasableLock.acquire() <-- Target <-- ...
-        // to reach the target, it must have at least 5 elements
-        // position sensitive! Do not use it in the plase other than ReleasableLock.acquire()
-        // if want to track the lock waiting time of other types of locks, using startResourceWait(String name)
-
-        // if (stackTraceElements.length >= 5) {
-        //     if (this.isMonitorTarget(stackTraceElements[4])) {
-        //         this.startResourceEvent(name, "wait");
-        //     }
-        // }
-    }
-
-    public void onLockGet(String name) {
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        // if (stackTraceElements.length >= 5) {
-        //     if (this.isMonitorTarget(stackTraceElements[4])) {
-        //         this.endResourceEvent(name, "wait");
-        //         this.startResourceEvent(name, "occupy");
-        //     }
-        // }
-    }
-
-    public void onLockRelease(String name) {
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        // if (stackTraceElements.length >= 5) {
-        //     if (this.isMonitorTarget(stackTraceElements[4])) {
-        //         this.endResourceEvent(name, "occupy");
-        //     }
-        // }
     }
 
     private Boolean isMonitorTarget(StackTraceElement stackTraceElement) {

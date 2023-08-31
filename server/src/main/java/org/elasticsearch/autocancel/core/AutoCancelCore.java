@@ -4,6 +4,7 @@ import org.elasticsearch.autocancel.manager.MainManager;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.core.monitor.MainMonitor;
+import org.elasticsearch.autocancel.core.performance.Performance;
 import org.elasticsearch.autocancel.core.utils.OperationRequest;
 import org.elasticsearch.autocancel.core.utils.ResourcePool;
 import org.elasticsearch.autocancel.core.utils.ResourceUsage;
@@ -29,7 +30,7 @@ import java.util.HashSet;
 
 public class AutoCancelCore {
 
-    private MainManager mainManager;
+    private MainManager mainManager = null;
 
     private MainMonitor mainMonitor;
 
@@ -39,42 +40,65 @@ public class AutoCancelCore {
 
     private ResourcePool resourcePool;
 
+    private Performance performanceMetrix;
+
     private RequestParser requestParser;
 
     private Logger logger;
 
+    private AutoCancelInfoCenter infoCenter;
+
     public AutoCancelCore(MainManager mainManager) {
-        this.mainManager = mainManager;
         this.cancellables = new HashMap<CancellableID, Cancellable>();
         this.rootCancellableToCancellableGroup = new HashMap<CancellableID, CancellableGroup>();
-        this.mainMonitor = new MainMonitor(this.mainManager, this.cancellables, this.rootCancellableToCancellableGroup);
         this.requestParser = new RequestParser();
         this.logger = new Logger("corerequest");
+        this.performanceMetrix = new Performance();
         this.resourcePool = new ResourcePool();
 
         this.resourcePool.addResource(new CPUResource());
         this.resourcePool.addResource(new MemoryResource());
+
+        this.infoCenter = new AutoCancelInfoCenter(this.rootCancellableToCancellableGroup,
+                                                    this.cancellables,
+                                                    this.resourcePool,
+                                                    this.performanceMetrix);
+
+        this.initialize(mainManager);
+    }
+
+    public AutoCancelCore() {
+        this.cancellables = new HashMap<CancellableID, Cancellable>();
+        this.rootCancellableToCancellableGroup = new HashMap<CancellableID, CancellableGroup>();
+        this.requestParser = new RequestParser();
+        this.logger = new Logger("corerequest");
+        this.performanceMetrix = new Performance();
+        this.resourcePool = new ResourcePool();
+
+        this.resourcePool.addResource(new CPUResource());
+        this.resourcePool.addResource(new MemoryResource());
+
+        this.infoCenter = new AutoCancelInfoCenter(this.rootCancellableToCancellableGroup,
+                                                    this.cancellables,
+                                                    this.resourcePool,
+                                                    this.performanceMetrix);
+    }
+
+    public void initialize(MainManager mainManager) {
+        if (this.mainManager == null) {
+            this.mainManager = mainManager;
+            this.mainMonitor = new MainMonitor(this.mainManager, this.cancellables, this.rootCancellableToCancellableGroup);
+        }
+    }
+
+    public Boolean isInitialized() {
+        return this.mainManager != null;
     }
 
     public void start() {
         while (!Thread.interrupted()) {
             try {
-                this.refreshCancellableGroups();
-
-                this.logger.log(String.format("Current time: %d", System.currentTimeMillis()));
-                Integer requestBufferSize = this.mainManager.getManagerRequestToCoreBufferSize();
-                for (Integer ignore = 0; ignore < requestBufferSize; ++ignore) {
-                    OperationRequest request = this.mainManager.getManagerRequestToCore();
-                    this.requestParser.parse(request);
-                }
-
-                this.mainMonitor.updateTasksResources();
-
-                Integer updateBufferSize = this.mainMonitor.getMonitorUpdateToCoreBufferSizeWithoutLock();
-                for (Integer ignore = 0; ignore < updateBufferSize; ++ignore) {
-                    OperationRequest request = this.mainMonitor.getMonitorUpdateToCoreWithoutLock();
-                    this.requestParser.parse(request);
-                }
+                this.startOneLoop();
 
                 Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
             } catch (InterruptedException e) {
@@ -84,9 +108,58 @@ public class AutoCancelCore {
         this.stop();
     }
 
-    private void stop() {
-        this.logger.close();
-        System.out.println("Recieve interrupt, exit");
+    public void startOneLoop() {
+        if (this.isInitialized()) {
+
+            this.refreshCancellableGroups();
+
+            this.resourcePool.refreshResources(this.logger);
+
+            this.logger.log(this.performanceMetrix.toString());
+
+            Long timestampMilli = System.currentTimeMillis();
+
+            this.logger.log(String.format("Current time: %d", timestampMilli));
+            this.performanceMetrix.reset(timestampMilli);
+
+            // refresh stuff should be done before update
+            Integer requestBufferSize = this.mainManager.getManagerRequestToCoreBufferSize();
+            for (Integer ignore = 0; ignore < requestBufferSize; ++ignore) {
+                OperationRequest request = this.mainManager.getManagerRequestToCore();
+                this.requestParser.parse(request);
+            }
+
+            this.mainMonitor.updateTasksResources();
+
+            Integer updateBufferSize = this.mainMonitor.getMonitorUpdateToCoreBufferSizeWithoutLock();
+            for (Integer ignore = 0; ignore < updateBufferSize; ++ignore) {
+                OperationRequest request = this.mainMonitor.getMonitorUpdateToCoreWithoutLock();
+                this.requestParser.parse(request);
+            }
+        }
+        else {
+            Logger.systemWarn("AutoCancelCore hasn't initialized, use initialize() first");
+        }
+    }
+
+    AutoCancelInfoCenter getInfoCenter() {
+        if (this.isInitialized()) {
+            return this.infoCenter;
+        }
+        else {
+            Logger.systemWarn("AutoCancelCore hasn't initialized, use initialize() first");
+            return null;
+        }
+    }
+
+    public void stop() {
+        if (this.isInitialized()) {
+            this.logger.close();
+            System.out.println("Recieve interrupt, exit");
+        }
+        else {
+            Logger.systemWarn("AutoCancelCore hasn't initialized, use initialize() first");
+        }
     }
 
     private void refreshCancellableGroups() {
@@ -135,6 +208,9 @@ public class AutoCancelCore {
             // this.cancellables.remove(childCancellable.getID());
             // }
             this.rootCancellableToCancellableGroup.get(cancellable.getID()).exit();
+            if (((Set<?>) Settings.getSetting("monitor_actions")).contains(cancellable.getAction())) {
+                this.performanceMetrix.increaseFinishedTask();
+            }
         } else {
             // Nothing to do: In the group, we don't care about whether a cancellable is
             // existing
@@ -152,7 +228,7 @@ public class AutoCancelCore {
         }
 
         public void parse(OperationRequest request) {
-            logger.log(request.toString());
+            // logger.log(request.toString());
             switch (request.getOperation()) {
                 case CREATE:
                     create(request);
@@ -242,6 +318,7 @@ public class AutoCancelCore {
                 "set_group_resource", request -> this.setGroupResource(request),
                 "monitor_resource", request -> this.monitorResource(request),
                 "cancellable_name", request -> this.cancellableName(request),
+                "cancellable_action", request -> this.cancellableAction(request),
                 "add_group_resource", request -> this.addGroupResource(request),
                 "resource_update_info", request -> this.resourceUpdateInfo(request));
 
@@ -297,11 +374,21 @@ public class AutoCancelCore {
             cancellable.setName(name);
         }
 
+        private void cancellableAction(OperationRequest request) {
+            Cancellable cancellable = cancellables.get(request.getCancellableID());
+            String action = (String) request.getParams().get("cancellable_action");
+            cancellable.setAction(action);
+        }
+
         private void addGroupResource(OperationRequest request) {
             Cancellable cancellable = cancellables.get(request.getCancellableID());
-            Double value = (Double) request.getParams().get("add_group_resource");
-            rootCancellableToCancellableGroup.get(cancellable.getRootID()).addResourceUsage(request.getResourceName(),
-                    value);
+            if (cancellable != null) {
+                Double value = (Double) request.getParams().get("add_group_resource");
+                rootCancellableToCancellableGroup.get(cancellable.getRootID()).addResourceUsage(request.getResourceName(), value);
+            }
+            else {
+                System.out.println("Can't find cancellable for cid " + request.getCancellableID());
+            }
         }
 
         @SuppressWarnings("unchecked")

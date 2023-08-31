@@ -18,6 +18,7 @@ public class ReleasableLock implements Closeable {
     @Override
     public void close() {
         this.lock.unlock();
+        this.lock.hashCode();
         assert removeCurrentThread();
     }
 

@@ -25,6 +25,13 @@ public class ReleasableLock implements Releasable {
     // a per-thread count indicating how many times the thread has entered the lock; only works if assertions are enabled
     private final ThreadLocal<Integer> holdingThreads;
 
+    private final ThreadLocal<Long> timestamp = new ThreadLocal<Long>() {
+        @Override
+        protected Long initialValue() {
+            return -1L;
+        }
+    };
+
     public ReleasableLock(Lock lock) {
         this.lock = lock;
         if (Assertions.ENABLED) {
@@ -37,14 +44,14 @@ public class ReleasableLock implements Releasable {
     @Override
     public void close() {
         lock.unlock();
-        AutoCancel.onLockRelease(lock.toString());
+        AutoCancel.onLockRelease(Integer.toHexString(lock.hashCode()), this.timestamp.get());
         assert removeCurrentThread();
     }
 
     public ReleasableLock acquire() throws EngineException {
-        AutoCancel.onLockWait(lock.toString());
+        this.timestamp.set(AutoCancel.onLockWait(Integer.toHexString(lock.hashCode())));
         lock.lock();
-        AutoCancel.onLockGet(lock.toString());
+        this.timestamp.set(AutoCancel.onLockGet(Integer.toHexString(lock.hashCode()), this.timestamp.get()));
         assert addCurrentThread();
         return this;
     }

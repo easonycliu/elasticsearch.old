@@ -10,6 +10,8 @@ public class LockResource extends Resource {
 
     public LockResource(ResourceName resourceName) {
         super(ResourceType.LOCK, resourceName);
+        this.triedTasks = 0;
+        this.totalWaitTime = 0L;
     }
 
     @Override
@@ -30,5 +32,14 @@ public class LockResource extends Resource {
     public void reset() {
         this.triedTasks = 0;
         this.totalWaitTime = 0L;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Resource Type: %s, Name: %s, Tried tasks: %d, Total wait time: %d", 
+        this.getResourceType().toString(),
+        this.getResourceName().toString(),
+        this.triedTasks,
+        this.totalWaitTime);
     }
 }

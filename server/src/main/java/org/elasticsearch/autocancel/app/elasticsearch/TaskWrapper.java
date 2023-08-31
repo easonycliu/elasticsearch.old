@@ -9,15 +9,19 @@ import org.elasticsearch.autocancel.utils.id.CancellableID;
 
 public class TaskWrapper {
 
-    private static Pattern parentPattern = Pattern.compile("(.*)(parentTask=)([^\\s]+)(,)(.*)");
+    private static final Pattern parentPattern = Pattern.compile("(.*)(parentTask=)([^\\s]+)(,)(.*)");
 
-    private static Pattern taskPattern = Pattern.compile("(.*)(Task\\{id=)([0-9]+)(,)(.*)");
+    private static final Pattern taskPattern = Pattern.compile("(.*)(Task\\{id=)([0-9]+)(,)(.*)");
+
+    private static final Pattern actionPattern = Pattern.compile("(.*)(action=')([^\\s]+)(',)(.*)");
     
     private Object task;
 
     private TaskID taskID;
 
     private TaskID parentID;
+
+    private String action;
 
     public TaskWrapper(Object task) throws AssertionError {
         assert task.toString().contains("Task") : "Input is not a class Task.";
@@ -50,6 +54,15 @@ public class TaskWrapper {
             assert false : "Illegal task name format " + this.task.toString();
         }
 
+        Matcher actionMatcher = actionPattern.matcher(this.task.toString());
+
+        if (actionMatcher.find()) {
+            this.action = actionMatcher.group(3);
+        }
+        else {
+            assert false : "Illegal task name format " + this.task.toString();
+        }
+
     }
 
     public TaskID getParentTaskID() {
@@ -58,6 +71,10 @@ public class TaskWrapper {
 
     public TaskID getTaskID() {
         return this.taskID;
+    }
+
+    public String getAction() {
+        return this.action;
     }
 
     @Override
@@ -98,7 +115,7 @@ public class TaskWrapper {
             return TaskID.class.equals(o.getClass()) && this.hashCode() == o.hashCode();
         }
 
-        private Long unwrap() {
+        public Long unwrap() {
             return this.id;
         }
 

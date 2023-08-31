@@ -45,4 +45,13 @@ public class ResourcePool {
             Logger.systemWarn("Cannot find resource " + resourceName.toString());
         }
     }
+
+    public void refreshResources(Logger logger) {
+        for (Map.Entry<ResourceName, Resource> entries : this.resources.entrySet()) {
+            if (logger != null) {
+                logger.log(entries.getValue().toString());
+            }
+            entries.getValue().reset();
+        }
+    }
 }

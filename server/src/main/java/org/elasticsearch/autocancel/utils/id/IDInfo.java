@@ -2,17 +2,15 @@ package org.elasticsearch.autocancel.utils.id;
 
 import org.elasticsearch.autocancel.utils.id.ID;
 
-import java.time.Instant;
-
 public class IDInfo<ObjectID extends ID> {
     
-    private Instant timestamp;
+    private Long timestamp;
 
     private Status status;
 
     private ObjectID id;
 
-    public IDInfo(Instant timestamp, Status status, ObjectID id) {
+    public IDInfo(Long timestamp, Status status, ObjectID id) {
         this.timestamp = timestamp;
         this.id = id;
         
@@ -20,7 +18,7 @@ public class IDInfo<ObjectID extends ID> {
     }
 
     public IDInfo(Status status, ObjectID id) {
-        this.timestamp = Instant.now();
+        this.timestamp = System.nanoTime();
         this.id = id;
 
         this.status = status;
@@ -43,7 +41,7 @@ public class IDInfo<ObjectID extends ID> {
         return this.id.hashCode();
     }
 
-    public Instant getStartTime() {
+    public Long getStartTime() {
         return this.timestamp;
     }
 

@@ -24,6 +24,8 @@ public class Cancellable {
 
     private String name;
 
+    private String action;
+
     public Cancellable(CancellableID id, CancellableID parentID, CancellableID rootID) {
         this.id = id;
         this.parentID = parentID;
@@ -32,6 +34,7 @@ public class Cancellable {
         // Call set level before tracking
         this.level = -1;
         this.name = "Anonymous";
+        this.action = "Unknown";
     }
 
     public String getName() {
@@ -40,6 +43,14 @@ public class Cancellable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAction() {
+        return this.action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public Integer getLevel() {
@@ -78,6 +89,6 @@ public class Cancellable {
 
     @Override
     public String toString() {
-        return this.id.toString() + " Parent " + this.parentID.toString() + " Root " + this.rootID.toString();
+        return this.id.toString() + " Parent " + this.parentID.toString() + " Root " + this.rootID.toString() + " name " + this.name;
     }
 }

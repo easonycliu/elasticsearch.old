@@ -11,9 +11,14 @@ package org.elasticsearch.autocancel.manager;
 
 import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 import org.elasticsearch.autocancel.core.AutoCancelCore;
+import org.elasticsearch.autocancel.core.AutoCancelCoreHolder;
+import org.elasticsearch.autocancel.core.AutoCancelInfoCenter;
 import org.elasticsearch.autocancel.core.utils.OperationMethod;
 import org.elasticsearch.autocancel.core.utils.OperationRequest;
+import org.elasticsearch.autocancel.utils.Policy;
+import org.elasticsearch.autocancel.core.policy.BasePolicy;
 import org.elasticsearch.autocancel.utils.ReleasableLock;
+import org.elasticsearch.autocancel.utils.Settings;
 import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
@@ -57,13 +62,29 @@ public class MainManager {
         this.autoCancelCoreThread = null;
     }
 
-    public void start() throws AssertionError {
+    public void start(Policy policy) throws AssertionError {
         assert this.autoCancelCoreThread == null : "AutoCancel core thread has been started";
-        AutoCancelCore autoCancelCore = new AutoCancelCore(this);
         this.autoCancelCoreThread = new Thread() {
             @Override
             public void run() {
-                autoCancelCore.start();
+                AutoCancelCore autoCancelCore = AutoCancelCoreHolder.getAutoCancelCore();
+                autoCancelCore.initialize(MainManager.this);
+                Policy actualPolicy = ((policy != null) ? policy : new BasePolicy());
+                while (!Thread.interrupted()) {
+                    try {
+                        autoCancelCore.startOneLoop();
+
+                        if (actualPolicy.needCancellation()) {
+                            CancellableID targetCID = actualPolicy.getCancelTarget();
+                            AutoCancel.cancel(targetCID);
+                        }
+
+                        Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+                }
+                autoCancelCore.stop();
             }
         };
         this.autoCancelCoreThread.start();
@@ -78,7 +99,7 @@ public class MainManager {
         this.infrastructureManager.startNewVersion();
     }
 
-    private CancellableID createCancellable(JavaThreadID jid, Boolean isCancellable, String name,
+    private CancellableID createCancellable(JavaThreadID jid, Boolean isCancellable, String name, String action,
             CancellableID parentID) {
         CancellableID cid = this.cidGenerator.generate();
         this.idManager.setCancellableIDAndJavaThreadID(cid, jid, IDInfo.Status.RUN);
@@ -90,6 +111,7 @@ public class MainManager {
         request.addRequestParam("monitor_resource",
                 new ArrayList<ResourceName>(Arrays.asList(ResourceName.CPU, ResourceName.MEMORY)));
         request.addRequestParam("cancellable_name", name);
+        request.addRequestParam("cancellable_action", action);
         this.putManagerRequestToCore(request);
 
         return cid;
@@ -121,10 +143,10 @@ public class MainManager {
         this.idManager.setCancellableIDAndJavaThreadID(cid, jid, IDInfo.Status.EXIT);
     }
 
-    public CancellableID createCancellableIDOnCurrentJavaThreadID(Boolean isCancellable, String name,
+    public CancellableID createCancellableIDOnCurrentJavaThreadID(Boolean isCancellable, String name, String action,
             CancellableID parentID) {
         JavaThreadID jid = new JavaThreadID(Thread.currentThread().getId());
-        CancellableID cid = this.createCancellable(jid, isCancellable, name, parentID);
+        CancellableID cid = this.createCancellable(jid, isCancellable, name, action, parentID);
 
         return cid;
     }
@@ -141,7 +163,7 @@ public class MainManager {
         // assert cidEqual : "Input cancellable id is not running on the current java
         // thread id";
 
-        this.idManager.setCancellableIDAndJavaThreadID(cidReadFromManager, jid, IDInfo.Status.EXIT);
+        this.idManager.setCancellableIDAndJavaThreadID(cid, jid, IDInfo.Status.EXIT);
 
         OperationRequest request = new OperationRequest(OperationMethod.DELETE, Map.of("cancellable_id", cid));
         this.putManagerRequestToCore(request);

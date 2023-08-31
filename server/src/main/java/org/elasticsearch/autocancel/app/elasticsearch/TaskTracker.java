@@ -57,7 +57,7 @@ public class TaskTracker {
         this.log.stop();
     }
 
-    public void onTaskCreate(Object task) throws AssertionError {        
+    public void onTaskCreate(Object task, Boolean isCancellable) throws AssertionError {        
         TaskWrapper wrappedTask = new TaskWrapper(task);
 
         CancellableID parentCancellableID = null;
@@ -95,7 +95,7 @@ public class TaskTracker {
         }
 
         if (parentCancellableID != null) {
-            CancellableID cid = this.mainManager.createCancellableIDOnCurrentJavaThreadID(true, task.toString(), parentCancellableID);
+            CancellableID cid = this.mainManager.createCancellableIDOnCurrentJavaThreadID(true, task.toString(), wrappedTask.getAction(), parentCancellableID);
 
             try (ReleasableLock ignored = this.writeLock.acquire()) {
                 assert !this.cancellableIDTaskIDBiMap.containsKey(cid) : "Do not register one task twice.";
@@ -116,7 +116,8 @@ public class TaskTracker {
                 }
                 if (danglingTasks != null) {
                     for (Object danglingTask : danglingTasks) {
-                        AutoCancel.onTaskCreate(danglingTask);
+                        // All children's isCancellable is the same as their parent's
+                        AutoCancel.onTaskCreate(danglingTask, isCancellable);
                     }
                 }
             }
@@ -210,6 +211,10 @@ public class TaskTracker {
         }
 
         this.mainManager.registerCancellableIDOnCurrentJavaThreadID(cid);
+    }
+
+    public TaskWrapper.TaskID getTaskIDFromCancellableID(CancellableID cid) {
+        return this.cancellableIDTaskIDBiMap.get(cid);
     }
 
     private void removeCancellableIDFromMaps(CancellableID cid) {
