@@ -36,20 +36,25 @@ public class LinuxCPUReader extends ResourceReader {
     }
 
     @Override
-    public Double readResource(ID id, Integer version) {
+    public Map<String, Object> readResource(ID id, Integer version) {
         assert id instanceof LinuxThreadID : "Linux CPU reader must recieve linux thread id";
         if (this.outOfDate(version)) {
             this.refresh(version);
         }
-        Double cpuResourceUsage = 0.0;
+        Map<String, Object> cpuUpdateInfo = null;
         if (this.linuxThreadCPUTime.containsKey((LinuxThreadID) id)) {
             CPUTimeInfo cpuTimeInfo = this.linuxThreadCPUTime.get((LinuxThreadID) id);
             if (cpuTimeInfo.comparable(this.systemCPUTime)) {
-                cpuResourceUsage = Double.valueOf(cpuTimeInfo.diffCPUTime()) / this.systemCPUTime.diffCPUTime();
+                cpuUpdateInfo = Map.of("cpu_time_system", this.systemCPUTime.diffCPUTime(), 
+                "cpu_time_thread", cpuTimeInfo.diffCPUTime());
             }
         }
 
-        return cpuResourceUsage;
+        if (cpuUpdateInfo == null) {
+            cpuUpdateInfo = Map.of();
+        }
+
+        return cpuUpdateInfo;
     }
 
     private Boolean outOfDate(Integer version) {

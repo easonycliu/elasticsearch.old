@@ -3,9 +3,10 @@ package org.elasticsearch.autocancel.infrastructure;
 import org.elasticsearch.autocancel.utils.id.ID;
 
 import java.lang.management.ManagementFactory;
+import java.util.Map;
 
 public abstract class ResourceReader {
-    public abstract Double readResource(ID id, Integer version);
+    public abstract Map<String, Object> readResource(ID id, Integer version);
 
     public String getJVMPID() {
         String name = ManagementFactory.getRuntimeMXBean().getName();

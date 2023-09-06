@@ -9,10 +9,10 @@ import org.elasticsearch.autocancel.infrastructure.AbstractInfrastructure;
 import org.elasticsearch.autocancel.infrastructure.jvm.JavaThreadStatusReader;
 import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadStatusReader;
 import org.elasticsearch.autocancel.utils.Settings;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
-import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
+import org.elasticsearch.autocancel.utils.resource.ResourceType;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,11 +30,11 @@ public class InfrastructureManager {
                 "Linux", new LinuxThreadStatusReader());
     }
 
-    public Double getSpecifiedResourceLatest(JavaThreadID jid, ResourceName resourceName) {
+    public Map<String, Object> getSpecifiedResourceLatest(JavaThreadID jid, ResourceName resourceName) {
         AbstractInfrastructure infrastructure = this.getInfrastructure(resourceName);
         assert infrastructure != null : String.format("Unsupported resource name: %s", resourceName.toString());
-        Double resource = infrastructure.getResource(jid, resourceName, this.version.get());
-        return resource;
+        Map<String, Object> resourceUpdateInfo = infrastructure.getResource(jid, resourceName, this.version.get());
+        return resourceUpdateInfo;
     }
 
     public void startNewVersion() {

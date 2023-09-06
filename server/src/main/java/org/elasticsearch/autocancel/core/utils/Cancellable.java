@@ -1,8 +1,8 @@
 package org.elasticsearch.autocancel.core.utils;
 
 import org.elasticsearch.autocancel.core.utils.ResourceUsage;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
 
 import java.util.HashMap;
 import java.util.Map;

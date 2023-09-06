@@ -2,9 +2,9 @@ package org.elasticsearch.autocancel.infrastructure.jvm;
 
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
 import org.elasticsearch.autocancel.infrastructure.CPUTimeInfo;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.ID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
@@ -31,20 +31,25 @@ public class JavaCPUReader extends ResourceReader {
     }
 
     @Override
-    public Double readResource(ID id, Integer version) {
+    public Map<String, Object> readResource(ID id, Integer version) {
         assert id instanceof JavaThreadID : "Java CPU reader must recieve java thread id";
         if (this.outOfDate(version)) {
             this.refresh(version);
         }
-        Double cpuResourceUsage = 0.0;
+        Map<String, Object> cpuUpdateInfo = null;
         if (this.javaThreadCPUTime.containsKey((JavaThreadID) id)) {
             CPUTimeInfo cpuTimeInfo = this.javaThreadCPUTime.get((JavaThreadID) id);
             if (cpuTimeInfo.comparable(this.systemCPUTime)) {
-                cpuResourceUsage = Double.valueOf(cpuTimeInfo.diffCPUTime()) / this.systemCPUTime.diffCPUTime();
+                cpuUpdateInfo = Map.of("cpu_time_system", this.systemCPUTime.diffCPUTime(), 
+                "cpu_time_thread", cpuTimeInfo.diffCPUTime());
             }
         }
 
-        return cpuResourceUsage;
+        if (cpuUpdateInfo == null) {
+            cpuUpdateInfo = Map.of();
+        }
+
+        return cpuUpdateInfo;
     }
 
     private Boolean outOfDate(Integer version) {

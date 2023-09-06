@@ -7,6 +7,7 @@ import org.elasticsearch.autocancel.utils.Policy;
 import org.elasticsearch.autocancel.utils.Settings;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
 
 public class BasePolicy extends Policy {
 
@@ -50,16 +51,31 @@ public class BasePolicy extends Policy {
 
     @Override
     public CancellableID getCancelTarget() {
-        Map<CancellableID, Double> cancellableCPUUSageMap = this.infoCenter.getCancellableCPUUsage();
-        Map.Entry<CancellableID, Double> maxUsageCancellable = cancellableCPUUSageMap
+        Map<ResourceName, Double> resourceContentionLevel = this.infoCenter.getContentionLevel();
+        Map.Entry<ResourceName, Double> maxContentionLevel = resourceContentionLevel
                                                                 .entrySet()
                                                                 .stream()
                                                                 .max(Map.Entry.comparingByValue()).orElse(null);
-        CancellableID target = null;
-        if (maxUsageCancellable != null) {
-            target = maxUsageCancellable.getKey();
+        ResourceName resourceName = null;
+        if (maxContentionLevel != null) {
+            resourceName = maxContentionLevel.getKey();
         }
-        else {
+
+        CancellableID target = null;
+
+        if (resourceName != null) {
+            System.out.println("Find contention resource " + resourceName);
+            Map<CancellableID, Double> cancellableGroupResourceResourceUsage = this.infoCenter.getCancellableGroupResourceUsage(resourceName);
+            Map.Entry<CancellableID, Double> maxResourceUsage = cancellableGroupResourceResourceUsage
+                                                                    .entrySet()
+                                                                    .stream()
+                                                                    .max(Map.Entry.comparingByValue()).orElse(null);
+            if (maxResourceUsage != null) {
+                target = maxResourceUsage.getKey();
+            }
+        }
+
+        if (target == null) {
             target = new CancellableID();
         }
 

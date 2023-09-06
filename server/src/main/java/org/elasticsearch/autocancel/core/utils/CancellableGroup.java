@@ -1,8 +1,14 @@
 package org.elasticsearch.autocancel.core.utils;
 
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 import org.elasticsearch.autocancel.core.utils.Cancellable;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
+import org.elasticsearch.autocancel.utils.logger.Logger;
+import org.elasticsearch.autocancel.utils.resource.CPUResource;
+import org.elasticsearch.autocancel.utils.resource.MemoryResource;
+import org.elasticsearch.autocancel.utils.resource.Resource;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
+import org.elasticsearch.autocancel.utils.resource.ResourceType;
 import org.elasticsearch.autocancel.utils.Settings;
 
 import java.util.Map;
@@ -13,11 +19,13 @@ import java.util.List;
 
 public class CancellableGroup {
 
+    private static final Logger logger = new Logger("cancellable_group");
+
     private final Cancellable root;
 
     private Map<CancellableID, Cancellable> cancellables;
 
-    private Map<ResourceName, ResourceUsage> resourceMap;
+    private ResourcePool resourcePool;
 
     private Boolean isCancellable;
 
@@ -29,11 +37,11 @@ public class CancellableGroup {
 
         this.cancellables = new HashMap<CancellableID, Cancellable>();
         this.cancellables.put(root.getID(), root);
-        this.resourceMap = new HashMap<ResourceName, ResourceUsage>();
+        this.resourcePool = new ResourcePool();
 
         // These are "built-in" monitored resources
-        this.resourceMap.put(ResourceName.CPU, new ResourceUsage());
-        this.resourceMap.put(ResourceName.MEMORY, new ResourceUsage());
+        this.resourcePool.addResource(new CPUResource());
+        this.resourcePool.addResource(new MemoryResource());
 
         this.isCancellable = null;
 
@@ -49,34 +57,28 @@ public class CancellableGroup {
     }
 
     public Set<ResourceName> getResourceNames() {
-        return this.resourceMap.keySet();
+        return this.resourcePool.getResourceNames();
     }
 
-    public void setResourceUsage(ResourceName resourceName, Double usage) {
-        if (this.resourceMap.containsKey(resourceName)) {
-            this.resourceMap.get(resourceName).setUsage(usage);
-        } else {
-            this.resourceMap.put(resourceName, new ResourceUsage(usage));
-        }
+    public void refreshResourcePool() {
+        CancellableGroup.logger.log("Root " + this.root.toString() + " used resource:");
+        this.resourcePool.refreshResources(CancellableGroup.logger);
     }
 
-    public void addResourceUsage(ResourceName resourceName, Double usageAdd) {
-        if (this.resourceMap.containsKey(resourceName)) {
-            Double previousUsage = this.resourceMap.get(resourceName).getUsage();
-            this.resourceMap.get(resourceName).setUsage(previousUsage + usageAdd);
-        } else {
-            this.resourceMap.put(resourceName, new ResourceUsage(usageAdd));
+    public void updateResource(ResourceType resourceType, ResourceName resourceName,
+            Map<String, Object> resourceUpdateInfo) {
+        if (!this.resourcePool.isResourceExist(resourceName)) {
+            this.resourcePool.addResource(resourceType, resourceName);
         }
+        this.resourcePool.setResourceUpdateInfo(resourceName, resourceUpdateInfo);
+    }
+
+    public Double getResourceSlowdown(ResourceName resourceName) {
+        return this.resourcePool.getSlowdown(resourceName);
     }
 
     public Double getResourceUsage(ResourceName resourceName) {
-        Double usage = null;
-        if (this.resourceMap.containsKey(resourceName)) {
-            usage = this.resourceMap.get(resourceName).getUsage();
-        } else {
-            usage = 0.0;
-        }
-        return usage;
+        return this.resourcePool.getResourceUsage(resourceName);
     }
 
     public Boolean getIsCancellable() {
@@ -127,5 +129,4 @@ public class CancellableGroup {
 
         return level;
     }
-
 }

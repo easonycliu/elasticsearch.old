@@ -1,11 +1,16 @@
 package org.elasticsearch.autocancel.core.utils;
 
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.logger.Logger;
-import org.elasticsearch.autocancel.utils.Resource.Resource;
+import org.elasticsearch.autocancel.utils.resource.CPUResource;
+import org.elasticsearch.autocancel.utils.resource.MemoryResource;
+import org.elasticsearch.autocancel.utils.resource.QueueResource;
+import org.elasticsearch.autocancel.utils.resource.Resource;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
+import org.elasticsearch.autocancel.utils.resource.ResourceType;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 public class ResourcePool {
 
@@ -24,18 +29,41 @@ public class ResourcePool {
         }
     }
 
+    public void addResource(ResourceType type, ResourceName name) {
+        if (!this.resources.containsKey(name)) {
+            Resource resource = this.createResource(type, name);
+            if (resource != null) {
+                this.resources.put(name, resource);
+            }
+        } else {
+            Logger.systemWarn(
+                    "Resource " + name + " has added to resource pool, skip");
+        }
+    }
+
     public Boolean isResourceExist(ResourceName resourceName) {
         return this.resources.containsKey(resourceName);
     }
 
-    public Double getContentionLevel(ResourceName resourceName) {
-        Double contentionLevel = 0.0;
+    public Double getSlowdown(ResourceName resourceName) {
+        Double slowDown = 0.0;
         if (this.resources.containsKey(resourceName)) {
-            contentionLevel = this.resources.get(resourceName).getContentionLevel();
+            slowDown = this.resources.get(resourceName).getSlowdown();
         } else {
             Logger.systemWarn("Cannot find resource " + resourceName.toString());
         }
-        return contentionLevel;
+        return slowDown;
+    }
+
+    public Double getResourceUsage(ResourceName resourceName) {
+        Double resourceUsage = 0.0;
+        if (this.resources.containsKey(resourceName)) {
+            resourceUsage = this.resources.get(resourceName).getResourceUsage();
+        }
+        else {
+            Logger.systemWarn("Cannot find resource " + resourceName.toString());
+        }
+        return resourceUsage;
     }
 
     public void setResourceUpdateInfo(ResourceName resourceName, Map<String, Object> resourceUpdateInfo) {
@@ -53,5 +81,28 @@ public class ResourcePool {
             }
             entries.getValue().reset();
         }
+    }
+
+    public Set<ResourceName> getResourceNames() {
+        return this.resources.keySet();
+    }
+
+    private Resource createResource(ResourceType type, ResourceName name) {
+        Resource resource = null;
+        switch (type) {
+            case CPU:
+                resource = new CPUResource(name);
+                break;
+            case MEMORY:
+                resource = new MemoryResource(name);
+                break;
+            case QUEUE:
+                resource = new QueueResource(name);
+                break;
+            case NULL:
+            default:
+                Logger.systemWarn("Invalid resource type " + type + " when creating resource");
+        }
+        return resource;
     }
 }

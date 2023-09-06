@@ -3,6 +3,11 @@ package org.elasticsearch.autocancel.core;
 import org.elasticsearch.autocancel.manager.MainManager;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
+import org.elasticsearch.autocancel.utils.resource.CPUResource;
+import org.elasticsearch.autocancel.utils.resource.MemoryResource;
+import org.elasticsearch.autocancel.utils.resource.QueueResource;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
+import org.elasticsearch.autocancel.utils.resource.ResourceType;
 import org.elasticsearch.autocancel.core.monitor.MainMonitor;
 import org.elasticsearch.autocancel.core.performance.Performance;
 import org.elasticsearch.autocancel.core.utils.OperationRequest;
@@ -12,11 +17,6 @@ import org.elasticsearch.autocancel.core.utils.Cancellable;
 import org.elasticsearch.autocancel.core.utils.CancellableGroup;
 import org.elasticsearch.autocancel.core.utils.OperationMethod;
 import org.elasticsearch.autocancel.utils.Settings;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
-import org.elasticsearch.autocancel.utils.Resource.ResourceType;
-import org.elasticsearch.autocancel.utils.Resource.CPUResource;
-import org.elasticsearch.autocancel.utils.Resource.MemoryResource;
-import org.elasticsearch.autocancel.utils.Resource.LockResource;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -60,9 +60,9 @@ public class AutoCancelCore {
         this.resourcePool.addResource(new MemoryResource());
 
         this.infoCenter = new AutoCancelInfoCenter(this.rootCancellableToCancellableGroup,
-                                                    this.cancellables,
-                                                    this.resourcePool,
-                                                    this.performanceMetrix);
+                this.cancellables,
+                this.resourcePool,
+                this.performanceMetrix);
 
         this.initialize(mainManager);
     }
@@ -79,15 +79,16 @@ public class AutoCancelCore {
         this.resourcePool.addResource(new MemoryResource());
 
         this.infoCenter = new AutoCancelInfoCenter(this.rootCancellableToCancellableGroup,
-                                                    this.cancellables,
-                                                    this.resourcePool,
-                                                    this.performanceMetrix);
+                this.cancellables,
+                this.resourcePool,
+                this.performanceMetrix);
     }
 
     public void initialize(MainManager mainManager) {
         if (this.mainManager == null) {
             this.mainManager = mainManager;
-            this.mainMonitor = new MainMonitor(this.mainManager, this.cancellables, this.rootCancellableToCancellableGroup);
+            this.mainMonitor = new MainMonitor(this.mainManager, this.cancellables,
+                    this.rootCancellableToCancellableGroup);
         }
     }
 
@@ -136,8 +137,7 @@ public class AutoCancelCore {
                 OperationRequest request = this.mainMonitor.getMonitorUpdateToCoreWithoutLock();
                 this.requestParser.parse(request);
             }
-        }
-        else {
+        } else {
             Logger.systemWarn("AutoCancelCore hasn't initialized, use initialize() first");
         }
     }
@@ -145,8 +145,7 @@ public class AutoCancelCore {
     AutoCancelInfoCenter getInfoCenter() {
         if (this.isInitialized()) {
             return this.infoCenter;
-        }
-        else {
+        } else {
             Logger.systemWarn("AutoCancelCore hasn't initialized, use initialize() first");
             return null;
         }
@@ -156,29 +155,19 @@ public class AutoCancelCore {
         if (this.isInitialized()) {
             this.logger.close();
             System.out.println("Recieve interrupt, exit");
-        }
-        else {
+        } else {
             Logger.systemWarn("AutoCancelCore hasn't initialized, use initialize() first");
         }
     }
 
     private void refreshCancellableGroups() {
-        for (Map.Entry<CancellableID, CancellableGroup> entries : this.rootCancellableToCancellableGroup.entrySet()) {
+        for (Map.Entry<CancellableID, CancellableGroup> entry : this.rootCancellableToCancellableGroup.entrySet()) {
 
-            if (entries.getValue().isExit()) {
+            if (entry.getValue().isExit()) {
                 continue;
             }
 
-            Set<ResourceName> resourceNames = entries.getValue().getResourceNames();
-            for (ResourceName resourceName : resourceNames) {
-                this.logger.log(String.format("Cancellable group with root %s used %s resource %s",
-                        entries.getKey().toString(), resourceName.toString(),
-                        entries.getValue().getResourceUsage(resourceName)));
-                OperationRequest request = new OperationRequest(OperationMethod.UPDATE,
-                        Map.of("cancellable_id", entries.getKey(), "resource_name", resourceName));
-                request.addRequestParam("set_group_resource", 0.0);
-                requestParser.parse(request);
-            }
+            entry.getValue().refreshResourcePool();
         }
     }
 
@@ -228,7 +217,7 @@ public class AutoCancelCore {
         }
 
         public void parse(OperationRequest request) {
-            // logger.log(request.toString());
+            logger.log(request.toString());
             switch (request.getOperation()) {
                 case CREATE:
                     create(request);
@@ -302,7 +291,7 @@ public class AutoCancelCore {
                 // Itself is a root cancellable
                 rootID = request.getCancellableID();
             } else {
-                rootID = cancellables.get(parentID).getID();
+                rootID = cancellables.get(parentID).getRootID();
             }
             return rootID;
         }
@@ -313,14 +302,11 @@ public class AutoCancelCore {
 
         // These parameters' parsing order doesn't matter
         private final Map<String, Consumer<OperationRequest>> paramHandlers = Map.of(
-                "basic_info", (request) -> {},
+                "basic_info", request -> {},
                 "is_cancellable", request -> this.isCancellable(request),
-                "set_group_resource", request -> this.setGroupResource(request),
-                "monitor_resource", request -> this.monitorResource(request),
                 "cancellable_name", request -> this.cancellableName(request),
                 "cancellable_action", request -> this.cancellableAction(request),
-                "add_group_resource", request -> this.addGroupResource(request),
-                "resource_update_info", request -> this.resourceUpdateInfo(request));
+                "update_group_resource", request -> this.updateGroupResource(request));
 
         public ParamHandlers() {
 
@@ -343,31 +329,6 @@ public class AutoCancelCore {
             }
         }
 
-        private void setGroupResource(OperationRequest request) {
-            Cancellable cancellable = cancellables.get(request.getCancellableID());
-            // TODO: Problematic point: nullptr
-            if (cancellable.isRoot()) {
-                Double value = (Double) request.getParams().get("set_group_resource");
-                rootCancellableToCancellableGroup.get(cancellable.getID()).setResourceUsage(request.getResourceName(),
-                        value);
-            }
-        }
-
-        private void monitorResource(OperationRequest request) {
-            Cancellable cancellable = cancellables.get(request.getCancellableID());
-            if (cancellable.isRoot()) {
-                // This is a root cancellable
-                // Parameter monitor_resource is useful only if this cancellable is a root
-                // cancellable
-                // TODO: Add a warning if this is not a root cancellable
-                List<?> resourceNames = (List<?>) request.getParams().get("monitor_resource");
-                CancellableGroup cancellableGroup = rootCancellableToCancellableGroup.get(cancellable.getID());
-                for (Object resourceName : resourceNames) {
-                    cancellableGroup.setResourceUsage((ResourceName) resourceName, 0.0);
-                }
-            }
-        }
-
         private void cancellableName(OperationRequest request) {
             Cancellable cancellable = cancellables.get(request.getCancellableID());
             String name = (String) request.getParams().get("cancellable_name");
@@ -380,48 +341,24 @@ public class AutoCancelCore {
             cancellable.setAction(action);
         }
 
-        private void addGroupResource(OperationRequest request) {
+        @SuppressWarnings("unchecked")
+        private void updateGroupResource(OperationRequest request) {
             Cancellable cancellable = cancellables.get(request.getCancellableID());
             if (cancellable != null) {
-                Double value = (Double) request.getParams().get("add_group_resource");
-                rootCancellableToCancellableGroup.get(cancellable.getRootID()).addResourceUsage(request.getResourceName(), value);
-            }
-            else {
+                ResourceType resourceType = request.getResourceType();
+                ResourceName resourceName = request.getResourceName();
+                if (!resourceName.equals(ResourceName.NULL) && !resourceType.equals(ResourceType.NULL)) {
+                    Map<String, Object> resourceUpdateInfo = (Map<String, Object>) request.getParams().get("update_group_resource");
+                    rootCancellableToCancellableGroup.get(cancellable.getRootID()).updateResource(resourceType, resourceName, resourceUpdateInfo);
+                    if (!resourcePool.isResourceExist(request.getResourceName())) {
+                        resourcePool.addResource(resourceType, resourceName);
+                    }
+                    resourcePool.setResourceUpdateInfo(resourceName, resourceUpdateInfo);
+                }
+
+            } else {
                 System.out.println("Can't find cancellable for cid " + request.getCancellableID());
             }
         }
-
-        @SuppressWarnings("unchecked")
-        private void resourceUpdateInfo(OperationRequest request) {
-            ResourceName resourceName = request.getResourceName();
-            ResourceType resourceType = request.getResourceType();
-            if (!resourceName.equals(ResourceName.NULL) && !resourceType.equals(ResourceType.NULL)) {
-                if (resourcePool.isResourceExist(request.getResourceName())) {
-                    resourcePool.setResourceUpdateInfo(resourceName, (Map<String, Object>) request.getParams().get("resource_update_info"));
-                }
-                else {
-                    switch (resourceType) {
-                        case CPU:
-                            resourcePool.addResource(new CPUResource(resourceName));
-                            break;
-                        case MEMORY:
-                            resourcePool.addResource(new MemoryResource(resourceName));
-                            break;
-                        case LOCK:
-                            resourcePool.addResource(new LockResource(resourceName));
-                            break;
-                        case NULL:
-                            assert false : "Should never be here";
-                            return;
-                    }
-                    
-                    resourcePool.setResourceUpdateInfo(resourceName, (Map<String, Object>) request.getParams().get("resource_update_info"));
-                }
-            }
-            else {
-                Logger.systemWarn("Update resource info should have resource type and name set");
-            }
-        }
-
     }
 }

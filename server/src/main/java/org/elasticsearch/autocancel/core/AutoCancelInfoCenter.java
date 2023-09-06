@@ -5,11 +5,12 @@ import org.elasticsearch.autocancel.core.utils.Cancellable;
 import org.elasticsearch.autocancel.core.utils.CancellableGroup;
 import org.elasticsearch.autocancel.core.utils.ResourcePool;
 import org.elasticsearch.autocancel.core.utils.ResourceUsage;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 public class AutoCancelInfoCenter {
     
@@ -17,17 +18,17 @@ public class AutoCancelInfoCenter {
 
     private final Map<CancellableID, Cancellable> cancellables;
 
-    private final ResourcePool resourcePool;
+    private final ResourcePool systemResourcePool;
 
     private final Performance performanceMetrix;
 
     public AutoCancelInfoCenter(Map<CancellableID, CancellableGroup> rootCancellableToCancellableGroup,
                                 Map<CancellableID, Cancellable> cancellables,
-                                ResourcePool resourcePool,
+                                ResourcePool systemResourcePool,
                                 Performance performanceMetrix) {
         this.rootCancellableToCancellableGroup = rootCancellableToCancellableGroup;
         this.cancellables = cancellables;
-        this.resourcePool = resourcePool;
+        this.systemResourcePool = systemResourcePool;
         this.performanceMetrix = performanceMetrix;
     }
 
@@ -35,13 +36,24 @@ public class AutoCancelInfoCenter {
         return this.performanceMetrix.getFinishedTaskNumber();
     }
 
-    public Map<CancellableID, Double> getCancellableCPUUsage() {
-        Map<CancellableID, Double> cancellableCPUUSageMap = new HashMap<CancellableID, Double>();
-        for (Map.Entry<CancellableID, CancellableGroup> entry : this.rootCancellableToCancellableGroup.entrySet()) {
-            if (entry.getValue().getIsCancellable()) {
-                cancellableCPUUSageMap.put(entry.getKey(), entry.getValue().getResourceUsage(ResourceName.CPU));
-            }
+    public Double getResourceContentionLevel(ResourceName resourceName) {
+        return this.systemResourcePool.getSlowdown(resourceName);
+    }
+
+    public Map<ResourceName, Double> getContentionLevel() {
+        Set<ResourceName> resourceNames = this.systemResourcePool.getResourceNames();
+        Map<ResourceName, Double> resourceContentionLevel = new HashMap<ResourceName, Double>();
+        for (ResourceName resourceName : resourceNames) {
+            resourceContentionLevel.put(resourceName, this.systemResourcePool.getSlowdown(resourceName));
         }
-        return cancellableCPUUSageMap;
+        return resourceContentionLevel;
+    }
+
+    public Map<CancellableID, Double> getCancellableGroupResourceUsage(ResourceName resourceName) {
+        Map<CancellableID, Double> cancellableGroupResourceUsage = new HashMap<CancellableID, Double>();
+        for (Map.Entry<CancellableID, CancellableGroup> entry : this.rootCancellableToCancellableGroup.entrySet()) {
+            cancellableGroupResourceUsage.put(entry.getKey(), entry.getValue().getResourceUsage(resourceName));
+        }
+        return cancellableGroupResourceUsage;
     }
 }

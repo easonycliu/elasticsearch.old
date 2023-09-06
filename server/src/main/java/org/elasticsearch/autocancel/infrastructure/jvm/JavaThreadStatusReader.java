@@ -2,8 +2,8 @@ package org.elasticsearch.autocancel.infrastructure.jvm;
 
 import org.elasticsearch.autocancel.infrastructure.AbstractInfrastructure;
 import org.elasticsearch.autocancel.utils.Settings;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
 import org.elasticsearch.autocancel.infrastructure.ResourceBatch;
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
 import org.elasticsearch.autocancel.utils.id.ID;
@@ -51,8 +51,8 @@ public class JavaThreadStatusReader extends AbstractInfrastructure {
     protected void updateResource(ID id, Integer version) {
         ResourceBatch resourceBatch = new ResourceBatch(version);
         for (ResourceName resourceName : this.resourceNames) {
-            Double value = this.resourceReaders.get(resourceName).readResource(id, version);
-            resourceBatch.setResourceValue(resourceName, value);
+            Map<String, Object> resourceUpdateInfo = this.resourceReaders.get(resourceName).readResource(id, version);
+            resourceBatch.setResourceValue(resourceName, resourceUpdateInfo);
         }
 
         this.setResourceBatch(id, resourceBatch);

@@ -6,6 +6,7 @@ import org.elasticsearch.autocancel.utils.ReleasableLock;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
+import org.elasticsearch.autocancel.utils.resource.ResourceType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,9 +100,9 @@ public class AutoCancel {
         }
     }
 
-    public static void addResourceUsage(String name, Double value) {
+    public static void addMemoryResourceUsage(String name, Long usingMemory, Long totalMemory) {
         if (AutoCancel.started) {
-            AutoCancel.resourceTracker.addResourceUsage(name, value);
+            AutoCancel.resourceTracker.addResourceUsage(ResourceType.MEMORY, name, Map.of("using_memory", usingMemory, "total_memory", totalMemory));
         }
         else if (warnNotStarted) {
             Logger.systemWarn("You should start lib AutoCancel first.");
@@ -109,14 +110,26 @@ public class AutoCancel {
         }
     }
 
-    public static void startResourceWait(String name) {
+    public static void addCPUResourceUsage(String name, Long cpuTimeSystem, Long cpuTimeThread) {
         if (AutoCancel.started) {
-            AutoCancel.resourceTracker.startResourceEvent(name, "wait");
+            AutoCancel.resourceTracker.addResourceUsage(ResourceType.CPU, name, Map.of("cpu_time_system", cpuTimeSystem, "cpu_time_thread", cpuTimeThread));
         }
         else if (warnNotStarted) {
             Logger.systemWarn("You should start lib AutoCancel first.");
             AutoCancel.warnNotStarted = false;
         }
+    }
+
+    public static Long startResourceWait(String name) {
+        Long timestamp = 0L;
+        if (AutoCancel.started) {
+            timestamp = AutoCancel.resourceTracker.startResourceEvent(name, "wait");
+        }
+        else if (warnNotStarted) {
+            Logger.systemWarn("You should start lib AutoCancel first.");
+            AutoCancel.warnNotStarted = false;
+        }
+        return timestamp;
     }
 
     public static void endResourceWait(String name, Long timestamp) {

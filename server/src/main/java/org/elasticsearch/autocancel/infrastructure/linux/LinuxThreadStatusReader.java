@@ -3,11 +3,11 @@ package org.elasticsearch.autocancel.infrastructure.linux;
 import org.elasticsearch.autocancel.infrastructure.AbstractInfrastructure;
 import org.elasticsearch.autocancel.infrastructure.ResourceBatch;
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.ID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
 import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadID;
 import org.elasticsearch.autocancel.utils.Settings;
 
@@ -80,8 +80,8 @@ public class LinuxThreadStatusReader extends AbstractInfrastructure {
         if (linuxThreadID.isValid()) {
             ResourceBatch resourceBatch = new ResourceBatch(version);
             for (ResourceName resourceName : this.resourceNames) {
-                Double value = this.resourceReaders.get(resourceName).readResource(linuxThreadID, version);
-                resourceBatch.setResourceValue(resourceName, value);
+                Map<String, Object> resourceUpdateInfo = this.resourceReaders.get(resourceName).readResource(linuxThreadID, version);
+                resourceBatch.setResourceValue(resourceName, resourceUpdateInfo);
             }
             this.setResourceBatch(id, resourceBatch);
         } else {

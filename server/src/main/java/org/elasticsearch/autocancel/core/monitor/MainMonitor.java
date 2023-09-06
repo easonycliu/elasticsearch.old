@@ -7,8 +7,8 @@ import org.elasticsearch.autocancel.core.utils.OperationRequest;
 import org.elasticsearch.autocancel.core.monitor.CPUMonitor;
 import org.elasticsearch.autocancel.core.monitor.MemoryMonitor;
 import org.elasticsearch.autocancel.manager.MainManager;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,7 +51,7 @@ public class MainMonitor {
                     .getResourceNames()) {
                 if (this.monitors.containsKey(resourceName)) {
                     this.monitorUpdateToCoreBuffer
-                            .add(this.monitors.get(resourceName).updateResource(cancellable.getID()));
+                            .addAll(this.monitors.get(resourceName).updateResource(cancellable.getID()));
                 } else {
                     // Unsupported name in monitor
                     // But may be updated by app

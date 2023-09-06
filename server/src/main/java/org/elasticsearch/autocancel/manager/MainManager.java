@@ -19,12 +19,12 @@ import org.elasticsearch.autocancel.utils.Policy;
 import org.elasticsearch.autocancel.core.policy.BasePolicy;
 import org.elasticsearch.autocancel.utils.ReleasableLock;
 import org.elasticsearch.autocancel.utils.Settings;
-import org.elasticsearch.autocancel.utils.Resource.ResourceName;
-import org.elasticsearch.autocancel.utils.Resource.ResourceType;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.CancellableIDGenerator;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
+import org.elasticsearch.autocancel.utils.resource.ResourceName;
+import org.elasticsearch.autocancel.utils.resource.ResourceType;
 import org.elasticsearch.autocancel.utils.id.IDInfo;
 
 import java.io.File;
@@ -107,9 +107,6 @@ public class MainManager {
         OperationRequest request = new OperationRequest(OperationMethod.CREATE,
                 Map.of("cancellable_id", cid, "parent_cancellable_id", parentID));
         request.addRequestParam("is_cancellable", isCancellable);
-        // TODO: According to settings
-        request.addRequestParam("monitor_resource",
-                new ArrayList<ResourceName>(Arrays.asList(ResourceName.CPU, ResourceName.MEMORY)));
         request.addRequestParam("cancellable_name", name);
         request.addRequestParam("cancellable_action", action);
         this.putManagerRequestToCore(request);
@@ -198,36 +195,28 @@ public class MainManager {
         return size;
     }
 
-    public Double getSpecifiedResource(CancellableID cid, ResourceName resourceName) {
-        Double resource = 0.0;
+    public List<Map<String, Object>> getSpecifiedResource(CancellableID cid, ResourceName resourceName) {
+        List<Map<String, Object>> resourceUpdateInfos = new ArrayList<Map<String, Object>>();
         List<JavaThreadID> javaThreadIDs = this.idManager.getJavaThreadIDOfCancellableID(cid);
         for (JavaThreadID javaThreadID : javaThreadIDs) {
             if (javaThreadID.isValid()) {
-                resource += this.infrastructureManager.getSpecifiedResourceLatest(javaThreadID, resourceName);
+                resourceUpdateInfos.add(this.infrastructureManager.getSpecifiedResourceLatest(javaThreadID, resourceName));
             }
         }
-        return resource;
+        return resourceUpdateInfos;
     }
 
-    public void updateCancellableGroup(String name, Double value) {
+    public void updateCancellableGroup(ResourceType type, String name, Map<String, Object> cancellableGroupUpdateInfo) {
         JavaThreadID jid = new JavaThreadID(Thread.currentThread().getId());
         CancellableID cid = this.idManager.getCancellableIDOfJavaThreadID(jid);
         if (cid.isValid()) {
             OperationRequest request = new OperationRequest(OperationMethod.UPDATE,
-                    Map.of("cancellable_id", cid, "resource_name", ResourceName.valueOf(name)));
-            request.addRequestParam("add_group_resource", value);
+                    Map.of("cancellable_id", cid, "resource_name", ResourceName.valueOf(name), "resource_type", type));
+            request.addRequestParam("update_group_resource", cancellableGroupUpdateInfo);
             this.putManagerRequestToCore(request);
         } else {
             System.out.println("Cannot find cancellable id from current " + jid.toString());
             // TODO: do something more
         }
     }
-
-    public void updateResource(ResourceType type, String name, Map<String, Object> resourceUpdateInfo) {
-        OperationRequest request = new OperationRequest(OperationMethod.UPDATE,
-                Map.of("resource_type", type, "resource_name", ResourceName.valueOf(name)));
-        request.addRequestParam("resource_update_info", resourceUpdateInfo);
-        this.putManagerRequestToCore(request);
-    }
-
 }
