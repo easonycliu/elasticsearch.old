@@ -1,22 +1,28 @@
 package org.elasticsearch.autocancel.utils.resource;
 
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.elasticsearch.autocancel.utils.logger.Logger;
 
 public class CPUResource extends Resource {
 
-    public Long absoluteSystemTime;
+    private Long absoluteSystemTime;
 
-    public Long totalSystemTime;
+    private Long totalSystemTime;
 
-    public Long usedSystemTime;
+    private Long usedSystemTime;
+
+    private List<Double> cpuUsageThreads;
 
     public CPUResource() {
         super(ResourceType.CPU, ResourceName.CPU);
         this.absoluteSystemTime = 0L;
         this.totalSystemTime = 0L;
         this.usedSystemTime = 0L;
+        this.cpuUsageThreads = new ArrayList<Double>();
     }
 
     public CPUResource(ResourceName resourceName) {
@@ -24,6 +30,7 @@ public class CPUResource extends Resource {
         this.absoluteSystemTime = 0L;
         this.totalSystemTime = 0L;
         this.usedSystemTime = 0L;
+        this.cpuUsageThreads = new ArrayList<Double>();
     }
 
     @Override
@@ -33,6 +40,21 @@ public class CPUResource extends Resource {
             slowdown = 1.0 - Double.valueOf(this.usedSystemTime) / this.totalSystemTime;
         }
         return slowdown;
+    }
+
+    @Override
+    public Double getContentionLevel() {
+        Double standard = 0.0;
+        Double meanCPUUsage = this.cpuUsageThreads.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+        Double sumOfPow = this.cpuUsageThreads.stream().mapToDouble((item) -> { 
+            return Math.pow(item - meanCPUUsage, 2);
+        }).sum();
+        
+        if (this.cpuUsageThreads.size() > 1) {
+            standard = Math.sqrt(sumOfPow / (this.cpuUsageThreads.size() - 1));
+        }
+        
+        return standard;
     }
 
     @Override
@@ -47,6 +69,7 @@ public class CPUResource extends Resource {
     // CPU resource update info has keys:
     // cpu_time_system
     // cpu_time_thread
+    // cpu_usage_thread
     @Override
     public void setResourceUpdateInfo(Map<String, Object> resourceUpdateInfo) {
         for (Map.Entry<String, Object> entry : resourceUpdateInfo.entrySet()) {
@@ -57,6 +80,9 @@ public class CPUResource extends Resource {
                     break;
                 case "cpu_time_thread":
                     this.usedSystemTime += (Long) entry.getValue();
+                    break;
+                case "cpu_usage_thread":
+                    this.cpuUsageThreads.add((Double) entry.getValue());
                     break;
                 default:
                     Logger.systemWarn("Invalid info name " + entry.getKey() + " in resource type " + this.resourceType
@@ -71,6 +97,7 @@ public class CPUResource extends Resource {
         this.absoluteSystemTime = 0L;
         this.totalSystemTime = 0L;
         this.usedSystemTime = 0L;
+        this.cpuUsageThreads.clear();
     }
 
     @Override

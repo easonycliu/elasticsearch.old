@@ -6,6 +6,7 @@ import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.utils.resource.CPUResource;
 import org.elasticsearch.autocancel.utils.resource.MemoryResource;
 import org.elasticsearch.autocancel.utils.resource.QueueResource;
+import org.elasticsearch.autocancel.utils.resource.Resource;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
 import org.elasticsearch.autocancel.utils.resource.ResourceType;
 import org.elasticsearch.autocancel.core.monitor.MainMonitor;
@@ -54,10 +55,10 @@ public class AutoCancelCore {
         this.requestParser = new RequestParser();
         this.logger = new Logger("corerequest");
         this.performanceMetrix = new Performance();
-        this.resourcePool = new ResourcePool();
+        this.resourcePool = new ResourcePool(true);
 
-        this.resourcePool.addResource(new CPUResource());
-        this.resourcePool.addResource(new MemoryResource());
+        this.resourcePool.addResource(Resource.createResource(ResourceType.CPU, ResourceName.CPU));
+        this.resourcePool.addResource(Resource.createResource(ResourceType.MEMORY, ResourceName.MEMORY));
 
         this.infoCenter = new AutoCancelInfoCenter(this.rootCancellableToCancellableGroup,
                 this.cancellables,
@@ -73,10 +74,10 @@ public class AutoCancelCore {
         this.requestParser = new RequestParser();
         this.logger = new Logger("corerequest");
         this.performanceMetrix = new Performance();
-        this.resourcePool = new ResourcePool();
+        this.resourcePool = new ResourcePool(true);
 
-        this.resourcePool.addResource(new CPUResource());
-        this.resourcePool.addResource(new MemoryResource());
+        this.resourcePool.addResource(Resource.createResource(ResourceType.CPU, ResourceName.CPU));
+        this.resourcePool.addResource(Resource.createResource(ResourceType.MEMORY, ResourceName.MEMORY));
 
         this.infoCenter = new AutoCancelInfoCenter(this.rootCancellableToCancellableGroup,
                 this.cancellables,
@@ -120,8 +121,11 @@ public class AutoCancelCore {
 
             Long timestampMilli = System.currentTimeMillis();
 
-            this.logger.log(String.format("Current time: %d", timestampMilli));
             this.performanceMetrix.reset(timestampMilli);
+
+            this.logger.log(String.format("Current time: %d", timestampMilli));
+
+            CancellableGroup.cancellableGroupLog(String.format("Current time: %d", timestampMilli));
 
             // refresh stuff should be done before update
             Integer requestBufferSize = this.mainManager.getManagerRequestToCoreBufferSize();
@@ -351,7 +355,7 @@ public class AutoCancelCore {
                     Map<String, Object> resourceUpdateInfo = (Map<String, Object>) request.getParams().get("update_group_resource");
                     rootCancellableToCancellableGroup.get(cancellable.getRootID()).updateResource(resourceType, resourceName, resourceUpdateInfo);
                     if (!resourcePool.isResourceExist(request.getResourceName())) {
-                        resourcePool.addResource(resourceType, resourceName);
+                        resourcePool.addResource(Resource.createResource(resourceType, resourceName));
                     }
                     resourcePool.setResourceUpdateInfo(resourceName, resourceUpdateInfo);
                 }

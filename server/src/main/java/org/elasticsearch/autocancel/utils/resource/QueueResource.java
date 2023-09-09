@@ -24,7 +24,18 @@ public class QueueResource extends Resource {
 
     @Override
     public Double getSlowdown() {
-        return Double.valueOf(totalWaitTime) / (System.nanoTime() - this.prevNanoTime);
+        Double slowdown = 0.0;
+        slowdown = Double.valueOf(totalWaitTime) / (System.nanoTime() - this.prevNanoTime);
+
+        return slowdown;
+    }
+
+    @Override
+    public Double getContentionLevel() {
+        Double contentionLevel = 0.0;
+        contentionLevel = Double.valueOf(totalWaitTime) / (System.nanoTime() - this.prevNanoTime);
+
+        return contentionLevel;
     }
 
     @Override

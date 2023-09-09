@@ -37,11 +37,11 @@ public class CancellableGroup {
 
         this.cancellables = new HashMap<CancellableID, Cancellable>();
         this.cancellables.put(root.getID(), root);
-        this.resourcePool = new ResourcePool();
+        this.resourcePool = new ResourcePool(false);
 
         // These are "built-in" monitored resources
-        this.resourcePool.addResource(new CPUResource());
-        this.resourcePool.addResource(new MemoryResource());
+        this.resourcePool.addResource(Resource.createResource(ResourceType.CPU, ResourceName.CPU));
+        this.resourcePool.addResource(Resource.createResource(ResourceType.MEMORY, ResourceName.MEMORY));
 
         this.isCancellable = null;
 
@@ -68,17 +68,25 @@ public class CancellableGroup {
     public void updateResource(ResourceType resourceType, ResourceName resourceName,
             Map<String, Object> resourceUpdateInfo) {
         if (!this.resourcePool.isResourceExist(resourceName)) {
-            this.resourcePool.addResource(resourceType, resourceName);
+            this.resourcePool.addResource(Resource.createResource(resourceType, resourceName));
         }
         this.resourcePool.setResourceUpdateInfo(resourceName, resourceUpdateInfo);
     }
 
     public Double getResourceSlowdown(ResourceName resourceName) {
-        return this.resourcePool.getSlowdown(resourceName);
+        Double slowdown = 0.0;
+        if (!this.isExit()) {
+            slowdown = this.resourcePool.getSlowdown(resourceName);
+        }
+        return slowdown;
     }
 
     public Double getResourceUsage(ResourceName resourceName) {
-        return this.resourcePool.getResourceUsage(resourceName);
+        Double resourceUsage = 0.0;
+        if (!this.isExit()) {
+            resourceUsage = this.resourcePool.getResourceUsage(resourceName);
+        }
+        return resourceUsage;
     }
 
     public Boolean getIsCancellable() {
@@ -128,5 +136,9 @@ public class CancellableGroup {
         } while (!tmp.equals(this.root.getID()));
 
         return level;
+    }
+
+    public static void cancellableGroupLog(String message) {
+        CancellableGroup.logger.log(message);
     }
 }

@@ -40,8 +40,15 @@ public class JavaCPUReader extends ResourceReader {
         if (this.javaThreadCPUTime.containsKey((JavaThreadID) id)) {
             CPUTimeInfo cpuTimeInfo = this.javaThreadCPUTime.get((JavaThreadID) id);
             if (cpuTimeInfo.comparable(this.systemCPUTime)) {
-                cpuUpdateInfo = Map.of("cpu_time_system", this.systemCPUTime.diffCPUTime(), 
-                "cpu_time_thread", cpuTimeInfo.diffCPUTime());
+                Long systemCPUTimeDiff = this.systemCPUTime.diffCPUTime();
+                Long threadCPUTimeDiff = cpuTimeInfo.diffCPUTime();
+                Double threadCPUUsage = 0.0;
+                if (systemCPUTimeDiff != 0L) {
+                    threadCPUUsage = Double.valueOf(threadCPUTimeDiff) / systemCPUTimeDiff;
+                }
+                cpuUpdateInfo = Map.of("cpu_time_system", systemCPUTimeDiff, 
+                "cpu_time_thread", threadCPUTimeDiff,
+                "cpu_usage_thread", threadCPUUsage);
             }
         }
 

@@ -16,7 +16,7 @@ public class Settings {
         "system_log_level", "INFO",
         "monitor_physical_resources", Map.of(
             "CPU", "JVM",
-            "MEMORY", "Linux"
+            "MEMORY", "JVM"
         ),
         "monitor_locks", Arrays.asList(
             Map.of("class_name", "Cache...") // use ... to include all classes inside specified class

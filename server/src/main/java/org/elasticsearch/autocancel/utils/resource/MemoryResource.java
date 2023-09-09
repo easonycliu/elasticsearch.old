@@ -1,13 +1,10 @@
 package org.elasticsearch.autocancel.utils.resource;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
 import java.util.Map;
 
 import org.elasticsearch.autocancel.utils.logger.Logger;
 
-public class MemoryResource extends Resource {
+public abstract class MemoryResource extends Resource {
 
     public Long usingMemory;
 
@@ -28,15 +25,10 @@ public class MemoryResource extends Resource {
     }
 
     @Override
-    public Double getSlowdown() {
-        return 0.0;
-    }
-
-    @Override
     public Double getResourceUsage() {
         Double resourceUsage = 0.0;
         if (this.totalMemory != 0L) {
-            resourceUsage = Double.valueOf(this.totalMemory) / this.totalMemory;
+            resourceUsage = Double.valueOf(this.usingMemory) / this.totalMemory;
         }
         return resourceUsage;
     }

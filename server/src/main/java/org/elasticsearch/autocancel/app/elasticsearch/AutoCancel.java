@@ -112,7 +112,13 @@ public class AutoCancel {
 
     public static void addCPUResourceUsage(String name, Long cpuTimeSystem, Long cpuTimeThread) {
         if (AutoCancel.started) {
-            AutoCancel.resourceTracker.addResourceUsage(ResourceType.CPU, name, Map.of("cpu_time_system", cpuTimeSystem, "cpu_time_thread", cpuTimeThread));
+            Double threadCPUUsage = 0.0;
+            if (cpuTimeSystem != 0L) {
+                threadCPUUsage = Double.valueOf(cpuTimeThread) / cpuTimeSystem;
+            }
+            AutoCancel.resourceTracker.addResourceUsage(ResourceType.CPU, name, Map.of("cpu_time_system", cpuTimeSystem, 
+            "cpu_time_thread", cpuTimeThread,
+            "cpu_usage_thread", threadCPUUsage));
         }
         else if (warnNotStarted) {
             Logger.systemWarn("You should start lib AutoCancel first.");

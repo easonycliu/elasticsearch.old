@@ -40,6 +40,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Map;
 
+import net.openhft.affinity.AffinityLock;
+
 public class MainManager {
 
     private ConcurrentLinkedQueue<OperationRequest> managerRequestToCoreBuffer;
@@ -67,24 +69,26 @@ public class MainManager {
         this.autoCancelCoreThread = new Thread() {
             @Override
             public void run() {
-                AutoCancelCore autoCancelCore = AutoCancelCoreHolder.getAutoCancelCore();
-                autoCancelCore.initialize(MainManager.this);
-                Policy actualPolicy = ((policy != null) ? policy : new BasePolicy());
-                while (!Thread.interrupted()) {
-                    try {
-                        autoCancelCore.startOneLoop();
+                try (AffinityLock lock = AffinityLock.acquireLock(Runtime.getRuntime().availableProcessors() - 1)) {
+                    AutoCancelCore autoCancelCore = AutoCancelCoreHolder.getAutoCancelCore();
+                    autoCancelCore.initialize(MainManager.this);
+                    Policy actualPolicy = ((policy != null) ? policy : new BasePolicy());
+                    while (!Thread.interrupted()) {
+                        try {
+                            autoCancelCore.startOneLoop();
 
-                        if (actualPolicy.needCancellation()) {
-                            CancellableID targetCID = actualPolicy.getCancelTarget();
-                            AutoCancel.cancel(targetCID);
+                            if (actualPolicy.needCancellation()) {
+                                CancellableID targetCID = actualPolicy.getCancelTarget();
+                                AutoCancel.cancel(targetCID);
+                            }
+
+                            Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
+                        } catch (InterruptedException e) {
+                            break;
                         }
-
-                        Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
-                    } catch (InterruptedException e) {
-                        break;
                     }
+                    autoCancelCore.stop();
                 }
-                autoCancelCore.stop();
             }
         };
         this.autoCancelCoreThread.start();
@@ -93,6 +97,13 @@ public class MainManager {
     public void stop() throws AssertionError {
         assert this.autoCancelCoreThread != null : "AutoCancel core thread has to be started";
         this.autoCancelCoreThread.interrupt();
+        try {
+            System.out.println("Waiting for autocancel lib thread to join");
+            this.autoCancelCoreThread.join();
+        }
+        catch (InterruptedException e) {
+            System.out.println("Giving up waiting for autocancel lib thread to join");
+        }
     }
 
     public void startNewVersion() {

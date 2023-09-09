@@ -16,8 +16,11 @@ public class ResourcePool {
 
     private Map<ResourceName, Resource> resources;
 
-    public ResourcePool() {
+    private final Boolean global;
+
+    public ResourcePool(Boolean global) {
         this.resources = new HashMap<ResourceName, Resource>();
+        this.global = global;
     }
 
     public void addResource(Resource resource) {
@@ -29,30 +32,38 @@ public class ResourcePool {
         }
     }
 
-    public void addResource(ResourceType type, ResourceName name) {
-        if (!this.resources.containsKey(name)) {
-            Resource resource = this.createResource(type, name);
-            if (resource != null) {
-                this.resources.put(name, resource);
-            }
-        } else {
-            Logger.systemWarn(
-                    "Resource " + name + " has added to resource pool, skip");
-        }
-    }
-
     public Boolean isResourceExist(ResourceName resourceName) {
         return this.resources.containsKey(resourceName);
     }
 
     public Double getSlowdown(ResourceName resourceName) {
         Double slowDown = 0.0;
-        if (this.resources.containsKey(resourceName)) {
-            slowDown = this.resources.get(resourceName).getSlowdown();
-        } else {
-            Logger.systemWarn("Cannot find resource " + resourceName.toString());
+        if (!this.global) {
+            if (this.resources.containsKey(resourceName)) {
+                slowDown = this.resources.get(resourceName).getSlowdown();
+            } else {
+                Logger.systemWarn("Cannot find resource " + resourceName.toString());
+            }
+        }
+        else {
+            Logger.systemWarn("Global resource pool should use getContentionLevel instead of getSlowdown");
         }
         return slowDown;
+    }
+
+    public Double getContentionLevel(ResourceName resourceName) {
+        Double contentionLevel = 0.0;
+        if (this.global) {
+            if (this.resources.containsKey(resourceName)) {
+                contentionLevel = this.resources.get(resourceName).getContentionLevel();
+            } else {
+                Logger.systemWarn("Cannot find resource " + resourceName.toString());
+            }
+        }
+        else {
+            Logger.systemWarn("Only global resource pool can use getContentionLevel, use getSlowdown instead");
+        }
+        return contentionLevel;
     }
 
     public Double getResourceUsage(ResourceName resourceName) {
@@ -85,24 +96,5 @@ public class ResourcePool {
 
     public Set<ResourceName> getResourceNames() {
         return this.resources.keySet();
-    }
-
-    private Resource createResource(ResourceType type, ResourceName name) {
-        Resource resource = null;
-        switch (type) {
-            case CPU:
-                resource = new CPUResource(name);
-                break;
-            case MEMORY:
-                resource = new MemoryResource(name);
-                break;
-            case QUEUE:
-                resource = new QueueResource(name);
-                break;
-            case NULL:
-            default:
-                Logger.systemWarn("Invalid resource type " + type + " when creating resource");
-        }
-        return resource;
     }
 }
