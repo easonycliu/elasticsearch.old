@@ -2,6 +2,8 @@ package org.elasticsearch.autocancel.utils.resource;
 
 import org.elasticsearch.autocancel.utils.logger.Logger;
 
+import java.util.Map;
+
 public class EvictableMemoryResource extends MemoryResource {
 
     public EvictableMemoryResource() {
@@ -13,19 +15,11 @@ public class EvictableMemoryResource extends MemoryResource {
     }
 
     @Override
-    public Double getSlowdown() {
+    public Double getSlowdown(Map<String, Object> slowdownInfo) {
         Double slowdown = 0.0;
         // TODO: implement it
 
         return slowdown;
-    }
-
-    @Override
-    public Double getContentionLevel() {
-        Double contentionLevel = 0.0;
-        // TODO: implement it
-
-        return contentionLevel;
     }
 
 }

@@ -6,41 +6,30 @@ import org.elasticsearch.autocancel.utils.logger.Logger;
 
 public class QueueResource extends Resource {
 
-    private Integer triedTasks;
-
     private Long totalWaitTime;
 
     private Long totalOccupyTime;
 
-    private Long prevNanoTime;
-
     public QueueResource(ResourceName resourceName) {
         super(ResourceType.QUEUE, resourceName);
-        this.triedTasks = 0;
         this.totalWaitTime = 0L;
         this.totalOccupyTime = 0L;
-        this.prevNanoTime = System.nanoTime();
     }
 
     @Override
-    public Double getSlowdown() {
+    public Double getSlowdown(Map<String, Object> slowdownInfo) {
         Double slowdown = 0.0;
-        slowdown = Double.valueOf(totalWaitTime) / (System.nanoTime() - this.prevNanoTime);
+        Long startTime = (Long) slowdownInfo.get("start_time");
+        if (startTime != null) {
+            slowdown = Double.valueOf(this.totalWaitTime) / (System.nanoTime() - startTime);
+        }
 
         return slowdown;
     }
 
     @Override
-    public Double getContentionLevel() {
-        Double contentionLevel = 0.0;
-        contentionLevel = Double.valueOf(totalWaitTime) / (System.nanoTime() - this.prevNanoTime);
-
-        return contentionLevel;
-    }
-
-    @Override
-    public Double getResourceUsage() {
-        return Double.valueOf(totalOccupyTime) / (System.nanoTime() - this.prevNanoTime);
+    public Long getResourceUsage() {
+        return this.totalOccupyTime;
     }
 
     // Queue resource update info has keys:
@@ -51,7 +40,6 @@ public class QueueResource extends Resource {
         for (Map.Entry<String, Object> entry : resourceUpdateInfo.entrySet()) {
             switch (entry.getKey()) {
                 case "wait_time":
-                    this.triedTasks += 1;
                     this.totalWaitTime += (Long) entry.getValue();
                     break;
                 case "occupy_time":
@@ -67,18 +55,15 @@ public class QueueResource extends Resource {
 
     @Override
     public void reset() {
-        this.triedTasks = 0;
-        this.totalWaitTime = 0L;
-        this.totalOccupyTime = 0L;
-        this.prevNanoTime = System.nanoTime();
+
     }
 
     @Override
     public String toString() {
-        return String.format("Resource Type: %s, Name: %s, Tried tasks: %d, Total wait time: %d",
+        return String.format("Resource Type: %s, Name: %s, Total wait time: %d, Total occupy time: %d",
                 this.getResourceType().toString(),
                 this.getResourceName().toString(),
-                this.triedTasks,
-                this.totalWaitTime);
+                this.totalWaitTime,
+                this.totalOccupyTime);
     }
 }

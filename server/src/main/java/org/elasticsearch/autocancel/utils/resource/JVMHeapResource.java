@@ -3,6 +3,7 @@ package org.elasticsearch.autocancel.utils.resource;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.List;
+import java.util.Map;
 
 import org.elasticsearch.autocancel.utils.logger.Logger;
 
@@ -10,35 +11,22 @@ public class JVMHeapResource extends MemoryResource {
 
     private List<GarbageCollectorMXBean> gcMXBeans;
 
-    private Long prevGCTime;
-
-    private Long gcTime;
-
-    private Long prevCPUTime;
-
-    private Long cpuTime;
+    private Long startGCTime;
     
     public JVMHeapResource() {
         super();
         this.gcMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
-        this.prevGCTime = 0L;
-        this.gcTime = this.getTotalGCTime();
-        this.prevCPUTime = 0L;
-        this.cpuTime = System.currentTimeMillis();
+        this.startGCTime = this.getTotalGCTime();
     }
 
     @Override
-    public Double getSlowdown() {
-        Logger.systemWarn("JVM heap resource can't calculate slowdown for a single cancellable group");
-        return 0.0;
-    }
-
-    @Override
-    public Double getContentionLevel() {
-        Double contentionLevel = 0.0;
-        contentionLevel = Double.valueOf(gcTime - prevGCTime) / (cpuTime - prevCPUTime);
-
-        return contentionLevel;
+    public Double getSlowdown(Map<String, Object> slowdownInfo) {
+        Double slowdown = 0.0;
+        Long startTime = (Long) slowdownInfo.get("start_time");
+        if (startTime != null) {
+            slowdown = Double.valueOf(this.getTotalGCTime() - this.startGCTime) / (System.currentTimeMillis() - startTime);
+        }
+        return slowdown;
     }
 
     private Long getTotalGCTime() {
@@ -50,30 +38,7 @@ public class JVMHeapResource extends MemoryResource {
     }
 
     @Override
-    public void reset() {
-        super.reset();
-        Long tmpGCTime = this.getTotalGCTime();
-
-        // GC is not triggered frequently, so most of the time this.gcTime == tmpGCTime
-        // Then it's slowdown is zero
-        // sometime this.gcTime get updated, then at that moment the slowdown appoarches 1
-        if (tmpGCTime.equals(this.gcTime)) {
-            this.cpuTime = System.currentTimeMillis();
-        }
-        else {
-            this.prevGCTime = this.gcTime;
-            this.gcTime = tmpGCTime;
-            this.prevCPUTime = this.cpuTime;
-            this.cpuTime = System.currentTimeMillis();
-        }
-    }
-
-    @Override
     public String toString() {
-        return super.toString() + String.format(", prevGCTime %d, gcTime: %d, prevCPUTime: %d, cpuTime: %d", 
-                                                this.prevGCTime,
-                                                this.gcTime,
-                                                this.prevCPUTime,
-                                                this.cpuTime);
+        return super.toString() + String.format(", startGCTime %d", this.startGCTime);
     }
 }

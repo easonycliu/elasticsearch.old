@@ -95,7 +95,12 @@ public class TaskTracker {
         }
 
         if (parentCancellableID != null) {
-            CancellableID cid = this.mainManager.createCancellableIDOnCurrentJavaThreadID(true, task.toString(), wrappedTask.getAction(), parentCancellableID);
+            CancellableID cid = this.mainManager.createCancellableIDOnCurrentJavaThreadID(true, 
+            task.toString(), 
+            wrappedTask.getAction(), 
+            parentCancellableID, 
+            wrappedTask.getStartTimeNano(),
+            wrappedTask.getStartTime());
 
             try (ReleasableLock ignored = this.writeLock.acquire()) {
                 assert !this.cancellableIDTaskIDBiMap.containsKey(cid) : "Do not register one task twice.";

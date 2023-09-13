@@ -32,6 +32,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +81,9 @@ public class MainManager {
 
                             if (actualPolicy.needCancellation()) {
                                 CancellableID targetCID = actualPolicy.getCancelTarget();
-                                AutoCancel.cancel(targetCID);
+                                if (targetCID.isValid()) {
+                                    AutoCancel.cancel(targetCID);
+                                }
                             }
 
                             Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
@@ -91,6 +95,7 @@ public class MainManager {
                 }
             }
         };
+        this.activateAutoCancelThreadMonitor(true);
         this.autoCancelCoreThread.start();
     }
 
@@ -106,12 +111,24 @@ public class MainManager {
         }
     }
 
+    public void activateAutoCancelThreadMonitor(Boolean activate) {
+        if (activate) {
+            this.createCancellable(new JavaThreadID(this.autoCancelCoreThread.getId()), 
+            false, 
+            "Autocancel Thread", 
+            "null", 
+            new CancellableID(),
+            System.nanoTime(),
+            System.currentTimeMillis());
+        }
+    }
+
     public void startNewVersion() {
         this.infrastructureManager.startNewVersion();
     }
 
     private CancellableID createCancellable(JavaThreadID jid, Boolean isCancellable, String name, String action,
-            CancellableID parentID) {
+            CancellableID parentID, Long startTimeNano, Long startTime) {
         CancellableID cid = this.cidGenerator.generate();
         this.idManager.setCancellableIDAndJavaThreadID(cid, jid, IDInfo.Status.RUN);
 
@@ -120,6 +137,8 @@ public class MainManager {
         request.addRequestParam("is_cancellable", isCancellable);
         request.addRequestParam("cancellable_name", name);
         request.addRequestParam("cancellable_action", action);
+        request.addRequestParam("cancellable_start_time_nano", startTimeNano);
+        request.addRequestParam("cancellable_start_time", startTime);
         this.putManagerRequestToCore(request);
 
         return cid;
@@ -152,9 +171,9 @@ public class MainManager {
     }
 
     public CancellableID createCancellableIDOnCurrentJavaThreadID(Boolean isCancellable, String name, String action,
-            CancellableID parentID) {
+            CancellableID parentID, Long startTimeNano, Long startTime) {
         JavaThreadID jid = new JavaThreadID(Thread.currentThread().getId());
-        CancellableID cid = this.createCancellable(jid, isCancellable, name, action, parentID);
+        CancellableID cid = this.createCancellable(jid, isCancellable, name, action, parentID, startTimeNano, startTime);
 
         return cid;
     }

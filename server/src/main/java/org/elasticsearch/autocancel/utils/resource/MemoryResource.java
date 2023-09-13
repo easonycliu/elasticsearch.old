@@ -25,17 +25,14 @@ public abstract class MemoryResource extends Resource {
     }
 
     @Override
-    public Double getResourceUsage() {
-        Double resourceUsage = 0.0;
-        if (this.totalMemory != 0L) {
-            resourceUsage = Double.valueOf(this.usingMemory) / this.totalMemory;
-        }
-        return resourceUsage;
+    public Long getResourceUsage() {
+        return this.usingMemory;
     }
 
     // Memory resource update info has keys:
     // total_memory
     // using_memory
+    // reuse_memory
     @Override
     public void setResourceUpdateInfo(Map<String, Object> resourceUpdateInfo) {
         for (Map.Entry<String, Object> entry : resourceUpdateInfo.entrySet()) {
@@ -45,6 +42,9 @@ public abstract class MemoryResource extends Resource {
                     break;
                 case "using_memory":
                     this.usingMemory += (Long) entry.getValue();
+                    break;
+                case "reuse_memory":
+                    // TODO: Find a method to get reused memory
                     break;
                 default:
                     Logger.systemWarn("Invalid info name " + entry.getKey() + " in resource type " + this.resourceType
@@ -56,8 +56,7 @@ public abstract class MemoryResource extends Resource {
 
     @Override
     public void reset() {
-        this.totalMemory = 0L;
-        this.usingMemory = 0L;
+
     }
 
     @Override

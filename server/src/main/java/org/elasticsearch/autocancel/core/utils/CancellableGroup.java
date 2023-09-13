@@ -63,6 +63,9 @@ public class CancellableGroup {
     public void refreshResourcePool() {
         CancellableGroup.logger.log("Root " + this.root.toString() + " used resource:");
         this.resourcePool.refreshResources(CancellableGroup.logger);
+        for (Cancellable cancellable : this.cancellables.values()) {
+            cancellable.refreshResourcePool();
+        }
     }
 
     public void updateResource(ResourceType resourceType, ResourceName resourceName,
@@ -75,14 +78,20 @@ public class CancellableGroup {
 
     public Double getResourceSlowdown(ResourceName resourceName) {
         Double slowdown = 0.0;
+        Long totalNoneExitCancellable = 0L;
         if (!this.isExit()) {
-            slowdown = this.resourcePool.getSlowdown(resourceName);
+            for (Cancellable cancellable : this.cancellables.values()) {
+                if (!cancellable.isExit()) {
+                    slowdown = ((slowdown * totalNoneExitCancellable) + cancellable.getResourceSlowdown(resourceName)) / (totalNoneExitCancellable + 1);
+                    totalNoneExitCancellable += 1;
+                }
+            }
         }
         return slowdown;
     }
 
-    public Double getResourceUsage(ResourceName resourceName) {
-        Double resourceUsage = 0.0;
+    public Long getResourceUsage(ResourceName resourceName) {
+        Long resourceUsage = 0L;
         if (!this.isExit()) {
             resourceUsage = this.resourcePool.getResourceUsage(resourceName);
         }

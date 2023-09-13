@@ -1,0 +1,1307 @@
+Removing single_node ... 
+[1A[2KRemoving single_node ... [32mdone[0m[1BRemoving network cluster_elastic
+> Task :build-conventions:compileJava UP-TO-DATE
+> Task :build-conventions:pluginDescriptors UP-TO-DATE
+> Task :build-conventions:processResources UP-TO-DATE
+> Task :build-conventions:classes UP-TO-DATE
+> Task :build-conventions:jar UP-TO-DATE
+> Task :build-tools-internal:extractPluginRequests UP-TO-DATE
+> Task :build-tools:reaper:compileJava UP-TO-DATE
+> Task :build-tools-internal:generatePluginAdapters UP-TO-DATE
+> Task :build-tools:reaper:processResources NO-SOURCE
+> Task :build-tools:reaper:classes UP-TO-DATE
+> Task :build-tools-internal:pluginDescriptors UP-TO-DATE
+> Task :build-tools:reaper:jar UP-TO-DATE
+> Task :build-tools-internal:processResources UP-TO-DATE
+> Task :build-tools:compileJava UP-TO-DATE
+> Task :build-tools:compileGroovy NO-SOURCE
+> Task :build-tools:generateVersionProperties UP-TO-DATE
+> Task :build-tools:pluginDescriptors UP-TO-DATE
+> Task :build-tools:processResources UP-TO-DATE
+> Task :build-tools:classes UP-TO-DATE
+> Task :build-tools:jar UP-TO-DATE
+> Task :build-tools-internal:compileJava UP-TO-DATE
+> Task :build-tools-internal:compileGroovy UP-TO-DATE
+> Task :build-tools-internal:compileGroovyPlugins UP-TO-DATE
+> Task :build-tools-internal:classes UP-TO-DATE
+> Task :build-tools-internal:jar UP-TO-DATE
+
+> Configure project :x-pack:plugin:searchable-snapshots:qa:hdfs
+hdfsFixture unsupported, please set HADOOP_HOME and put HADOOP_HOME\bin in PATH
+=======================================
+Elasticsearch Build Hamster says Hello!
+  Gradle Version        : 8.1.1
+  OS Info               : Linux 5.4.0-1098-kvm (amd64)
+  JDK Version           : 17.0.8+9-LTS-211 (Oracle)
+  JAVA_HOME             : /usr/lib/jvm/jdk-17-oracle-x64
+  Random Testing Seed   : 3F482EB99F84E21F
+  In FIPS 140 mode      : false
+=======================================
+
+> Task :libs:elasticsearch-plugin-classloader:compileJava UP-TO-DATE
+> Task :libs:elasticsearch-core:compileJava UP-TO-DATE
+> Task :modules:analysis-common:processResources UP-TO-DATE
+> Task :libs:elasticsearch-plugin-api:compileJava UP-TO-DATE
+> Task :libs:elasticsearch-secure-sm:compileJava UP-TO-DATE
+> Task :modules:aggregations:processResources UP-TO-DATE
+> Task :libs:elasticsearch-logging:compileJava UP-TO-DATE
+> Task :libs:elasticsearch-cli:compileJava UP-TO-DATE
+> Task :libs:elasticsearch-x-content:compileJava UP-TO-DATE
+> Task :libs:elasticsearch-grok:compileJava UP-TO-DATE
+> Task :modules:apm:processResources NO-SOURCE
+> Task :modules:data-streams:processResources NO-SOURCE
+> Task :libs:elasticsearch-geo:compileJava UP-TO-DATE
+> Task :modules:dlm:processResources NO-SOURCE
+> Task :libs:elasticsearch-dissect:compileJava UP-TO-DATE
+> Task :modules:ingest-geoip:processResources NO-SOURCE
+> Task :libs:elasticsearch-grok:processResources UP-TO-DATE
+> Task :libs:elasticsearch-grok:classes UP-TO-DATE
+> Task :libs:elasticsearch-dissect:processResources NO-SOURCE
+> Task :modules:ingest-common:processResources UP-TO-DATE
+> Task :libs:elasticsearch-dissect:classes UP-TO-DATE
+> Task :modules:ingest-user-agent:processResources UP-TO-DATE
+> Task :modules:kibana:processResources NO-SOURCE
+> Task :modules:lang-expression:processResources NO-SOURCE
+> Task :libs:elasticsearch-plugin-analysis-api:compileJava UP-TO-DATE
+> Task :modules:lang-painless:spi:processResources NO-SOURCE
+> Task :modules:lang-mustache:processResources NO-SOURCE
+> Task :modules:legacy-geo:processResources NO-SOURCE
+> Task :modules:mapper-extras:processResources NO-SOURCE
+> Task :modules:ingest-attachment:processResources NO-SOURCE
+> Task :modules:lang-painless:processResources UP-TO-DATE
+> Task :modules:parent-join:processResources UP-TO-DATE
+> Task :libs:elasticsearch-core:processResources NO-SOURCE
+> Task :libs:elasticsearch-core:classes UP-TO-DATE
+> Task :modules:rank-eval:processResources UP-TO-DATE
+> Task :modules:repository-azure:processResources NO-SOURCE
+> Task :libs:elasticsearch-ssl-config:compileJava UP-TO-DATE
+> Task :libs:elasticsearch-dissect:jar UP-TO-DATE
+> Task :libs:elasticsearch-grok:jar UP-TO-DATE
+> Task :modules:runtime-fields-common:processResources UP-TO-DATE
+> Task :x-pack:plugin:async:generateNotice UP-TO-DATE
+> Task :modules:transport-netty4:processResources NO-SOURCE
+> Task :modules:repository-gcs:processResources NO-SOURCE
+> Task :x-pack:plugin:analytics:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:autoscaling:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:async-search:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:blob-cache:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:autoscaling:processResources UP-TO-DATE
+> Task :libs:elasticsearch-core:jar UP-TO-DATE
+> Task :libs:elasticsearch-preallocate:compileJava UP-TO-DATE
+> Task :libs:elasticsearch-ssl-config:processResources NO-SOURCE
+> Task :libs:elasticsearch-ssl-config:classes UP-TO-DATE
+> Task :x-pack:plugin:ccr:generateNotice UP-TO-DATE
+> Task :modules:repository-s3:processResources NO-SOURCE
+> Task :modules:repository-url:processResources NO-SOURCE
+> Task :x-pack:plugin:async:processResources NO-SOURCE
+> Task :x-pack:plugin:analytics:processResources NO-SOURCE
+> Task :x-pack:plugin:deprecation:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:enrich:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:ent-search:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:frozen-indices:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:ent-search:processResources UP-TO-DATE
+> Task :x-pack:plugin:fleet:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:eql:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:graph:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:async-search:processResources NO-SOURCE
+> Task :libs:elasticsearch-ssl-config:jar UP-TO-DATE
+> Task :x-pack:plugin:blob-cache:processResources NO-SOURCE
+> Task :libs:elasticsearch-lz4:compileJava UP-TO-DATE
+> Task :x-pack:plugin:eql:processResources UP-TO-DATE
+> Task :client:rest:compileJava UP-TO-DATE
+> Task :x-pack:plugin:ccr:processResources NO-SOURCE
+> Task :x-pack:plugin:logstash:generateNotice UP-TO-DATE
+> Task :client:rest:processResources UP-TO-DATE
+> Task :client:rest:classes UP-TO-DATE
+> Task :x-pack:plugin:mapper-constant-keyword:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:ilm:generateNotice UP-TO-DATE
+> Task :modules:percolator:processResources NO-SOURCE
+> Task :modules:reindex:processResources NO-SOURCE
+> Task :x-pack:plugin:ilm:processResources UP-TO-DATE
+> Task :x-pack:plugin:core:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:mapper-version:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:mapper-unsigned-long:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:identity-provider:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:mapper-constant-keyword:processResources UP-TO-DATE
+> Task :x-pack:plugin:mapper-unsigned-long:processResources UP-TO-DATE
+> Task :x-pack:plugin:identity-provider:processResources UP-TO-DATE
+> Task :x-pack:plugin:ml-package-loader:generateNotice UP-TO-DATE
+> Task :client:rest:jar UP-TO-DATE
+> Task :x-pack:plugin:deprecation:processResources NO-SOURCE
+> Task :x-pack:plugin:enrich:processResources NO-SOURCE
+> Task :modules:rest-root:processResources NO-SOURCE
+> Task :client:sniffer:compileJava UP-TO-DATE
+> Task :x-pack:plugin:monitoring:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:frozen-indices:processResources NO-SOURCE
+> Task :x-pack:plugin:profiler:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:fleet:processResources NO-SOURCE
+> Task :x-pack:plugin:graph:processResources NO-SOURCE
+> Task :x-pack:plugin:logstash:processResources NO-SOURCE
+> Task :libs:elasticsearch-logging:processResources NO-SOURCE
+> Task :x-pack:plugin:old-lucene-versions:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:core:processResources UP-TO-DATE
+> Task :x-pack:plugin:monitoring:processResources UP-TO-DATE
+> Task :x-pack:plugin:redact:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:rank-rrf:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:old-lucene-versions:processResources UP-TO-DATE
+> Task :x-pack:plugin:search-business-rules:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:repositories-metering-api:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:rollup:generateNotice UP-TO-DATE
+> Task :libs:elasticsearch-logging:classes UP-TO-DATE
+> Task :x-pack:plugin:ml-package-loader:processResources NO-SOURCE
+> Task :x-pack:plugin:mapper-aggregate-metric:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:ql:generateNotice UP-TO-DATE
+> Task :client:sniffer:processResources NO-SOURCE
+> Task :x-pack:plugin:redact:processResources NO-SOURCE
+> Task :x-pack:plugin:rank-rrf:processResources NO-SOURCE
+> Task :x-pack:plugin:repositories-metering-api:processResources NO-SOURCE
+> Task :x-pack:plugin:mapper-version:processResources UP-TO-DATE
+> Task :x-pack:plugin:searchable-snapshots:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:shutdown:generateNotice UP-TO-DATE
+> Task :client:sniffer:classes UP-TO-DATE
+> Task :x-pack:plugin:ql:processResources UP-TO-DATE
+> Task :x-pack:plugin:search-business-rules:processResources NO-SOURCE
+> Task :x-pack:plugin:snapshot-based-recoveries:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:snapshot-repo-test-kit:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:spatial:generateNotice UP-TO-DATE
+> Task :libs:elasticsearch-h3:compileJava UP-TO-DATE
+> Task :x-pack:plugin:spatial:processResources UP-TO-DATE
+> Task :x-pack:plugin:rollup:processResources NO-SOURCE
+> Task :x-pack:plugin:profiler:processResources NO-SOURCE
+> Task :x-pack:plugin:mapper-aggregate-metric:processResources NO-SOURCE
+> Task :x-pack:plugin:searchable-snapshots:processResources NO-SOURCE
+> Task :x-pack:plugin:shutdown:processResources NO-SOURCE
+> Task :libs:elasticsearch-x-content:processResources NO-SOURCE
+> Task :x-pack:plugin:snapshot-based-recoveries:processResources NO-SOURCE
+> Task :libs:elasticsearch-h3:processResources NO-SOURCE
+> Task :libs:elasticsearch-h3:classes UP-TO-DATE
+> Task :x-pack:plugin:sql:sql-client:processResources NO-SOURCE
+> Task :x-pack:plugin:security:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:sql:sql-action:processResources NO-SOURCE
+> Task :x-pack:plugin:stack:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:snapshot-repo-test-kit:processResources NO-SOURCE
+> Task :x-pack:plugin:sql:sql-proto:compileJava UP-TO-DATE
+> Task :x-pack:plugin:stack:processResources NO-SOURCE
+> Task :x-pack:plugin:sql:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:sql:sql-cli:processResources UP-TO-DATE
+> Task :x-pack:plugin:security:processResources UP-TO-DATE
+> Task :x-pack:plugin:text-structure:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:sql:sql-proto:processResources NO-SOURCE
+> Task :x-pack:plugin:transform:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:sql:sql-proto:classes UP-TO-DATE
+> Task :libs:elasticsearch-cli:processResources NO-SOURCE
+> Task :libs:elasticsearch-cli:classes UP-TO-DATE
+> Task :x-pack:plugin:voting-only-node:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:vector-tile:generateNotice UP-TO-DATE
+> Task :x-pack:plugin:transform:processResources NO-SOURCE
+> Task :x-pack:plugin:sql:sql-client:compileJava UP-TO-DATE
+> Task :x-pack:plugin:sql:processResources UP-TO-DATE
+> Task :x-pack:plugin:voting-only-node:processResources NO-SOURCE
+> Task :x-pack:plugin:sql:sql-client:classes UP-TO-DATE
+> Task :x-pack:plugin:vector-tile:processResources UP-TO-DATE
+> Task :x-pack:plugin:write-load-forecaster:generateNotice UP-TO-DATE
+> Task :test:external-modules:test-delayed-aggs:processResources NO-SOURCE
+> Task :x-pack:plugin:wildcard:generateNotice UP-TO-DATE
+> Task :client:sniffer:jar UP-TO-DATE
+> Task :libs:elasticsearch-h3:jar UP-TO-DATE
+> Task :x-pack:plugin:write-load-forecaster:processResources NO-SOURCE
+> Task :libs:elasticsearch-logging:jar UP-TO-DATE
+> Task :test:external-modules:test-die-with-dignity:processResources NO-SOURCE
+> Task :test:external-modules:test-error-query:processResources NO-SOURCE
+> Task :x-pack:plugin:wildcard:processResources UP-TO-DATE
+> Task :test:external-modules:test-seek-tracking-directory:processResources NO-SOURCE
+> Task :libs:elasticsearch-geo:processResources NO-SOURCE
+> Task :x-pack:plugin:sql:sql-cli:compileJava UP-TO-DATE
+> Task :x-pack:plugin:watcher:generateNotice UP-TO-DATE
+> Task :distribution:archives:createJvmOptionsDir
+> Task :libs:elasticsearch-plugin-api:processResources NO-SOURCE
+> Task :libs:elasticsearch-plugin-analysis-api:processResources NO-SOURCE
+> Task :libs:elasticsearch-lz4:processResources NO-SOURCE
+> Task :libs:elasticsearch-geo:classes UP-TO-DATE
+> Task :x-pack:plugin:sql:sql-cli:classes UP-TO-DATE
+> Task :libs:elasticsearch-plugin-api:classes UP-TO-DATE
+> Task :libs:elasticsearch-lz4:classes UP-TO-DATE
+> Task :libs:elasticsearch-plugin-analysis-api:classes UP-TO-DATE
+> Task :x-pack:plugin:watcher:processResources UP-TO-DATE
+> Task :libs:elasticsearch-plugin-classloader:processResources NO-SOURCE
+> Task :x-pack:plugin:sql:sql-proto:jar UP-TO-DATE
+> Task :libs:elasticsearch-plugin-classloader:classes UP-TO-DATE
+> Task :distribution:archives:createLogsDir
+> Task :libs:elasticsearch-preallocate:processResources NO-SOURCE
+> Task :distribution:archives:createPluginsDir
+> Task :libs:elasticsearch-preallocate:classes UP-TO-DATE
+> Task :libs:elasticsearch-x-content:impl:compileJava UP-TO-DATE
+> Task :x-pack:plugin:text-structure:processResources NO-SOURCE
+> Task :libs:elasticsearch-secure-sm:processResources NO-SOURCE
+> Task :libs:elasticsearch-secure-sm:classes UP-TO-DATE
+> Task :libs:elasticsearch-plugin-scanner:compileJava UP-TO-DATE
+> Task :libs:elasticsearch-x-content:impl:processResources UP-TO-DATE
+> Task :libs:elasticsearch-x-content:impl:classes UP-TO-DATE
+> Task :distribution:tools:ansi-console:processResources NO-SOURCE
+> Task :libs:elasticsearch-plugin-scanner:processResources NO-SOURCE
+> Task :libs:elasticsearch-plugin-scanner:classes UP-TO-DATE
+> Task :x-pack:plugin:sql:sql-client:jar UP-TO-DATE
+> Task :distribution:tools:cli-launcher:processResources NO-SOURCE
+> Task :libs:elasticsearch-cli:jar UP-TO-DATE
+> Task :distribution:tools:geoip-cli:processResources UP-TO-DATE
+> Task :distribution:tools:keystore-cli:processResources UP-TO-DATE
+> Task :distribution:tools:java-version-checker:compileJava UP-TO-DATE
+> Task :distribution:tools:java-version-checker:processResources NO-SOURCE
+> Task :distribution:tools:java-version-checker:classes UP-TO-DATE
+> Task :distribution:tools:plugin-cli:processResources UP-TO-DATE
+> Task :libs:elasticsearch-geo:jar UP-TO-DATE
+> Task :x-pack:plugin:sql:sql-cli:shadowJar UP-TO-DATE
+> Task :distribution:tools:server-cli:processResources UP-TO-DATE
+> Task :distribution:tools:windows-service-cli:processResources UP-TO-DATE
+> Task :x-pack:plugin:security:cli:processResources UP-TO-DATE
+> Task :distribution:tools:java-version-checker:compileUnsupportedJdkVersionEntrypointJava UP-TO-DATE
+> Task :distribution:tools:java-version-checker:processUnsupportedJdkVersionEntrypointResources NO-SOURCE
+> Task :distribution:tools:java-version-checker:unsupportedJdkVersionEntrypointClasses UP-TO-DATE
+> Task :libs:elasticsearch-plugin-analysis-api:jar UP-TO-DATE
+> Task :libs:elasticsearch-preallocate:jar UP-TO-DATE
+> Task :libs:elasticsearch-plugin-api:jar UP-TO-DATE
+> Task :libs:elasticsearch-lz4:jar UP-TO-DATE
+> Task :libs:elasticsearch-secure-sm:jar UP-TO-DATE
+> Task :libs:elasticsearch-x-content:impl:jar UP-TO-DATE
+> Task :libs:elasticsearch-plugin-scanner:jar UP-TO-DATE
+> Task :libs:elasticsearch-plugin-classloader:jar UP-TO-DATE
+> Task :distribution:tools:java-version-checker:jar UP-TO-DATE
+> Task :libs:elasticsearch-x-content:generateProviderManifest UP-TO-DATE
+> Task :libs:elasticsearch-x-content:generateProviderImpl UP-TO-DATE
+> Task :libs:elasticsearch-x-content:classes UP-TO-DATE
+> Task :x-pack:plugin:ml:extractNativeLicenses UP-TO-DATE
+> Task :libs:elasticsearch-x-content:jar UP-TO-DATE
+> Task :libs:elasticsearch-log4j:patchLog4j UP-TO-DATE
+> Task :x-pack:plugin:ml:generateNotice
+> Task :x-pack:plugin:ml:processResources UP-TO-DATE
+> Task :server:compileJava
+> Task :modules:ingest-user-agent:compileJava
+> Task :modules:ingest-user-agent:classes
+
+> Task :modules:lang-painless:spi:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/modules/lang-painless/spi/src/main/java/org/elasticsearch/painless/spi/WhitelistLoader.java uses or overrides a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:ingest-user-agent:jar UP-TO-DATE
+
+> Task :modules:percolator:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:kibana:compileJava
+> Task :modules:ingest-user-agent:pluginProperties UP-TO-DATE
+> Task :modules:ingest-user-agent:explodedBundlePlugin UP-TO-DATE
+> Task :modules:kibana:classes
+
+> Task :modules:parent-join:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:kibana:jar UP-TO-DATE
+> Task :modules:kibana:pluginProperties UP-TO-DATE
+
+> Task :modules:rank-eval:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/modules/rank-eval/src/main/java/org/elasticsearch/index/rankeval/TransportRankEvalAction.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:lang-painless:spi:classes
+> Task :modules:kibana:explodedBundlePlugin UP-TO-DATE
+> Task :modules:parent-join:classes
+
+> Task :modules:ingest-attachment:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/modules/ingest-attachment/src/main/java/org/elasticsearch/ingest/attachment/TikaImpl.java uses or overrides a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:ingest-attachment:classes
+> Task :modules:lang-painless:spi:jar UP-TO-DATE
+> Task :modules:percolator:classes
+> Task :modules:parent-join:jar UP-TO-DATE
+> Task :modules:parent-join:pluginProperties UP-TO-DATE
+> Task :modules:ingest-attachment:jar UP-TO-DATE
+> Task :modules:ingest-attachment:pluginProperties UP-TO-DATE
+> Task :modules:parent-join:explodedBundlePlugin UP-TO-DATE
+> Task :modules:percolator:jar UP-TO-DATE
+> Task :modules:rank-eval:classes
+> Task :modules:percolator:pluginProperties UP-TO-DATE
+> Task :modules:ingest-attachment:explodedBundlePlugin UP-TO-DATE
+> Task :modules:percolator:explodedBundlePlugin UP-TO-DATE
+> Task :modules:rank-eval:jar UP-TO-DATE
+> Task :modules:rank-eval:pluginProperties UP-TO-DATE
+> Task :modules:rank-eval:explodedBundlePlugin UP-TO-DATE
+
+> Task :modules:apm:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/modules/apm/src/main/java/org/elasticsearch/tracing/apm/APM.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:apm:classes
+
+> Task :modules:lang-mustache:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:lang-mustache:classes
+> Task :modules:apm:jar UP-TO-DATE
+> Task :modules:lang-mustache:jar UP-TO-DATE
+> Task :modules:lang-mustache:pluginProperties UP-TO-DATE
+> Task :modules:apm:pluginProperties UP-TO-DATE
+> Task :modules:apm:explodedBundlePlugin UP-TO-DATE
+> Task :modules:lang-mustache:explodedBundlePlugin UP-TO-DATE
+
+> Task :modules:legacy-geo:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:legacy-geo:classes
+
+> Task :modules:lang-expression:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/ubuntu/AutocancelProject/elasticsearch/modules/lang-expression/src/main/java/org/elasticsearch/script/expression/ExpressionScriptEngine.java uses or overrides a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:lang-expression:classes
+> Task :modules:legacy-geo:jar UP-TO-DATE
+> Task :modules:legacy-geo:pluginProperties UP-TO-DATE
+> Task :modules:legacy-geo:explodedBundlePlugin UP-TO-DATE
+> Task :modules:lang-expression:jar UP-TO-DATE
+> Task :modules:lang-expression:pluginProperties UP-TO-DATE
+> Task :modules:lang-expression:explodedBundlePlugin UP-TO-DATE
+> Task :modules:mapper-extras:compileJava
+> Task :modules:mapper-extras:classes
+> Task :modules:mapper-extras:jar UP-TO-DATE
+> Task :modules:mapper-extras:pluginProperties UP-TO-DATE
+> Task :modules:mapper-extras:explodedBundlePlugin UP-TO-DATE
+
+> Task :modules:data-streams:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:data-streams:classes
+> Task :modules:data-streams:jar UP-TO-DATE
+> Task :modules:data-streams:pluginProperties UP-TO-DATE
+> Task :modules:data-streams:explodedBundlePlugin UP-TO-DATE
+
+> Task :modules:reindex:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:reindex:classes
+
+> Task :modules:ingest-geoip:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/modules/ingest-geoip/src/main/java/org/elasticsearch/ingest/geoip/HttpClient.java uses or overrides a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:ingest-geoip:classes
+> Task :modules:reindex:jar UP-TO-DATE
+> Task :modules:ingest-geoip:jar UP-TO-DATE
+> Task :modules:reindex:pluginProperties UP-TO-DATE
+> Task :modules:ingest-geoip:pluginProperties UP-TO-DATE
+> Task :modules:ingest-geoip:explodedBundlePlugin UP-TO-DATE
+> Task :server:processResources UP-TO-DATE
+> Task :modules:reindex:explodedBundlePlugin UP-TO-DATE
+> Task :server:classes
+> Task :server:generateModulesList UP-TO-DATE
+> Task :server:generatePluginsList UP-TO-DATE
+> Task :modules:rest-root:compileJava
+> Task :modules:rest-root:classes
+> Task :modules:rest-root:jar UP-TO-DATE
+> Task :modules:rest-root:pluginProperties UP-TO-DATE
+> Task :modules:rest-root:explodedBundlePlugin UP-TO-DATE
+> Task :test:external-modules:test-delayed-aggs:compileJava
+> Task :test:external-modules:test-delayed-aggs:classes
+> Task :test:external-modules:test-delayed-aggs:jar UP-TO-DATE
+> Task :test:external-modules:test-delayed-aggs:pluginProperties UP-TO-DATE
+> Task :test:external-modules:test-delayed-aggs:explodedBundlePlugin UP-TO-DATE
+
+> Task :modules:runtime-fields-common:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/modules/runtime-fields-common/src/main/java/org/elasticsearch/runtimefields/NamedGroupExtractor.java uses or overrides a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:runtime-fields-common:classes
+> Task :modules:runtime-fields-common:jar UP-TO-DATE
+> Task :modules:runtime-fields-common:pluginProperties UP-TO-DATE
+> Task :modules:runtime-fields-common:explodedBundlePlugin UP-TO-DATE
+> Task :modules:ingest-common:compileJava
+> Task :modules:ingest-common:classes
+> Task :modules:ingest-common:jar UP-TO-DATE
+> Task :modules:ingest-common:pluginProperties UP-TO-DATE
+> Task :modules:ingest-common:explodedBundlePlugin UP-TO-DATE
+
+> Task :modules:repository-url:compileJava
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:repository-url:classes
+
+> Task :modules:aggregations:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:aggregations:classes
+> Task :modules:repository-url:jar UP-TO-DATE
+> Task :modules:repository-url:pluginProperties UP-TO-DATE
+> Task :modules:repository-url:explodedBundlePlugin UP-TO-DATE
+
+> Task :modules:analysis-common:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:analysis-common:classes
+> Task :modules:aggregations:jar UP-TO-DATE
+> Task :modules:aggregations:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:blob-cache:compileJava
+> Task :x-pack:plugin:blob-cache:classes
+> Task :modules:analysis-common:jar UP-TO-DATE
+> Task :modules:analysis-common:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:blob-cache:jar UP-TO-DATE
+> Task :x-pack:plugin:blob-cache:pluginProperties UP-TO-DATE
+> Task :modules:analysis-common:explodedBundlePlugin UP-TO-DATE
+> Task :modules:aggregations:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:blob-cache:explodedBundlePlugin UP-TO-DATE
+> Task :modules:dlm:compileJava
+> Task :modules:dlm:classes
+> Task :modules:dlm:jar UP-TO-DATE
+> Task :modules:dlm:pluginProperties UP-TO-DATE
+> Task :modules:dlm:explodedBundlePlugin UP-TO-DATE
+> Task :test:external-modules:test-die-with-dignity:compileJava
+> Task :test:external-modules:test-die-with-dignity:classes
+> Task :distribution:tools:ansi-console:compileJava
+> Task :distribution:tools:ansi-console:classes
+> Task :test:external-modules:test-die-with-dignity:jar UP-TO-DATE
+> Task :distribution:tools:ansi-console:jar UP-TO-DATE
+> Task :test:external-modules:test-die-with-dignity:pluginProperties UP-TO-DATE
+> Task :test:external-modules:test-die-with-dignity:explodedBundlePlugin UP-TO-DATE
+> Task :distribution:buildDefaultNotice
+
+> Task :modules:repository-gcs:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/modules/repository-gcs/src/main/java/org/elasticsearch/repositories/gcs/GoogleCloudStorageService.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:repository-gcs:classes
+> Task :modules:repository-gcs:jar UP-TO-DATE
+> Task :modules:repository-gcs:pluginProperties UP-TO-DATE
+> Task :modules:repository-gcs:explodedBundlePlugin UP-TO-DATE
+> Task :test:external-modules:test-error-query:compileJava
+> Task :test:external-modules:test-error-query:classes
+> Task :test:external-modules:test-error-query:jar UP-TO-DATE
+> Task :test:external-modules:test-error-query:pluginProperties UP-TO-DATE
+> Task :test:external-modules:test-error-query:explodedBundlePlugin UP-TO-DATE
+> Task :distribution:tools:geoip-cli:compileJava
+> Task :distribution:tools:geoip-cli:classes
+> Task :distribution:tools:geoip-cli:jar UP-TO-DATE
+> Task :test:external-modules:test-seek-tracking-directory:compileJava
+> Task :test:external-modules:test-seek-tracking-directory:classes
+> Task :test:external-modules:test-seek-tracking-directory:jar UP-TO-DATE
+> Task :test:external-modules:test-seek-tracking-directory:pluginProperties UP-TO-DATE
+> Task :test:external-modules:test-seek-tracking-directory:explodedBundlePlugin UP-TO-DATE
+> Task :distribution:processExternalTestOutputs UP-TO-DATE
+> Task :distribution:buildExternalTestModules UP-TO-DATE
+> Task :distribution:tools:cli-launcher:compileJava
+> Task :distribution:tools:cli-launcher:classes
+> Task :distribution:tools:cli-launcher:jar UP-TO-DATE
+> Task :distribution:tools:keystore-cli:compileJava
+> Task :distribution:tools:keystore-cli:classes
+
+> Task :modules:transport-netty4:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :modules:transport-netty4:classes
+> Task :distribution:tools:keystore-cli:jar UP-TO-DATE
+> Task :modules:transport-netty4:jar UP-TO-DATE
+> Task :modules:transport-netty4:pluginProperties UP-TO-DATE
+
+> Task :modules:repository-s3:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/modules/repository-s3/src/main/java/org/elasticsearch/repositories/s3/S3Repository.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:repository-s3:classes
+> Task :modules:transport-netty4:explodedBundlePlugin UP-TO-DATE
+> Task :modules:repository-s3:jar UP-TO-DATE
+> Task :modules:repository-s3:pluginProperties UP-TO-DATE
+> Task :modules:repository-s3:explodedBundlePlugin UP-TO-DATE
+> Task :distribution:tools:server-cli:compileJava
+> Task :distribution:tools:server-cli:classes
+> Task :distribution:tools:server-cli:jar UP-TO-DATE
+> Task :distribution:tools:plugin-cli:compileJava
+> Task :distribution:tools:plugin-cli:classes
+> Task :distribution:tools:plugin-cli:jar UP-TO-DATE
+> Task :distribution:tools:windows-service-cli:compileJava
+> Task :distribution:tools:windows-service-cli:classes
+> Task :distribution:tools:windows-service-cli:jar UP-TO-DATE
+
+> Task :modules:repository-azure:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:repository-azure:classes
+> Task :modules:repository-azure:jar UP-TO-DATE
+> Task :modules:repository-azure:pluginProperties UP-TO-DATE
+> Task :modules:repository-azure:explodedBundlePlugin UP-TO-DATE
+
+> Task :modules:lang-painless:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :modules:lang-painless:classes
+> Task :modules:lang-painless:jar UP-TO-DATE
+> Task :modules:lang-painless:pluginProperties UP-TO-DATE
+> Task :modules:lang-painless:explodedBundlePlugin UP-TO-DATE
+> Task :server:jar
+
+> Task :x-pack:plugin:core:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :x-pack:plugin:core:classes
+> Task :x-pack:plugin:core:jar UP-TO-DATE
+> Task :x-pack:plugin:core:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:core:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:async:compileJava
+> Task :x-pack:plugin:async:classes
+> Task :x-pack:plugin:async:jar UP-TO-DATE
+> Task :x-pack:plugin:async:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:async:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:frozen-indices:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/frozen-indices/src/main/java/org/elasticsearch/xpack/frozen/action/TransportFreezeIndexAction.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:frozen-indices:classes
+> Task :x-pack:plugin:frozen-indices:jar UP-TO-DATE
+> Task :x-pack:plugin:frozen-indices:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:frozen-indices:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:mapper-constant-keyword:compileJava
+> Task :x-pack:plugin:mapper-constant-keyword:classes
+> Task :x-pack:plugin:mapper-constant-keyword:jar UP-TO-DATE
+> Task :x-pack:plugin:mapper-constant-keyword:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:mapper-constant-keyword:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:mapper-version:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:graph:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/graph/src/main/java/org/elasticsearch/xpack/graph/action/TransportGraphExploreAction.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:graph:classes
+> Task :x-pack:plugin:graph:jar UP-TO-DATE
+> Task :x-pack:plugin:graph:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:graph:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:mapper-version:classes
+> Task :x-pack:plugin:mapper-version:jar UP-TO-DATE
+> Task :x-pack:plugin:mapper-version:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:mapper-version:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:async-search:compileJava
+> Task :x-pack:plugin:async-search:classes
+> Task :x-pack:plugin:async-search:jar UP-TO-DATE
+> Task :x-pack:plugin:async-search:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:async-search:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:mapper-aggregate-metric:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/mapper-aggregate-metric/src/main/java/org/elasticsearch/xpack/aggregatemetric/aggregations/support/AggregateMetricsValuesSourceType.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:mapper-aggregate-metric:classes
+
+> Task :x-pack:plugin:logstash:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/logstash/src/main/java/org/elasticsearch/xpack/logstash/action/GetPipelineResponse.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:logstash:classes
+> Task :x-pack:plugin:mapper-aggregate-metric:jar UP-TO-DATE
+> Task :x-pack:plugin:mapper-aggregate-metric:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:logstash:jar UP-TO-DATE
+> Task :x-pack:plugin:logstash:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:mapper-aggregate-metric:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:logstash:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:deprecation:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/deprecation/src/main/java/org/elasticsearch/xpack/deprecation/logging/DeprecationIndexingAppender.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:deprecation:classes
+> Task :x-pack:plugin:deprecation:jar UP-TO-DATE
+> Task :x-pack:plugin:deprecation:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:deprecation:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:ml-package-loader:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/ml-package-loader/src/main/java/org/elasticsearch/xpack/ml/packageloader/action/ModelLoaderUtils.java uses or overrides a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :x-pack:plugin:ml-package-loader:classes
+> Task :x-pack:plugin:ml-package-loader:jar UP-TO-DATE
+> Task :x-pack:plugin:ml-package-loader:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:ml-package-loader:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:enrich:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:ent-search:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/ent-search/src/main/java/org/elasticsearch/xpack/application/search/SearchTemplateHelper.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:ent-search:classes
+> Task :x-pack:plugin:ent-search:jar UP-TO-DATE
+> Task :x-pack:plugin:ent-search:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:ent-search:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:enrich:classes
+> Task :x-pack:plugin:redact:compileJava
+> Task :x-pack:plugin:redact:classes
+> Task :x-pack:plugin:redact:jar UP-TO-DATE
+> Task :x-pack:plugin:enrich:jar UP-TO-DATE
+> Task :x-pack:plugin:redact:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:enrich:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:enrich:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:autoscaling:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:mapper-unsigned-long:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/mapper-unsigned-long/src/main/java/org/elasticsearch/xpack/unsignedlong/UnsignedLongFieldMapper.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:mapper-unsigned-long:classes
+> Task :x-pack:plugin:redact:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:mapper-unsigned-long:jar UP-TO-DATE
+> Task :x-pack:plugin:mapper-unsigned-long:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:mapper-unsigned-long:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:autoscaling:classes
+> Task :x-pack:plugin:autoscaling:jar UP-TO-DATE
+> Task :x-pack:plugin:autoscaling:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:autoscaling:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:repositories-metering-api:compileJava
+> Task :x-pack:plugin:repositories-metering-api:classes
+> Task :x-pack:plugin:repositories-metering-api:jar UP-TO-DATE
+
+> Task :x-pack:plugin:analytics:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:repositories-metering-api:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:repositories-metering-api:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:profiler:compileJava
+> Task :x-pack:plugin:profiler:classes
+> Task :x-pack:plugin:profiler:jar UP-TO-DATE
+> Task :x-pack:plugin:profiler:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:analytics:classes
+> Task :x-pack:plugin:profiler:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:rank-rrf:compileJava
+> Task :x-pack:plugin:rank-rrf:classes
+> Task :x-pack:plugin:analytics:jar UP-TO-DATE
+> Task :x-pack:plugin:analytics:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:rank-rrf:jar UP-TO-DATE
+> Task :x-pack:plugin:rank-rrf:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:analytics:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:rank-rrf:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:search-business-rules:compileJava
+> Task :x-pack:plugin:search-business-rules:classes
+
+> Task :x-pack:plugin:identity-provider:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :x-pack:plugin:search-business-rules:jar UP-TO-DATE
+> Task :x-pack:plugin:search-business-rules:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:search-business-rules:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:identity-provider:classes
+> Task :x-pack:plugin:identity-provider:jar UP-TO-DATE
+> Task :x-pack:plugin:identity-provider:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:identity-provider:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:monitoring:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:monitoring:classes
+> Task :x-pack:plugin:monitoring:jar UP-TO-DATE
+> Task :x-pack:plugin:monitoring:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:snapshot-based-recoveries:compileJava
+> Task :x-pack:plugin:snapshot-based-recoveries:classes
+> Task :x-pack:plugin:snapshot-based-recoveries:jar UP-TO-DATE
+> Task :x-pack:plugin:snapshot-based-recoveries:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:monitoring:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:snapshot-based-recoveries:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:ilm:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:shutdown:compileJava
+> Task :x-pack:plugin:shutdown:classes
+> Task :x-pack:plugin:shutdown:jar UP-TO-DATE
+> Task :x-pack:plugin:shutdown:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:shutdown:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:ccr:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:stack:compileJava
+> Task :x-pack:plugin:stack:classes
+
+> Task :x-pack:plugin:old-lucene-versions:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:ilm:classes
+> Task :x-pack:plugin:stack:jar UP-TO-DATE
+> Task :x-pack:plugin:old-lucene-versions:classes
+> Task :x-pack:plugin:ilm:jar UP-TO-DATE
+> Task :x-pack:plugin:ilm:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:old-lucene-versions:jar UP-TO-DATE
+> Task :x-pack:plugin:old-lucene-versions:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:ilm:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:stack:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:old-lucene-versions:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:stack:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:ccr:classes
+> Task :x-pack:plugin:ccr:jar UP-TO-DATE
+> Task :x-pack:plugin:ccr:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:ccr:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:voting-only-node:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/voting-only-node/src/main/java/org/elasticsearch/cluster/coordination/votingonly/VotingOnlyNodePlugin.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:voting-only-node:classes
+> Task :x-pack:plugin:voting-only-node:jar UP-TO-DATE
+> Task :x-pack:plugin:voting-only-node:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:voting-only-node:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:snapshot-repo-test-kit:compileJava
+> Task :x-pack:plugin:snapshot-repo-test-kit:classes
+> Task :x-pack:plugin:snapshot-repo-test-kit:jar UP-TO-DATE
+> Task :x-pack:plugin:snapshot-repo-test-kit:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:snapshot-repo-test-kit:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:wildcard:compileJava
+> Task :x-pack:plugin:wildcard:classes
+> Task :x-pack:plugin:wildcard:jar UP-TO-DATE
+> Task :x-pack:plugin:wildcard:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:wildcard:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:write-load-forecaster:compileJava
+> Task :x-pack:plugin:write-load-forecaster:classes
+> Task :x-pack:plugin:write-load-forecaster:jar UP-TO-DATE
+> Task :x-pack:plugin:write-load-forecaster:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:write-load-forecaster:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:text-structure:compileJava
+> Task :x-pack:plugin:text-structure:classes
+> Task :x-pack:plugin:text-structure:jar UP-TO-DATE
+> Task :x-pack:plugin:text-structure:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:text-structure:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:fleet:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/fleet/src/main/java/org/elasticsearch/xpack/fleet/action/GetGlobalCheckpointsAction.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:fleet:classes
+> Task :x-pack:plugin:fleet:jar UP-TO-DATE
+> Task :x-pack:plugin:fleet:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:fleet:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:ql:compileJava
+> Task :x-pack:plugin:ql:classes
+> Task :x-pack:plugin:ql:jar UP-TO-DATE
+> Task :x-pack:plugin:ql:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:ql:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:rollup:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/rollup/src/main/java/org/elasticsearch/xpack/rollup/action/RollupIndexCaps.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:searchable-snapshots:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:searchable-snapshots:classes
+> Task :x-pack:plugin:searchable-snapshots:jar UP-TO-DATE
+> Task :x-pack:plugin:searchable-snapshots:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:rollup:classes
+> Task :x-pack:plugin:searchable-snapshots:explodedBundlePlugin UP-TO-DATE
+> Task :x-pack:plugin:rollup:jar UP-TO-DATE
+> Task :x-pack:plugin:rollup:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:rollup:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:security:cli:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/security/cli/src/main/java/org/elasticsearch/xpack/security/cli/CertificateGenerateToolProvider.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:security:cli:classes
+> Task :x-pack:plugin:security:cli:jar UP-TO-DATE
+
+> Task :x-pack:plugin:spatial:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:sql:sql-action:compileJava
+> Task :x-pack:plugin:sql:sql-action:classes
+> Task :x-pack:plugin:sql:sql-action:jar UP-TO-DATE
+> Task :x-pack:plugin:spatial:classes
+> Task :x-pack:plugin:spatial:jar UP-TO-DATE
+> Task :x-pack:plugin:spatial:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:spatial:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:vector-tile:compileJava
+Note: /home/ubuntu/AutocancelProject/elasticsearch/x-pack/plugin/vector-tile/src/main/java/org/elasticsearch/xpack/vectortile/feature/PatchedJtsAdapter.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:vector-tile:classes
+> Task :x-pack:plugin:vector-tile:jar UP-TO-DATE
+> Task :x-pack:plugin:vector-tile:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:vector-tile:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:transform:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:transform:classes
+> Task :x-pack:plugin:transform:jar UP-TO-DATE
+> Task :x-pack:plugin:transform:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:transform:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:watcher:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :x-pack:plugin:watcher:classes
+> Task :x-pack:plugin:watcher:jar UP-TO-DATE
+> Task :x-pack:plugin:watcher:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:watcher:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:eql:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:eql:classes
+> Task :x-pack:plugin:eql:jar UP-TO-DATE
+> Task :x-pack:plugin:eql:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:eql:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:sql:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :x-pack:plugin:sql:classes
+> Task :x-pack:plugin:sql:jar UP-TO-DATE
+> Task :x-pack:plugin:sql:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:sql:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:security:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :x-pack:plugin:security:classes
+> Task :x-pack:plugin:security:jar UP-TO-DATE
+> Task :x-pack:plugin:security:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:security:explodedBundlePlugin UP-TO-DATE
+
+> Task :x-pack:plugin:ml:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use or override a deprecated API that is marked for removal.
+Note: Recompile with -Xlint:removal for details.
+
+> Task :x-pack:plugin:ml:classes
+> Task :x-pack:plugin:ml:jar UP-TO-DATE
+> Task :x-pack:plugin:ml:pluginProperties UP-TO-DATE
+> Task :x-pack:plugin:ml:explodedBundlePlugin UP-TO-DATE
+> Task :distribution:processDefaultOutputs UP-TO-DATE
+> Task :distribution:buildDefaultLog4jConfig UP-TO-DATE
+> Task :distribution:archives:buildLinux
+
+> Task :localDistro
+Elasticsearch distribution installed to /home/ubuntu/AutocancelProject/elasticsearch/build/distribution/local/elasticsearch-8.9.0-SNAPSHOT
+
+BUILD SUCCESSFUL in 1m 13s
+496 actionable tasks: 96 executed, 400 up-to-date
+Creating network "cluster_elastic" with the default driver
+Creating single_node ... 
+[1A[2KCreating single_node ... [32mdone[0m[1BAttaching to single_node
+[36msingle_node    |[0m [2023-09-11T07:28:29,410][INFO ][o.e.c.u.FeatureFlag      ] [single_node] The current build is a snapshot, feature flag [untrusted_remote_cluster] is enabled
+[36msingle_node    |[0m [2023-09-11T07:28:30,423][INFO ][o.e.n.Node               ] [single_node] version[8.9.0-SNAPSHOT], pid[63], build[tar/ddc8dbb426f62448510f47708da69e3ad158ac25/2023-09-10T23:26:58.814395307Z], OS[Linux/5.4.0-1098-kvm/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/20.0.1/20.0.1+9-29]
+[36msingle_node    |[0m [2023-09-11T07:28:30,425][INFO ][o.e.n.Node               ] [single_node] JVM home [/usr/share/elasticsearch/jdk], using bundled JDK [true]
+[36msingle_node    |[0m [2023-09-11T07:28:30,426][INFO ][o.e.n.Node               ] [single_node] JVM arguments [-Des.networkaddress.cache.ttl=60, -Des.networkaddress.cache.negative.ttl=10, -Djava.security.manager=allow, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -XX:-OmitStackTraceInFastThrow, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dio.netty.recycler.maxCapacityPerThread=0, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -Dlog4j2.formatMsgNoLookups=true, -Djava.locale.providers=SPI,COMPAT, --add-opens=java.base/java.io=org.elasticsearch.preallocate, -XX:+UseG1GC, -Djava.io.tmpdir=/tmp/elasticsearch-6352740596003249499, -XX:+HeapDumpOnOutOfMemoryError, -XX:+ExitOnOutOfMemoryError, -XX:HeapDumpPath=data, -XX:ErrorFile=logs/hs_err_pid%p.log, -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,level,pid,tags:filecount=32,filesize=64m, -Xms8g, -Xmx8g, -ea:org.elasticsearch.autocancel..., -Djava.security.policy=/usr/share/elasticsearch/config/java.policy, -XX:MaxDirectMemorySize=4294967296, -XX:InitiatingHeapOccupancyPercent=30, -XX:G1ReservePercent=25, -Des.distribution.type=tar, --module-path=/usr/share/elasticsearch/lib, --add-modules=jdk.net, --add-modules=org.elasticsearch.preallocate, -Djdk.module.main=org.elasticsearch.server]
+[36msingle_node    |[0m [2023-09-11T07:28:30,427][WARN ][o.e.n.Node               ] [single_node] version [8.9.0-SNAPSHOT] is a pre-release version of Elasticsearch and is not suitable for production
+[36msingle_node    |[0m [2023-09-11T07:28:35,280][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [repository-url]
+[36msingle_node    |[0m [2023-09-11T07:28:35,281][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [rest-root]
+[36msingle_node    |[0m [2023-09-11T07:28:35,281][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-core]
+[36msingle_node    |[0m [2023-09-11T07:28:35,281][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-redact]
+[36msingle_node    |[0m [2023-09-11T07:28:35,281][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [dlm]
+[36msingle_node    |[0m [2023-09-11T07:28:35,282][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [ingest-user-agent]
+[36msingle_node    |[0m [2023-09-11T07:28:35,282][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-async-search]
+[36msingle_node    |[0m [2023-09-11T07:28:35,282][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [test-error-query]
+[36msingle_node    |[0m [2023-09-11T07:28:35,283][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-monitoring]
+[36msingle_node    |[0m [2023-09-11T07:28:35,283][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [repository-s3]
+[36msingle_node    |[0m [2023-09-11T07:28:35,283][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-analytics]
+[36msingle_node    |[0m [2023-09-11T07:28:35,284][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-ent-search]
+[36msingle_node    |[0m [2023-09-11T07:28:35,284][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-autoscaling]
+[36msingle_node    |[0m [2023-09-11T07:28:35,285][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [lang-painless]
+[36msingle_node    |[0m [2023-09-11T07:28:35,285][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-ml]
+[36msingle_node    |[0m [2023-09-11T07:28:35,285][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [test-die-with-dignity]
+[36msingle_node    |[0m [2023-09-11T07:28:35,285][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [legacy-geo]
+[36msingle_node    |[0m [2023-09-11T07:28:35,286][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [lang-mustache]
+[36msingle_node    |[0m [2023-09-11T07:28:35,286][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-ql]
+[36msingle_node    |[0m [2023-09-11T07:28:35,286][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [rank-rrf]
+[36msingle_node    |[0m [2023-09-11T07:28:35,287][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [analysis-common]
+[36msingle_node    |[0m [2023-09-11T07:28:35,287][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [test-seek-tracking-directory]
+[36msingle_node    |[0m [2023-09-11T07:28:35,287][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [transport-netty4]
+[36msingle_node    |[0m [2023-09-11T07:28:35,288][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [aggregations]
+[36msingle_node    |[0m [2023-09-11T07:28:35,288][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [ingest-common]
+[36msingle_node    |[0m [2023-09-11T07:28:35,288][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-identity-provider]
+[36msingle_node    |[0m [2023-09-11T07:28:35,289][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [frozen-indices]
+[36msingle_node    |[0m [2023-09-11T07:28:35,289][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-text-structure]
+[36msingle_node    |[0m [2023-09-11T07:28:35,289][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-shutdown]
+[36msingle_node    |[0m [2023-09-11T07:28:35,290][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [snapshot-repo-test-kit]
+[36msingle_node    |[0m [2023-09-11T07:28:35,290][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [ml-package-loader]
+[36msingle_node    |[0m [2023-09-11T07:28:35,290][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [test-delayed-aggs]
+[36msingle_node    |[0m [2023-09-11T07:28:35,290][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [kibana]
+[36msingle_node    |[0m [2023-09-11T07:28:35,291][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [constant-keyword]
+[36msingle_node    |[0m [2023-09-11T07:28:35,291][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-logstash]
+[36msingle_node    |[0m [2023-09-11T07:28:35,291][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-graph]
+[36msingle_node    |[0m [2023-09-11T07:28:35,292][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-ccr]
+[36msingle_node    |[0m [2023-09-11T07:28:35,292][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [parent-join]
+[36msingle_node    |[0m [2023-09-11T07:28:35,292][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-enrich]
+[36msingle_node    |[0m [2023-09-11T07:28:35,293][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [repositories-metering-api]
+[36msingle_node    |[0m [2023-09-11T07:28:35,293][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [transform]
+[36msingle_node    |[0m [2023-09-11T07:28:35,293][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [repository-azure]
+[36msingle_node    |[0m [2023-09-11T07:28:35,293][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [repository-gcs]
+[36msingle_node    |[0m [2023-09-11T07:28:35,294][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [spatial]
+[36msingle_node    |[0m [2023-09-11T07:28:35,294][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [apm]
+[36msingle_node    |[0m [2023-09-11T07:28:35,294][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [mapper-extras]
+[36msingle_node    |[0m [2023-09-11T07:28:35,294][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [mapper-version]
+[36msingle_node    |[0m [2023-09-11T07:28:35,295][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-aggregate-metric]
+[36msingle_node    |[0m [2023-09-11T07:28:35,295][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-rollup]
+[36msingle_node    |[0m [2023-09-11T07:28:35,295][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [percolator]
+[36msingle_node    |[0m [2023-09-11T07:28:35,295][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [data-streams]
+[36msingle_node    |[0m [2023-09-11T07:28:35,296][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-stack]
+[36msingle_node    |[0m [2023-09-11T07:28:35,296][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [rank-eval]
+[36msingle_node    |[0m [2023-09-11T07:28:35,296][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [reindex]
+[36msingle_node    |[0m [2023-09-11T07:28:35,296][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-security]
+[36msingle_node    |[0m [2023-09-11T07:28:35,297][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [blob-cache]
+[36msingle_node    |[0m [2023-09-11T07:28:35,297][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [searchable-snapshots]
+[36msingle_node    |[0m [2023-09-11T07:28:35,297][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [snapshot-based-recoveries]
+[36msingle_node    |[0m [2023-09-11T07:28:35,297][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-watcher]
+[36msingle_node    |[0m [2023-09-11T07:28:35,298][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [old-lucene-versions]
+[36msingle_node    |[0m [2023-09-11T07:28:35,298][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-ilm]
+[36msingle_node    |[0m [2023-09-11T07:28:35,298][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-voting-only-node]
+[36msingle_node    |[0m [2023-09-11T07:28:35,299][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-deprecation]
+[36msingle_node    |[0m [2023-09-11T07:28:35,299][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-fleet]
+[36msingle_node    |[0m [2023-09-11T07:28:35,299][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-profiling]
+[36msingle_node    |[0m [2023-09-11T07:28:35,299][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [ingest-geoip]
+[36msingle_node    |[0m [2023-09-11T07:28:35,300][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-write-load-forecaster]
+[36msingle_node    |[0m [2023-09-11T07:28:35,300][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [search-business-rules]
+[36msingle_node    |[0m [2023-09-11T07:28:35,300][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [wildcard]
+[36msingle_node    |[0m [2023-09-11T07:28:35,300][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [ingest-attachment]
+[36msingle_node    |[0m [2023-09-11T07:28:35,300][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [unsigned-long]
+[36msingle_node    |[0m [2023-09-11T07:28:35,301][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-sql]
+[36msingle_node    |[0m [2023-09-11T07:28:35,301][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [runtime-fields-common]
+[36msingle_node    |[0m [2023-09-11T07:28:35,301][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-async]
+[36msingle_node    |[0m [2023-09-11T07:28:35,302][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [vector-tile]
+[36msingle_node    |[0m [2023-09-11T07:28:35,302][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [lang-expression]
+[36msingle_node    |[0m [2023-09-11T07:28:35,302][INFO ][o.e.p.PluginsService     ] [single_node] loaded module [x-pack-eql]
+[36msingle_node    |[0m [2023-09-11T07:28:35,600][INFO ][o.e.c.u.FeatureFlag      ] [single_node] The current build is a snapshot, feature flag [dlm] is enabled
+[36msingle_node    |[0m [2023-09-11T07:28:39,209][WARN ][stderr                   ] [single_node] Sep 11, 2023 7:28:39 AM org.apache.lucene.store.MemorySegmentIndexInputProvider <init>
+[36msingle_node    |[0m [2023-09-11T07:28:39,217][INFO ][o.e.e.NodeEnvironment    ] [single_node] using [1] data paths, mounts [[/usr/share/elasticsearch (/dev/root)]], net usable_space [66.3gb], net total_space [96.7gb], types [ext4]
+[36msingle_node    |[0m [2023-09-11T07:28:39,218][INFO ][o.e.e.NodeEnvironment    ] [single_node] heap size [8gb], compressed ordinary object pointers [true]
+[36msingle_node    |[0m [2023-09-11T07:28:39,476][INFO ][o.e.n.Node               ] [single_node] node name [single_node], node ID [fP3FcalYSw2EYMx6UC1Y6A], cluster name [es_exp_single], roles [transform, data_hot, ml, data_frozen, ingest, data_cold, data, remote_cluster_client, master, data_warm, data_content]
+[36msingle_node    |[0m [2023-09-11T07:28:41,036][INFO ][o.e.c.u.FeatureFlag      ] [single_node] The current build is a snapshot, feature flag [synonyms_api] is enabled
+[36msingle_node    |[0m [2023-09-11T07:28:42,932][INFO ][o.e.x.m.p.l.CppLogMessageHandler] [single_node] [controller/83] [Main.cc@123] controller (64 bit): Version 8.9.0-SNAPSHOT (Build 4b769f85c816b8) Copyright (c) 2023 Elasticsearch BV
+[36msingle_node    |[0m [2023-09-11T07:28:43,143][INFO ][o.e.x.s.Security         ] [single_node] Security is disabled
+[36msingle_node    |[0m [2023-09-11T07:28:43,478][INFO ][o.e.x.p.ProfilingPlugin  ] [single_node] Profiling is enabled
+[36msingle_node    |[0m [2023-09-11T07:28:43,492][INFO ][o.e.x.p.ProfilingPlugin  ] [single_node] profiling index templates will not be installed or reinstalled
+[36msingle_node    |[0m [2023-09-11T07:28:44,398][INFO ][o.e.t.n.NettyAllocator   ] [single_node] creating NettyAllocator with the following configs: [name=elasticsearch_configured, chunk_size=1mb, suggested_max_allocation_size=1mb, factors={es.unsafe.use_netty_default_chunk_and_page_size=false, g1gc_enabled=true, g1gc_region_size=4mb}]
+[36msingle_node    |[0m [2023-09-11T07:28:44,422][INFO ][o.e.i.r.RecoverySettings ] [single_node] using rate limit [40mb] with [default=40mb, read=0b, write=0b, max=0b]
+[36msingle_node    |[0m [2023-09-11T07:28:44,473][INFO ][o.e.d.DiscoveryModule    ] [single_node] using discovery type [multi-node] and seed hosts providers [settings]
+[36msingle_node    |[0m [2023-09-11T07:28:46,316][INFO ][o.e.n.Node               ] [single_node] initialized
+[36msingle_node    |[0m [2023-09-11T07:28:46,324][INFO ][o.e.n.Node               ] [single_node] starting ...
+[36msingle_node    |[0m [2023-09-11T07:28:46,891][INFO ][o.e.x.s.c.f.PersistentCache] [single_node] persistent cache index loaded
+[36msingle_node    |[0m [2023-09-11T07:28:46,893][INFO ][o.e.x.d.l.DeprecationIndexingComponent] [single_node] deprecation component started
+[36msingle_node    |[0m [2023-09-11T07:28:47,012][INFO ][o.e.t.TransportService   ] [single_node] publish_address {172.23.0.2:9300}, bound_addresses {0.0.0.0:9300}
+[36msingle_node    |[0m [2023-09-11T07:28:48,236][INFO ][o.e.b.BootstrapChecks    ] [single_node] bound or publishing to a non-loopback address, enforcing bootstrap checks
+[36msingle_node    |[0m [2023-09-11T07:28:48,242][WARN ][o.e.c.c.ClusterBootstrapService] [single_node] this node is locked into cluster UUID [zo8EFuQkTj2gUtoPlTN4kA] but [cluster.initial_master_nodes] is set to [single_node]; remove this setting to avoid possible data loss caused by subsequent cluster bootstrap attempts; for further information see https://www.elastic.co/guide/en/elasticsearch/reference/master/important-settings.html#initial_master_nodes
+[36msingle_node    |[0m [2023-09-11T07:28:48,497][INFO ][o.e.c.s.MasterService    ] [single_node] elected-as-master ([1] nodes joined in term 726)[_FINISH_ELECTION_, {single_node}{fP3FcalYSw2EYMx6UC1Y6A}{A4tvjvgTQXW-t-jWEhujeQ}{single_node}{172.23.0.2}{172.23.0.2:9300}{cdfhilmrstw}{8.9.0} completing election], term: 726, version: 18343, delta: master node changed {previous [], current [{single_node}{fP3FcalYSw2EYMx6UC1Y6A}{A4tvjvgTQXW-t-jWEhujeQ}{single_node}{172.23.0.2}{172.23.0.2:9300}{cdfhilmrstw}{8.9.0}]}
+[36msingle_node    |[0m [2023-09-11T07:28:48,827][INFO ][o.e.c.s.ClusterApplierService] [single_node] master node changed {previous [], current [{single_node}{fP3FcalYSw2EYMx6UC1Y6A}{A4tvjvgTQXW-t-jWEhujeQ}{single_node}{172.23.0.2}{172.23.0.2:9300}{cdfhilmrstw}{8.9.0}]}, term: 726, version: 18343, reason: Publication{term=726, version=18343}
+[36msingle_node    |[0m [2023-09-11T07:28:48,880][INFO ][o.e.c.f.AbstractFileWatchingService] [single_node] starting file watcher ...
+[36msingle_node    |[0m [2023-09-11T07:28:48,888][INFO ][o.e.c.f.AbstractFileWatchingService] [single_node] file settings service up and running [tid=49]
+[36msingle_node    |[0m [2023-09-11T07:28:48,896][INFO ][o.e.c.c.NodeJoinExecutor ] [single_node] node-join: [{single_node}{fP3FcalYSw2EYMx6UC1Y6A}{A4tvjvgTQXW-t-jWEhujeQ}{single_node}{172.23.0.2}{172.23.0.2:9300}{cdfhilmrstw}{8.9.0}] with reason [completing election]
+[36msingle_node    |[0m [2023-09-11T07:28:48,899][INFO ][o.e.h.AbstractHttpServerTransport] [single_node] publish_address {172.23.0.2:9200}, bound_addresses {0.0.0.0:9200}
+[36msingle_node    |[0m [2023-09-11T07:28:48,900][INFO ][o.e.n.Node               ] [single_node] started {single_node}{fP3FcalYSw2EYMx6UC1Y6A}{A4tvjvgTQXW-t-jWEhujeQ}{single_node}{172.23.0.2}{172.23.0.2:9300}{cdfhilmrstw}{8.9.0}{xpack.installed=true, ml.allocated_processors_double=2.0, ml.max_jvm_size=8589934592, ml.allocated_processors=2, ml.machine_memory=33682104320}
+[36msingle_node    |[0m [2023-09-11T07:28:49,049][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,049][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,050][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,050][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,238][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,239][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,241][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,241][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,242][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,242][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,249][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,250][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,250][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,251][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,251][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,252][INFO ][stdout                   ] [single_node] Cannot find cancellable id from current Java Thread ID : 41
+[36msingle_node    |[0m [2023-09-11T07:28:49,649][INFO ][o.e.l.ClusterStateLicenseService] [single_node] license [83418d66-4bc0-410d-9f76-50bc11d6178c] mode [basic] - valid
+[36msingle_node    |[0m [2023-09-11T07:28:49,653][INFO ][o.e.g.GatewayService     ] [single_node] recovered [101] indices into cluster_state
+[36msingle_node    |[0m [2023-09-11T07:28:53,581][INFO ][stdout                   ] [single_node] Parent cancellable id not found: Time: 1694388533581, Task ID : 254, Parent Task ID : 517
+[36msingle_node    |[0m [2023-09-11T07:28:53,583][INFO ][o.e.h.n.s.HealthNodeTaskExecutor] [single_node] Node [{single_node}{fP3FcalYSw2EYMx6UC1Y6A}] is selected as the current health node.
+[36msingle_node    |[0m [2023-09-11T07:28:53,585][INFO ][stdout                   ] [single_node] Parent cancellable id not found: Time: 1694388533585, Task ID : 255, Parent Task ID : 518
+[36msingle_node    |[0m [2023-09-11T07:28:54,493][INFO ][stdout                   ] [single_node] Find contention resource CPU
+[36msingle_node    |[0m [2023-09-11T07:28:54,494][INFO ][stdout                   ] [single_node] MEMORY's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:28:54,494][INFO ][stdout                   ] [single_node] CPU's contention level is 0.48129286212933686
+[36msingle_node    |[0m [2023-09-11T07:28:54,495][INFO ][stdout                   ] [single_node] Detect abnormal performance behaviour, cancel Cancellable ID : 1, CPU usage 337824052
+[36msingle_node    |[0m [2023-09-11T07:28:54,495][INFO ][stdout                   ] [single_node] Cancellable ID : 1 is not cancellable
+[36msingle_node    |[0m [2023-09-11T07:29:24,588][INFO ][o.e.c.r.a.AllocationService] [single_node] current.health="YELLOW" message="Cluster health status changed from [RED] to [YELLOW] (reason: [shards started [[news][0]]])." previous.health="RED" reason="shards started [[news][0]]"
+[36msingle_node    |[0m [2023-09-11T07:29:46,901][INFO ][stdout                   ] [single_node] Start cleaning cache
+[36msingle_node    |[0m [2023-09-11T07:29:46,903][INFO ][stdout                   ] [single_node] Cleaning cache completed
+[36msingle_node    |[0m [2023-09-11T07:30:09,075][INFO ][o.e.m.j.JvmGcMonitorService] [single_node] [gc][82] overhead, spent [285ms] collecting in the last [1s]
+[36msingle_node    |[0m [2023-09-11T07:30:10,775][INFO ][stdout                   ] [single_node] Find contention resource CPU
+[36msingle_node    |[0m [2023-09-11T07:30:10,776][INFO ][stdout                   ] [single_node] MEMORY's contention level is 0.10139691606848826
+[36msingle_node    |[0m [2023-09-11T07:30:10,776][INFO ][stdout                   ] [single_node] 5d69fd5e's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:30:10,777][INFO ][stdout                   ] [single_node] CPU's contention level is 0.7127281525831174
+[36msingle_node    |[0m [2023-09-11T07:30:10,777][INFO ][stdout                   ] [single_node] 50fccb3a's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:30:10,781][INFO ][stdout                   ] [single_node] Detect abnormal performance behaviour, cancel Cancellable ID : 10138, CPU usage 8223066844
+[36msingle_node    |[0m [2023-09-11T07:30:10,787][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchTask and my task id is 10137. I have no parent
+[36msingle_node    |[0m [2023-09-11T07:30:10,788][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:30:10,792][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 10188. My parent id is 10137
+[36msingle_node    |[0m [2023-09-11T07:30:10,792][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:30:10,857][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 10266. My parent id is 10137
+[36msingle_node    |[0m [2023-09-11T07:30:10,858][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:30:10,858][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 10267. My parent id is 10137
+[36msingle_node    |[0m [2023-09-11T07:30:10,859][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:30:10,859][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 10169. My parent id is 10137
+[36msingle_node    |[0m [2023-09-11T07:30:10,859][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:30:10,860][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 10252. My parent id is 10137
+[36msingle_node    |[0m [2023-09-11T07:30:10,860][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:30:46,905][INFO ][stdout                   ] [single_node] Start cleaning cache
+[36msingle_node    |[0m [2023-09-11T07:30:46,906][INFO ][stdout                   ] [single_node] Cleaning cache completed
+[36msingle_node    |[0m [2023-09-11T07:30:47,022][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 20248
+[36msingle_node    |[0m [2023-09-11T07:30:47,023][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 20248
+[36msingle_node    |[0m [2023-09-11T07:30:47,023][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 20248
+[36msingle_node    |[0m [2023-09-11T07:30:47,024][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 20248
+[36msingle_node    |[0m [2023-09-11T07:30:55,744][INFO ][stdout                   ] [single_node] I am action cluster:admin/tasks/cancel[n], I am sending request to node fP3FcalYSw2EYMx6UC1Y6A
+[36msingle_node    |[0m [2023-09-11T07:31:00,881][INFO ][stdout                   ] [single_node] Find contention resource CPU
+[36msingle_node    |[0m [2023-09-11T07:31:00,882][INFO ][stdout                   ] [single_node] MEMORY's contention level is 0.018714649899291697
+[36msingle_node    |[0m [2023-09-11T07:31:00,882][INFO ][stdout                   ] [single_node] 5d69fd5e's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:31:00,882][INFO ][stdout                   ] [single_node] CPU's contention level is 0.8990361056147433
+[36msingle_node    |[0m [2023-09-11T07:31:00,883][INFO ][stdout                   ] [single_node] 50fccb3a's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:31:00,897][INFO ][stdout                   ] [single_node] Detect abnormal performance behaviour, cancel Cancellable ID : 1, CPU usage 11067453383
+[36msingle_node    |[0m [2023-09-11T07:31:00,897][INFO ][stdout                   ] [single_node] Cancellable ID : 1 is not cancellable
+[36msingle_node    |[0m [2023-09-11T07:31:46,906][INFO ][stdout                   ] [single_node] Start cleaning cache
+[36msingle_node    |[0m [2023-09-11T07:31:46,908][INFO ][stdout                   ] [single_node] Cleaning cache completed
+[36msingle_node    |[0m [2023-09-11T07:31:46,950][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 108084
+[36msingle_node    |[0m [2023-09-11T07:31:46,951][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 108084
+[36msingle_node    |[0m [2023-09-11T07:31:46,952][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 108084
+[36msingle_node    |[0m [2023-09-11T07:31:46,953][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 108084
+[36msingle_node    |[0m [2023-09-11T07:32:15,781][INFO ][stdout                   ] [single_node] Find contention resource CPU
+[36msingle_node    |[0m [2023-09-11T07:32:15,782][INFO ][stdout                   ] [single_node] 69c26ef2's contention level is 5.265119607401784E-13
+[36msingle_node    |[0m [2023-09-11T07:32:15,783][INFO ][stdout                   ] [single_node] 456e2fb2's contention level is 2.1874666725690946E-12
+[36msingle_node    |[0m [2023-09-11T07:32:15,783][INFO ][stdout                   ] [single_node] 1039d26b's contention level is 9.48372638882716E-13
+[36msingle_node    |[0m [2023-09-11T07:32:15,784][INFO ][stdout                   ] [single_node] 5d69fd5e's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:15,784][INFO ][stdout                   ] [single_node] CPU's contention level is 0.6720859883862577
+[36msingle_node    |[0m [2023-09-11T07:32:15,785][INFO ][stdout                   ] [single_node] 2e699628's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:15,785][INFO ][stdout                   ] [single_node] 2ecba0fc's contention level is 5.084475686388003E-12
+[36msingle_node    |[0m [2023-09-11T07:32:15,786][INFO ][stdout                   ] [single_node] 1ee53b0's contention level is 5.189126657847133E-13
+[36msingle_node    |[0m [2023-09-11T07:32:15,786][INFO ][stdout                   ] [single_node] 6a649317's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:15,787][INFO ][stdout                   ] [single_node] MEMORY's contention level is 0.004712251854822539
+[36msingle_node    |[0m [2023-09-11T07:32:15,787][INFO ][stdout                   ] [single_node] b789e39's contention level is 1.5519613692641157E-12
+[36msingle_node    |[0m [2023-09-11T07:32:15,788][INFO ][stdout                   ] [single_node] 73546df9's contention level is 5.34762287451673E-13
+[36msingle_node    |[0m [2023-09-11T07:32:15,788][INFO ][stdout                   ] [single_node] 50fccb3a's contention level is 1.2931563812377747E-12
+[36msingle_node    |[0m [2023-09-11T07:32:15,788][INFO ][stdout                   ] [single_node] 4eef316b's contention level is 4.695182436812859E-12
+[36msingle_node    |[0m [2023-09-11T07:32:15,874][INFO ][stdout                   ] [single_node] Detect abnormal performance behaviour, cancel Cancellable ID : 1, CPU usage 16788687618
+[36msingle_node    |[0m [2023-09-11T07:32:15,876][INFO ][stdout                   ] [single_node] Cancellable ID : 1 is not cancellable
+[36msingle_node    |[0m [2023-09-11T07:32:22,802][INFO ][o.e.m.j.JvmGcMonitorService] [single_node] [gc][young][215][34] duration [741ms], collections [1]/[1.4s], total [741ms]/[4s], memory [2.1gb]->[1gb]/[8gb], all_pools {[young] [1.7gb]->[8mb]/[0b]}{[old] [302.9mb]->[771.9mb]/[8gb]}{[survivor] [70mb]->[248mb]/[0b]}
+[36msingle_node    |[0m [2023-09-11T07:32:22,806][WARN ][o.e.m.j.JvmGcMonitorService] [single_node] [gc][215] overhead, spent [741ms] collecting in the last [1.4s]
+[36msingle_node    |[0m [2023-09-11T07:32:24,810][WARN ][o.e.m.j.JvmGcMonitorService] [single_node] [gc][217] overhead, spent [531ms] collecting in the last [1s]
+[36msingle_node    |[0m [2023-09-11T07:32:26,812][INFO ][o.e.m.j.JvmGcMonitorService] [single_node] [gc][219] overhead, spent [375ms] collecting in the last [1s]
+[36msingle_node    |[0m [2023-09-11T07:32:28,858][INFO ][o.e.m.j.JvmGcMonitorService] [single_node] [gc][221] overhead, spent [460ms] collecting in the last [1s]
+[36msingle_node    |[0m [2023-09-11T07:32:32,983][INFO ][stdout                   ] [single_node] Find contention resource CPU
+[36msingle_node    |[0m [2023-09-11T07:32:32,984][INFO ][stdout                   ] [single_node] 456e2fb2's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,984][INFO ][stdout                   ] [single_node] 58b5d59a's contention level is 8.334619227529484E-13
+[36msingle_node    |[0m [2023-09-11T07:32:32,984][INFO ][stdout                   ] [single_node] 1c9adc7b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,985][INFO ][stdout                   ] [single_node] CPU's contention level is 0.7025049642683588
+[36msingle_node    |[0m [2023-09-11T07:32:32,985][INFO ][stdout                   ] [single_node] 656fd5b9's contention level is 1.545345626582536E-12
+[36msingle_node    |[0m [2023-09-11T07:32:32,985][INFO ][stdout                   ] [single_node] 113ad08e's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,985][INFO ][stdout                   ] [single_node] 10896239's contention level is 1.6790816169236194E-12
+[36msingle_node    |[0m [2023-09-11T07:32:32,986][INFO ][stdout                   ] [single_node] 4b1c8c8e's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,986][INFO ][stdout                   ] [single_node] 6442f5e3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,986][INFO ][stdout                   ] [single_node] 1bd0b4c9's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,986][INFO ][stdout                   ] [single_node] 69400a0b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,987][INFO ][stdout                   ] [single_node] 4c98aa58's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,987][INFO ][stdout                   ] [single_node] b63c3f0's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,987][INFO ][stdout                   ] [single_node] 5252f8cb's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,987][INFO ][stdout                   ] [single_node] 2a8ec9b3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,988][INFO ][stdout                   ] [single_node] 17529036's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,988][INFO ][stdout                   ] [single_node] 693b3e24's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,988][INFO ][stdout                   ] [single_node] 7c1f68e6's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,988][INFO ][stdout                   ] [single_node] 2e699628's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,989][INFO ][stdout                   ] [single_node] 4c4812c3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,989][INFO ][stdout                   ] [single_node] 2ecba0fc's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,989][INFO ][stdout                   ] [single_node] 1ee53b0's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,989][INFO ][stdout                   ] [single_node] 78e8e2c's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,990][INFO ][stdout                   ] [single_node] 221f34ff's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,990][INFO ][stdout                   ] [single_node] 7f39043's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,990][INFO ][stdout                   ] [single_node] 4db8cbb's contention level is 4.4137209071509525E-13
+[36msingle_node    |[0m [2023-09-11T07:32:32,990][INFO ][stdout                   ] [single_node] 384bf8d2's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,991][INFO ][stdout                   ] [single_node] 50fccb3a's contention level is 1.882723897911391E-12
+[36msingle_node    |[0m [2023-09-11T07:32:32,991][INFO ][stdout                   ] [single_node] 4f23b6e7's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,991][INFO ][stdout                   ] [single_node] 24a7a1ec's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,991][INFO ][stdout                   ] [single_node] 5b3b3f7b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,991][INFO ][stdout                   ] [single_node] 6bac0756's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,992][INFO ][stdout                   ] [single_node] 6aca1ca8's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,992][INFO ][stdout                   ] [single_node] 65753a35's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,992][INFO ][stdout                   ] [single_node] 6e741a7d's contention level is 4.923913251502843E-13
+[36msingle_node    |[0m [2023-09-11T07:32:32,992][INFO ][stdout                   ] [single_node] 55a784f8's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,993][INFO ][stdout                   ] [single_node] 2f14fc1's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,993][INFO ][stdout                   ] [single_node] 5de8cfbb's contention level is 1.90725648904054E-12
+[36msingle_node    |[0m [2023-09-11T07:32:32,993][INFO ][stdout                   ] [single_node] 5d2e6450's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,993][INFO ][stdout                   ] [single_node] MEMORY's contention level is 0.0897200594625923
+[36msingle_node    |[0m [2023-09-11T07:32:32,994][INFO ][stdout                   ] [single_node] b789e39's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,994][INFO ][stdout                   ] [single_node] 73546df9's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,994][INFO ][stdout                   ] [single_node] 41404998's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,994][INFO ][stdout                   ] [single_node] 35a98861's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,994][INFO ][stdout                   ] [single_node] 28e88a51's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,995][INFO ][stdout                   ] [single_node] e00a1fa's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,995][INFO ][stdout                   ] [single_node] 69c26ef2's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,995][INFO ][stdout                   ] [single_node] 726c0153's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,995][INFO ][stdout                   ] [single_node] 1039d26b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,996][INFO ][stdout                   ] [single_node] 6a4a89a3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,996][INFO ][stdout                   ] [single_node] 4ebf5b15's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,996][INFO ][stdout                   ] [single_node] 646bd933's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:32,996][INFO ][stdout                   ] [single_node] 4736f7b2's contention level is 2.6699410603294474E-12
+[36msingle_node    |[0m [2023-09-11T07:32:33,057][INFO ][stdout                   ] [single_node] 7084b493's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,058][INFO ][stdout                   ] [single_node] 59f43f83's contention level is 4.415888789710662E-13
+[36msingle_node    |[0m [2023-09-11T07:32:33,058][INFO ][stdout                   ] [single_node] 5d69fd5e's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,059][INFO ][stdout                   ] [single_node] 7bec17a3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,059][INFO ][stdout                   ] [single_node] 5ee15550's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,060][INFO ][stdout                   ] [single_node] 6a649317's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,060][INFO ][stdout                   ] [single_node] 2e81985f's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,060][INFO ][stdout                   ] [single_node] 7e7e83a4's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,061][INFO ][stdout                   ] [single_node] 736987e7's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,061][INFO ][stdout                   ] [single_node] 50d056f's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,062][INFO ][stdout                   ] [single_node] 4eef316b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:32:33,080][INFO ][stdout                   ] [single_node] Detect abnormal performance behaviour, cancel Cancellable ID : 133396, CPU usage 42779923298
+[36msingle_node    |[0m [2023-09-11T07:32:33,081][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchTask and my task id is 133395. I have no parent
+[36msingle_node    |[0m [2023-09-11T07:32:33,081][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:32:33,082][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 133543. My parent id is 133395
+[36msingle_node    |[0m [2023-09-11T07:32:33,082][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:32:33,082][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 133763. My parent id is 133395
+[36msingle_node    |[0m [2023-09-11T07:32:33,083][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:32:33,083][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 133760. My parent id is 133395
+[36msingle_node    |[0m [2023-09-11T07:32:33,083][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:32:33,084][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 133701. My parent id is 133395
+[36msingle_node    |[0m [2023-09-11T07:32:33,084][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:32:33,862][INFO ][o.e.m.j.JvmGcMonitorService] [single_node] [gc][226] overhead, spent [251ms] collecting in the last [1s]
+[36msingle_node    |[0m [2023-09-11T07:32:46,909][INFO ][stdout                   ] [single_node] Start cleaning cache
+[36msingle_node    |[0m [2023-09-11T07:32:46,910][INFO ][stdout                   ] [single_node] Cleaning cache completed
+[36msingle_node    |[0m [2023-09-11T07:32:46,962][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 133556
+[36msingle_node    |[0m [2023-09-11T07:32:46,963][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 133556
+[36msingle_node    |[0m [2023-09-11T07:32:46,964][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 133556
+[36msingle_node    |[0m [2023-09-11T07:32:46,964][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 133556
+[36msingle_node    |[0m [2023-09-11T07:33:00,649][INFO ][stdout                   ] [single_node] I am action cluster:admin/tasks/cancel[n], I am sending request to node fP3FcalYSw2EYMx6UC1Y6A
+[36msingle_node    |[0m [2023-09-11T07:33:00,659][INFO ][stdout                   ] [single_node] I am task 183485, I am call task manager cancel api to 183418
+[36msingle_node    |[0m [2023-09-11T07:33:00,663][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchTask and my task id is 183418. I have no parent
+[36msingle_node    |[0m [2023-09-11T07:33:00,663][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:33:00,664][INFO ][stdout                   ] [single_node] I will be cancelled by task manager. I am org.elasticsearch.action.search.SearchShardTask and my task id is 183523. My parent id is 183418
+[36msingle_node    |[0m [2023-09-11T07:33:00,664][INFO ][stdout                   ] [single_node] First I will notify 0 listeners
+[36msingle_node    |[0m [2023-09-11T07:33:05,843][INFO ][stdout                   ] [single_node] Find contention resource CPU
+[36msingle_node    |[0m [2023-09-11T07:33:05,843][INFO ][stdout                   ] [single_node] 456e2fb2's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,844][INFO ][stdout                   ] [single_node] 58b5d59a's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,844][INFO ][stdout                   ] [single_node] 1c9adc7b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,844][INFO ][stdout                   ] [single_node] CPU's contention level is 0.8821294171197731
+[36msingle_node    |[0m [2023-09-11T07:33:05,845][INFO ][stdout                   ] [single_node] 656fd5b9's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,845][INFO ][stdout                   ] [single_node] 113ad08e's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,846][INFO ][stdout                   ] [single_node] 10896239's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,846][INFO ][stdout                   ] [single_node] 4b1c8c8e's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,846][INFO ][stdout                   ] [single_node] 6442f5e3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,847][INFO ][stdout                   ] [single_node] 1bd0b4c9's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,847][INFO ][stdout                   ] [single_node] 69400a0b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,848][INFO ][stdout                   ] [single_node] 4c98aa58's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,848][INFO ][stdout                   ] [single_node] b63c3f0's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,849][INFO ][stdout                   ] [single_node] 5252f8cb's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,849][INFO ][stdout                   ] [single_node] 2a8ec9b3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,850][INFO ][stdout                   ] [single_node] 17529036's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,850][INFO ][stdout                   ] [single_node] 693b3e24's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,850][INFO ][stdout                   ] [single_node] 7c1f68e6's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,851][INFO ][stdout                   ] [single_node] 2e699628's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,851][INFO ][stdout                   ] [single_node] 4c4812c3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,852][INFO ][stdout                   ] [single_node] 2ecba0fc's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,852][INFO ][stdout                   ] [single_node] 1ee53b0's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,852][INFO ][stdout                   ] [single_node] 78e8e2c's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,853][INFO ][stdout                   ] [single_node] 221f34ff's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,853][INFO ][stdout                   ] [single_node] 7f39043's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,853][INFO ][stdout                   ] [single_node] 4db8cbb's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,854][INFO ][stdout                   ] [single_node] 384bf8d2's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,854][INFO ][stdout                   ] [single_node] 50fccb3a's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,854][INFO ][stdout                   ] [single_node] 4f23b6e7's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,855][INFO ][stdout                   ] [single_node] 24a7a1ec's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,855][INFO ][stdout                   ] [single_node] 5b3b3f7b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,856][INFO ][stdout                   ] [single_node] 6bac0756's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,856][INFO ][stdout                   ] [single_node] 6aca1ca8's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,857][INFO ][stdout                   ] [single_node] 65753a35's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,857][INFO ][stdout                   ] [single_node] 6e741a7d's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,857][INFO ][stdout                   ] [single_node] 55a784f8's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,858][INFO ][stdout                   ] [single_node] 2f14fc1's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,858][INFO ][stdout                   ] [single_node] 5de8cfbb's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,858][INFO ][stdout                   ] [single_node] 5d2e6450's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,859][INFO ][stdout                   ] [single_node] MEMORY's contention level is 0.02895383880192075
+[36msingle_node    |[0m [2023-09-11T07:33:05,859][INFO ][stdout                   ] [single_node] b789e39's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,859][INFO ][stdout                   ] [single_node] 73546df9's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,860][INFO ][stdout                   ] [single_node] 41404998's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,860][INFO ][stdout                   ] [single_node] 35a98861's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,860][INFO ][stdout                   ] [single_node] 28e88a51's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,861][INFO ][stdout                   ] [single_node] e00a1fa's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,861][INFO ][stdout                   ] [single_node] 69c26ef2's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,861][INFO ][stdout                   ] [single_node] 726c0153's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,862][INFO ][stdout                   ] [single_node] 1039d26b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,862][INFO ][stdout                   ] [single_node] 6a4a89a3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,862][INFO ][stdout                   ] [single_node] 4ebf5b15's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,863][INFO ][stdout                   ] [single_node] 646bd933's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,863][INFO ][stdout                   ] [single_node] 4736f7b2's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,863][INFO ][stdout                   ] [single_node] 7084b493's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,864][INFO ][stdout                   ] [single_node] 59f43f83's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,864][INFO ][stdout                   ] [single_node] 5d69fd5e's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,865][INFO ][stdout                   ] [single_node] 7bec17a3's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,865][INFO ][stdout                   ] [single_node] 5ee15550's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,865][INFO ][stdout                   ] [single_node] 6a649317's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,866][INFO ][stdout                   ] [single_node] 2e81985f's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,866][INFO ][stdout                   ] [single_node] 7e7e83a4's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,866][INFO ][stdout                   ] [single_node] 736987e7's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,867][INFO ][stdout                   ] [single_node] 50d056f's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,867][INFO ][stdout                   ] [single_node] 4eef316b's contention level is 0.0
+[36msingle_node    |[0m [2023-09-11T07:33:05,882][INFO ][stdout                   ] [single_node] Detect abnormal performance behaviour, cancel Cancellable ID : 1, CPU usage 23065389229
+[36msingle_node    |[0m [2023-09-11T07:33:05,883][INFO ][stdout                   ] [single_node] Cancellable ID : 1 is not cancellable
+[36msingle_node    |[0m [2023-09-11T07:33:46,910][INFO ][stdout                   ] [single_node] Start cleaning cache
+[36msingle_node    |[0m [2023-09-11T07:33:46,911][INFO ][stdout                   ] [single_node] Cleaning cache completed
+[36msingle_node    |[0m [2023-09-11T07:33:46,942][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 183695
+[36msingle_node    |[0m [2023-09-11T07:33:46,943][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 183695
+[36msingle_node    |[0m [2023-09-11T07:33:46,944][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 183695
+[36msingle_node    |[0m [2023-09-11T07:33:46,945][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 183695
+[36msingle_node    |[0m [2023-09-11T07:34:46,913][INFO ][stdout                   ] [single_node] Start cleaning cache
+[36msingle_node    |[0m [2023-09-11T07:34:46,914][INFO ][stdout                   ] [single_node] Cleaning cache completed
+[36msingle_node    |[0m [2023-09-11T07:34:46,940][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 184107
+[36msingle_node    |[0m [2023-09-11T07:34:46,941][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 184107
+[36msingle_node    |[0m [2023-09-11T07:34:46,941][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 184107
+[36msingle_node    |[0m [2023-09-11T07:34:46,942][INFO ][stdout                   ] [single_node] Can't find cancellable for cid Cancellable ID : 184107
+Stopping single_node ... 
+[1A[2KStopping single_node ... [32mdone[0m[1BGracefully stopping... (press Ctrl+C again to force)

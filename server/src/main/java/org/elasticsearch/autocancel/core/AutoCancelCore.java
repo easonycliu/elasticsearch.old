@@ -205,11 +205,7 @@ public class AutoCancelCore {
                 this.performanceMetrix.increaseFinishedTask();
             }
         } else {
-            // Nothing to do: In the group, we don't care about whether a cancellable is
-            // existing
-            // because we update cancellables according to this.cancellables
-            // TODO: find a more robust way to handle it
-
+            cancellable.exit();
         }
     }
 
@@ -310,6 +306,8 @@ public class AutoCancelCore {
                 "is_cancellable", request -> this.isCancellable(request),
                 "cancellable_name", request -> this.cancellableName(request),
                 "cancellable_action", request -> this.cancellableAction(request),
+                "cancellable_start_time_nano", request -> this.cancellableStartTimeNano(request),
+                "cancellable_start_time", request -> this.cancellableStartTime(request),
                 "update_group_resource", request -> this.updateGroupResource(request));
 
         public ParamHandlers() {
@@ -345,6 +343,18 @@ public class AutoCancelCore {
             cancellable.setAction(action);
         }
 
+        private void cancellableStartTime(OperationRequest request) {
+            Cancellable cancellable = cancellables.get(request.getCancellableID());
+            Long startTime = (Long) request.getParams().get("cancellable_start_time");
+            cancellable.setStartTime(startTime);
+        }
+
+        private void cancellableStartTimeNano(OperationRequest request) {
+            Cancellable cancellable = cancellables.get(request.getCancellableID());
+            Long startTimeNano = (Long) request.getParams().get("cancellable_start_time_nano");
+            cancellable.setStartTimeNano(startTimeNano);
+        }
+
         @SuppressWarnings("unchecked")
         private void updateGroupResource(OperationRequest request) {
             Cancellable cancellable = cancellables.get(request.getCancellableID());
@@ -354,6 +364,7 @@ public class AutoCancelCore {
                 if (!resourceName.equals(ResourceName.NULL) && !resourceType.equals(ResourceType.NULL)) {
                     Map<String, Object> resourceUpdateInfo = (Map<String, Object>) request.getParams().get("update_group_resource");
                     rootCancellableToCancellableGroup.get(cancellable.getRootID()).updateResource(resourceType, resourceName, resourceUpdateInfo);
+                    cancellable.updateResource(resourceType, resourceName, resourceUpdateInfo);
                     if (!resourcePool.isResourceExist(request.getResourceName())) {
                         resourcePool.addResource(Resource.createResource(resourceType, resourceName));
                     }
