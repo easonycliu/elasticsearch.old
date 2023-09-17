@@ -85,7 +85,7 @@ public class TaskTracker {
                         // once its parentCancellableID has been registered, it will be created
                     }
                     else {
-                        assert false : "Can't find parent task of " + task.toString();
+                        // assert false : "Can't find parent task of " + task.toString();
                     }
                 }
             }

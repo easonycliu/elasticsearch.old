@@ -16,7 +16,7 @@ public class Resource {
 
     private final MainManager mainManager;
 
-    private ConcurrentMap<String, Boolean> monitoredLock;
+    private ConcurrentMap<String, String> monitoredLock;
 
     private static final Map<String, BiFunction<String, StackTraceElement, Boolean>> lockInfoParser = Map.of(
         "file_name", (name, stackTraceElement) -> stackTraceElement.getFileName().equals(name),
@@ -34,7 +34,7 @@ public class Resource {
 
     public Resource(MainManager mainManager) {
         this.mainManager = mainManager;
-        this.monitoredLock = new ConcurrentHashMap<String, Boolean>();
+        this.monitoredLock = new ConcurrentHashMap<String, String>();
     }
     
     public void addResourceUsage(ResourceType type, String name, Map<String, Object> resourceUpdateInfo) {
@@ -80,10 +80,11 @@ public class Resource {
                 // " Filename: " + stackTraceElements[4].getFileName() + 
                 // " Methodname: " + stackTraceElements[4].getMethodName() +
                 // " Linenumber: " + stackTraceElements[4].getLineNumber());
-                if (this.isMonitorTarget(stackTraceElements[4])) {
+                String targetName = this.isMonitorTarget(stackTraceElements[4]);
+                if (targetName != null) {
                     // System.out.println("Find lock at " + stackTraceElements[4].toString());
-                    timestamp = this.startResourceEvent(name, "wait");
-                    this.monitoredLock.put(name, true);
+                    timestamp = this.startResourceEvent(targetName, "wait");
+                    this.monitoredLock.put(name, targetName);
                 }
             }
         }
@@ -97,24 +98,33 @@ public class Resource {
     public Long onLockGet(String name, Long timestamp) {
         Long nextTimestamp = -1L;
         if (timestamp > 0) {
-            this.endResourceEvent(name, "wait", timestamp);
-            nextTimestamp = this.startResourceEvent(name, "occupy");
+            String targetName = this.monitoredLock.get(name);
+            if (targetName != null) {
+                this.endResourceEvent(targetName, "wait", timestamp);
+                nextTimestamp = this.startResourceEvent(targetName, "occupy");
+            }
         }
         return nextTimestamp;
     }
 
     public void onLockRelease(String name, Long timestamp) {
         if (timestamp > 0) {
-            this.endResourceEvent(name, "occupy", timestamp);
+            String targetName = this.monitoredLock.get(name);
+            if (targetName != null) {
+                this.endResourceEvent(targetName, "occupy", timestamp);
+            }
         }
     }
 
-    private Boolean isMonitorTarget(StackTraceElement stackTraceElement) {
+    private String isMonitorTarget(StackTraceElement stackTraceElement) {
         List<?> monitorLocks = (List<?>) Settings.getSetting("monitor_locks");
         
         for (Object monitorLock : monitorLocks) {
             Boolean monitorTarget = true;
+            String targetName = "Lock";
             for (Map.Entry<?, ?> entries : ((Map<?, ?>) monitorLock).entrySet()) {
+                targetName += "-" + (String) entries.getValue();
+
                 if (Resource.lockInfoParser.containsKey((String) entries.getKey())) {
                     if (!Resource.lockInfoParser.get((String) entries.getKey()).apply((String) entries.getValue(), stackTraceElement)) {
                         monitorTarget = false;
@@ -129,10 +139,10 @@ public class Resource {
             }
             if (monitorTarget) {
                 // find one matches all location requirements
-                return true;
+                return targetName;
             }
         }
 
-        return false;
+        return null;
     }
 }

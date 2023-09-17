@@ -71,27 +71,39 @@ public class MainManager {
         this.autoCancelCoreThread = new Thread() {
             @Override
             public void run() {
-                try (AffinityLock lock = AffinityLock.acquireLock(Runtime.getRuntime().availableProcessors() - 1)) {
-                    AutoCancelCore autoCancelCore = AutoCancelCoreHolder.getAutoCancelCore();
-                    autoCancelCore.initialize(MainManager.this);
-                    Policy actualPolicy = ((policy != null) ? policy : new BasePolicy());
-                    while (!Thread.interrupted()) {
-                        try {
-                            autoCancelCore.startOneLoop();
+                Boolean exitWhenSleep = false;
+                try {
+                    Thread.sleep((Long) Settings.getSetting("skip_first_ms"));
+                }
+                catch (InterruptedException e) {
+                    System.out.println(e.toString());
+                    exitWhenSleep = true;
+                }
+                if (!exitWhenSleep) {
+                    System.out.println("Autocancel core start");
+                    AutoCancel.doStart();
+                    try (AffinityLock lock = AffinityLock.acquireLock(Runtime.getRuntime().availableProcessors() - 1)) {
+                        AutoCancelCore autoCancelCore = AutoCancelCoreHolder.getAutoCancelCore();
+                        autoCancelCore.initialize(MainManager.this);
+                        Policy actualPolicy = ((policy != null) ? policy : new BasePolicy());
+                        while (!Thread.interrupted()) {
+                            try {
+                                autoCancelCore.startOneLoop();
 
-                            if (actualPolicy.needCancellation()) {
-                                CancellableID targetCID = actualPolicy.getCancelTarget();
-                                if (targetCID.isValid()) {
-                                    AutoCancel.cancel(targetCID);
+                                if (actualPolicy.needCancellation()) {
+                                    CancellableID targetCID = actualPolicy.getCancelTarget();
+                                    if (targetCID.isValid()) {
+                                        AutoCancel.cancel(targetCID);
+                                    }
                                 }
-                            }
 
-                            Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
-                        } catch (InterruptedException e) {
-                            break;
+                                Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
+                            } catch (InterruptedException e) {
+                                break;
+                            }
                         }
+                        autoCancelCore.stop();
                     }
-                    autoCancelCore.stop();
                 }
             }
         };

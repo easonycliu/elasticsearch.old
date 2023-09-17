@@ -125,6 +125,14 @@ public class CancellableGroup {
         return this.cancellables.values();
     }
 
+    public Set<CancellableID> getChildCancellableIDs() {
+        return this.cancellables.keySet();
+    }
+
+    public CancellableID getRootID() {
+        return this.root.getID();
+    }
+
     private Integer getCancellableLevel(Cancellable cancellable) {
         Integer level = 0;
         CancellableID tmp;

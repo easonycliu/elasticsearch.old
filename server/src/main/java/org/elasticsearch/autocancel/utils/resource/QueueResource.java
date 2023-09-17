@@ -2,6 +2,7 @@ package org.elasticsearch.autocancel.utils.resource;
 
 import java.util.Map;
 
+import org.elasticsearch.autocancel.utils.Settings;
 import org.elasticsearch.autocancel.utils.logger.Logger;
 
 public class QueueResource extends Resource {
@@ -43,7 +44,7 @@ public class QueueResource extends Resource {
                     this.totalWaitTime += (Long) entry.getValue();
                     break;
                 case "occupy_time":
-                    this.totalOccupyTime += (Long) entry.getValue();
+                    this.totalOccupyTime = (long) Math.ceil((Double) Settings.getSetting("resource_usage_decay") * this.totalOccupyTime) + (Long) entry.getValue();
                     break;
                 default:
                     Logger.systemWarn("Invalid info name " + entry.getKey() + " in resource type " + this.resourceType

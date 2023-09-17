@@ -22,6 +22,7 @@ import org.elasticsearch.autocancel.utils.Settings;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.lang.Thread;
@@ -165,13 +166,19 @@ public class AutoCancelCore {
     }
 
     private void refreshCancellableGroups() {
+        List<CancellableGroup> toBeRemovedCancellableGroups = new ArrayList<CancellableGroup>();
         for (Map.Entry<CancellableID, CancellableGroup> entry : this.rootCancellableToCancellableGroup.entrySet()) {
 
             if (entry.getValue().isExit()) {
+                toBeRemovedCancellableGroups.add(entry.getValue());
                 continue;
             }
 
             entry.getValue().refreshResourcePool();
+        }
+
+        for (CancellableGroup cancellableGroup : toBeRemovedCancellableGroups) {
+            this.removeCancellableGroup(cancellableGroup);
         }
     }
 
@@ -183,13 +190,16 @@ public class AutoCancelCore {
         if (cancellable.isRoot()) {
             this.rootCancellableToCancellableGroup.put(cancellable.getID(), new CancellableGroup(cancellable));
         } else {
-            this.rootCancellableToCancellableGroup.get(cancellable.getRootID()).putCancellable(cancellable);
+            try {
+                this.rootCancellableToCancellableGroup.get(cancellable.getRootID()).putCancellable(cancellable);
+            }
+            catch (NullPointerException e) {
+                System.out.println("Cannot find cancellable group for " + cancellable.toString() + " at " + e.getStackTrace()[0]);
+            }
         }
     }
 
-    protected void removeCancellable(Cancellable cancellable) {
-        this.cancellables.remove(cancellable.getID());
-
+    protected void exitCancellable(Cancellable cancellable) {
         if (cancellable.isRoot()) {
             // TODO: Problematic point: nullptr
             // CancellableGroup cancellableGroup =
@@ -200,12 +210,30 @@ public class AutoCancelCore {
             // for (Cancellable childCancellable : childCancellables) {
             // this.cancellables.remove(childCancellable.getID());
             // }
-            this.rootCancellableToCancellableGroup.get(cancellable.getID()).exit();
-            if (((Set<?>) Settings.getSetting("monitor_actions")).contains(cancellable.getAction())) {
-                this.performanceMetrix.increaseFinishedTask();
+            try {
+                this.rootCancellableToCancellableGroup.get(cancellable.getID()).exit();
+                if (((Set<?>) Settings.getSetting("monitor_actions")).contains(cancellable.getAction())) {
+                    this.performanceMetrix.increaseFinishedTask();
+                }
+            }
+            catch (NullPointerException e) {
+                System.out.println("Cannot find cancellable group for " + cancellable.toString() + " at " + e.getStackTrace()[0]);
             }
         } else {
             cancellable.exit();
+        }
+    }
+
+    private void removeCancellableGroup(CancellableGroup cancellableGroup) {
+        if (cancellableGroup != null) {
+            Set<CancellableID> childCancellableIDs = cancellableGroup.getChildCancellableIDs();
+            childCancellableIDs.forEach((cancellableID) -> {
+                this.cancellables.remove(cancellableID);
+            });
+            this.rootCancellableToCancellableGroup.remove(cancellableGroup.getRootID());
+        }
+        else {
+            System.out.println("Cancellable group to be removed does not exist");
         }
     }
 
@@ -268,7 +296,7 @@ public class AutoCancelCore {
             assert request.getCancellableID() != new CancellableID() : "Delete operation must have cancellable id set";
 
             if (cancellables.containsKey(request.getCancellableID())) {
-                removeCancellable(cancellables.get(request.getCancellableID()));
+                exitCancellable(cancellables.get(request.getCancellableID()));
 
                 Map<String, Object> params = request.getParams();
                 for (String key : params.keySet()) {
@@ -276,7 +304,7 @@ public class AutoCancelCore {
                 }
             } else {
                 // Some task will exit before its child task exit, we will remove all child
-                // tasks when root task exit (See removeCancellable())
+                // tasks when root task exit (See exitCancellable())
                 // TODO: Find a method to handle it
                 System.out.println(String.format("Cancellable id not found: Time: %d, %s", System.currentTimeMillis(),
                         request.getCancellableID().toString()));
@@ -327,7 +355,12 @@ public class AutoCancelCore {
                 // cancellable
                 // TODO: Add a warning if this is not a root cancellable
                 Boolean isCancellable = (Boolean) request.getParams().get("is_cancellable");
-                rootCancellableToCancellableGroup.get(cancellable.getID()).setIsCancellable(isCancellable);
+                try {
+                    rootCancellableToCancellableGroup.get(cancellable.getID()).setIsCancellable(isCancellable);
+                }
+                catch (NullPointerException e) {
+                    System.out.println("Cannot find cancellable group for " + cancellable.toString() + " at " + e.getStackTrace()[0]);
+                }
             }
         }
 
@@ -363,12 +396,17 @@ public class AutoCancelCore {
                 ResourceName resourceName = request.getResourceName();
                 if (!resourceName.equals(ResourceName.NULL) && !resourceType.equals(ResourceType.NULL)) {
                     Map<String, Object> resourceUpdateInfo = (Map<String, Object>) request.getParams().get("update_group_resource");
-                    rootCancellableToCancellableGroup.get(cancellable.getRootID()).updateResource(resourceType, resourceName, resourceUpdateInfo);
-                    cancellable.updateResource(resourceType, resourceName, resourceUpdateInfo);
-                    if (!resourcePool.isResourceExist(request.getResourceName())) {
-                        resourcePool.addResource(Resource.createResource(resourceType, resourceName));
+                    try {
+                        rootCancellableToCancellableGroup.get(cancellable.getRootID()).updateResource(resourceType, resourceName, resourceUpdateInfo);
+                        cancellable.updateResource(resourceType, resourceName, resourceUpdateInfo);
+                        if (!resourcePool.isResourceExist(request.getResourceName())) {
+                            resourcePool.addResource(Resource.createResource(resourceType, resourceName));
+                        }
+                        resourcePool.setResourceUpdateInfo(resourceName, resourceUpdateInfo);
                     }
-                    resourcePool.setResourceUpdateInfo(resourceName, resourceUpdateInfo);
+                    catch (NullPointerException e) {
+                        System.out.println("Cannot find cancellable group for " + cancellable.toString() + " at " + e.getStackTrace()[0]);
+                    }
                 }
 
             } else {

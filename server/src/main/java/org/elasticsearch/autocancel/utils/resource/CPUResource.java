@@ -10,11 +10,14 @@ import java.util.Set;
 import java.util.HashSet;
 
 import org.elasticsearch.autocancel.utils.logger.Logger;
+import org.elasticsearch.autocancel.utils.Settings;
 import org.elasticsearch.autocancel.utils.id.ID;
 
 public class CPUResource extends Resource {
 
     private Long usedSystemTime;
+
+    private Long usedSystemTimeDecay;
 
     private List<Double> cpuUsageThreads;
 
@@ -27,6 +30,7 @@ public class CPUResource extends Resource {
     public CPUResource() {
         super(ResourceType.CPU, ResourceName.CPU);
         this.usedSystemTime = 0L;
+        this.usedSystemTimeDecay = 0L;
         this.cpuUsageThreads = new ArrayList<Double>();
         this.existedThreadID = new HashSet<ID>();
         this.gcMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
@@ -36,6 +40,7 @@ public class CPUResource extends Resource {
     public CPUResource(ResourceName resourceName) {
         super(ResourceType.CPU, resourceName);
         this.usedSystemTime = 0L;
+        this.usedSystemTimeDecay = 0L;
         this.cpuUsageThreads = new ArrayList<Double>();
         this.existedThreadID = new HashSet<ID>();
         this.gcMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
@@ -69,7 +74,7 @@ public class CPUResource extends Resource {
 
     @Override
     public Long getResourceUsage() {
-        return this.usedSystemTime;
+        return this.usedSystemTimeDecay;
     }
 
     // CPU resource update info has keys:
@@ -84,6 +89,7 @@ public class CPUResource extends Resource {
                 case "cpu_time_system":
                     break;
                 case "cpu_time_thread":
+                    this.usedSystemTimeDecay = (long) Math.ceil((Double) Settings.getSetting("resource_usage_decay") * this.usedSystemTimeDecay) + (Long) entry.getValue();
                     this.usedSystemTime += (Long) entry.getValue();
                     break;
                 case "thread_id":
@@ -109,10 +115,11 @@ public class CPUResource extends Resource {
 
     @Override
     public String toString() {
-        return String.format("Resource Type: %s, name: %s, used system time: %d",
+        return String.format("Resource Type: %s, name: %s, used system time: %d, used system time decay: %d",
                 this.getResourceType().toString(),
                 this.getResourceName().toString(),
-                this.usedSystemTime);
+                this.usedSystemTime,
+                this.usedSystemTimeDecay);
     }
 
     // This is exactly the same method as JVMHeapResource
