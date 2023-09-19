@@ -18,6 +18,10 @@ import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.support.IndicesOptions;
 import org.elasticsearch.action.support.replication.ReplicatedWriteRequest;
 import org.elasticsearch.action.support.replication.ReplicationRequest;
+import org.elasticsearch.action.support.replication.CancellableReplicationTask;
+import org.elasticsearch.tasks.TaskCancelledException;
+import org.elasticsearch.tasks.TaskId;
+import org.elasticsearch.tasks.Task;
 import org.elasticsearch.client.internal.Requests;
 import org.elasticsearch.cluster.metadata.IndexAbstraction;
 import org.elasticsearch.cluster.metadata.Metadata;
@@ -272,6 +276,11 @@ public class IndexRequest extends ReplicatedWriteRequest<IndexRequest> implement
     public IndexRequest id(String id) {
         this.id = id;
         return this;
+    }
+
+    @Override
+    public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
+        return new CancellableReplicationTask(id, type, action, getDescription(), parentTaskId, headers);
     }
 
     /**
