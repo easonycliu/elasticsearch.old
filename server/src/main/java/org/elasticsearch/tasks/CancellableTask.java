@@ -58,6 +58,13 @@ public class CancellableTask extends Task {
      * includes the cancellation reason.
      */
     public final boolean isCancelled() {
+        if (this.getAction().contains("search")) {
+            System.out.println(this.toString());
+            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+            for (StackTraceElement element : stackTraceElements) {
+                System.out.println(element.toString());
+            }
+        }
         return isCancelled;
     }
 
