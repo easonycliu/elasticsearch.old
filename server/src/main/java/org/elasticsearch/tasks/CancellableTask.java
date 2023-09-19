@@ -80,7 +80,7 @@ public class CancellableTask extends Task {
     /**
      * This method adds a listener that needs to be notified if this task is cancelled.
      */
-    public final void addListener(CancellationListener listener) {
+    public final void addLiptener(CancellationListener listener) {
         synchronized (this) {
             if (this.isCancelled == false) {
                 listeners.add(listener);

@@ -1071,10 +1071,10 @@ public class InternalEngine extends Engine {
                 Releasable indexThrottle = doThrottle ? throttle.acquireThrottle() : () -> {}
             ) {
                 lastWriteNanos = index.startTime();
-                // StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-                // for (StackTraceElement element : stackTraceElements) {
-                //     System.out.println(element.toString());
-                // }
+                StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+                for (StackTraceElement element : stackTraceElements) {
+                    System.out.println(element.toString());
+                }
                 long writeStartTimeNano = System.nanoTime();
                 System.out.println(String.format("Index %s write Start at: %d", index.uid().toString(), writeStartTimeNano));
                 /* A NOTE ABOUT APPEND ONLY OPTIMIZATIONS:
