@@ -14,6 +14,7 @@ import org.elasticsearch.action.admin.cluster.node.tasks.cancel.CancelTasksReque
 import org.elasticsearch.core.Nullable;
 import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.tasks.TaskManager;
 
@@ -27,7 +28,7 @@ import static org.elasticsearch.core.Strings.format;
 /**
  * Represents a executor node operation that corresponds to a persistent task
  */
-public class AllocatedPersistentTask extends CancellableTask {
+public class AllocatedPersistentTask extends BaseCancellableTask {
 
     private static final Logger logger = LogManager.getLogger(AllocatedPersistentTask.class);
     private final AtomicReference<State> state;

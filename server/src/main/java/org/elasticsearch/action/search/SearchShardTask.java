@@ -11,6 +11,7 @@ package org.elasticsearch.action.search;
 import org.elasticsearch.search.fetch.ShardFetchSearchRequest;
 import org.elasticsearch.search.internal.ShardSearchRequest;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.TaskId;
 
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.Map;
  * Task storing information about a currently running search shard request.
  * See {@link ShardSearchRequest}, {@link ShardFetchSearchRequest}, ...
  */
-public class SearchShardTask extends CancellableTask {
+public class SearchShardTask extends BaseCancellableTask {
 
     public SearchShardTask(long id, String type, String action, String description, TaskId parentTaskId, Map<String, String> headers) {
         super(id, type, action, description, parentTaskId, headers);

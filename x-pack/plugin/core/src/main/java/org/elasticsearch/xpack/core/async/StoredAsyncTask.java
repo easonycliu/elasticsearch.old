@@ -11,6 +11,7 @@ import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.tasks.TaskManager;
 
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class StoredAsyncTask<Response extends ActionResponse> extends CancellableTask implements AsyncTask {
+public abstract class StoredAsyncTask<Response extends ActionResponse> extends BaseCancellableTask implements AsyncTask {
 
     private final AsyncExecutionId asyncExecutionId;
     private final Map<String, String> originHeaders;

@@ -7,6 +7,7 @@
 package org.elasticsearch.xpack.core.downsample;
 
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.xpack.core.rollup.RollupField;
 
@@ -16,7 +17,7 @@ import java.util.Map;
  * This class contains the high-level logic that drives the rollup job. The allocated task contains transient state
  * which drives the indexing, and periodically updates it's parent PersistentTask with the indexing's current position.
  */
-public class DownsampleTask extends CancellableTask {
+public class DownsampleTask extends BaseCancellableTask {
     private final String downsampleIndex;
     private final DownsampleConfig config;
 
