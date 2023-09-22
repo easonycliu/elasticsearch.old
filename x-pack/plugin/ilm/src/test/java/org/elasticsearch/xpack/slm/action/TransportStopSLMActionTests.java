@@ -15,6 +15,7 @@ import org.elasticsearch.cluster.metadata.IndexNameExpressionResolver;
 import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.Priority;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.test.ESTestCase;
 import org.elasticsearch.threadpool.ThreadPool;
@@ -41,7 +42,7 @@ public class TransportStopSLMActionTests extends ESTestCase {
             mock(ActionFilters.class),
             mock(IndexNameExpressionResolver.class)
         );
-        Task task = new Task(
+        Task task = new BaseTask(
             randomLong(),
             "transport",
             StopILMAction.NAME,

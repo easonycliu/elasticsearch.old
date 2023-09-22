@@ -48,7 +48,7 @@ public interface TaskAwareRequest {
      * Returns the task object that should be used to keep track of the processing of the request.
      */
     default Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-        return new Task(id, type, action, getDescription(), parentTaskId, headers);
+        return new BaseTask(id, type, action, getDescription(), parentTaskId, headers);
     }
 
     /**

@@ -35,6 +35,7 @@ import org.elasticsearch.index.shard.ShardId;
 import org.elasticsearch.indices.EmptySystemIndices;
 import org.elasticsearch.indices.IndicesService;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.tasks.TaskManager;
 import org.elasticsearch.test.ESTestCase;
@@ -260,7 +261,7 @@ public class TransportMultiTermVectorsActionTests extends ESTestCase {
     }
 
     private static Task createTask() {
-        return new Task(
+        return new BaseTask(
             randomLong(),
             "transport",
             MultiTermVectorsAction.NAME,

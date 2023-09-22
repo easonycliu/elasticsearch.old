@@ -506,7 +506,7 @@ public class TaskManagerTests extends ESTestCase {
                     };
                 }
 
-                return new Task(id, type, action, "request-" + id, parentTaskId, headers);
+                return new BaseTask(id, type, action, "request-" + id, parentTaskId, headers);
             }
         };
     }

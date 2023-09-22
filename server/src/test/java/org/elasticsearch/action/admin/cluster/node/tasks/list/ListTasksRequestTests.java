@@ -10,6 +10,7 @@ package org.elasticsearch.action.admin.cluster.node.tasks.list;
 
 import org.elasticsearch.action.ActionRequestValidationException;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.test.ESTestCase;
 
@@ -49,7 +50,7 @@ public class ListTasksRequestTests extends ESTestCase {
     }
 
     private static Task taskWithActionDescription(String action, String description) {
-        return new Task(
+        return new BaseTask(
             randomNonNegativeLong(),
             randomAlphaOfLength(10),
             action,
