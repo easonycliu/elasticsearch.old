@@ -47,7 +47,7 @@ import java.util.Map;
  * The base class for transport actions that are interacting with currently running tasks.
  */
 public abstract class TransportTasksAction<
-    OperationTask extends BaseTask,
+    OperationTask extends Task,
     TasksRequest extends BaseTasksRequest<TasksRequest>,
     TasksResponse extends BaseTasksResponse,
     TaskResponse extends Writeable> extends HandledTransportAction<TasksRequest, TasksResponse> {

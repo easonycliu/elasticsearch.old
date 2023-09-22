@@ -50,13 +50,6 @@ public class CancellableReplicationTask extends ReplicationTask implements Cance
      * includes the cancellation reason.
      */
     public final boolean isCancelled() {
-        if (this.getAction().contains("search")) {
-            System.out.println(this.toString());
-            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-            for (StackTraceElement element : stackTraceElements) {
-                System.out.println(element.toString());
-            }
-        }
         return isCancelled;
     }
 
@@ -72,7 +65,7 @@ public class CancellableReplicationTask extends ReplicationTask implements Cance
     /**
      * This method adds a listener that needs to be notified if this task is cancelled.
      */
-    public final void addListener(CancellationListener listener) {
+    public final void addListener(CancellableTask.CancellationListener listener) {
         synchronized (this) {
             if (this.isCancelled == false) {
                 listeners.add(listener);
@@ -118,12 +111,5 @@ public class CancellableReplicationTask extends ReplicationTask implements Cance
         assert isCancelled;
         assert reason != null;
         return new TaskCancelledException("task cancelled [" + reason + ']');
-    }
-
-    /**
-     * This interface is implemented by any class that needs to react to the cancellation of this task.
-     */
-    public interface CancellationListener {
-        void onCancelled();
     }
 }

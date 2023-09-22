@@ -58,13 +58,13 @@ public class BaseCancellableTask extends BaseTask implements CancellableTask {
     * includes the cancellation reason.
     */
     public final boolean isCancelled() {
-        if (this.getAction().contains("search")) {
-            System.out.println(this.toString());
-            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-            for (StackTraceElement element : stackTraceElements) {
-                System.out.println(element.toString());
-            }
-        }
+        // if (this.getAction().contains("search")) {
+        //     System.out.println(this.toString());
+        //     StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        //     for (StackTraceElement element : stackTraceElements) {
+        //         System.out.println(element.toString());
+        //     }
+        // }
         return isCancelled;
     }
 
@@ -80,7 +80,7 @@ public class BaseCancellableTask extends BaseTask implements CancellableTask {
     /**
      * This method adds a listener that needs to be notified if this task is cancelled.
     */
-    public final void addListener(CancellationListener listener) {
+    public final void addListener(CancellableTask.CancellationListener listener) {
         synchronized (this) {
             if (this.isCancelled == false) {
                 listeners.add(listener);
@@ -126,12 +126,5 @@ public class BaseCancellableTask extends BaseTask implements CancellableTask {
         assert isCancelled;
         assert reason != null;
         return new TaskCancelledException("task cancelled [" + reason + ']');
-    }
-
-    /**
-     * This interface is implemented by any class that needs to react to the cancellation of this task.
-    */
-    public interface CancellationListener {
-        void onCancelled();
     }
 }
