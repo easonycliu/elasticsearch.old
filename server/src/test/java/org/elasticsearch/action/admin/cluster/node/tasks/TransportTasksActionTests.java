@@ -37,6 +37,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.ChunkedToXContent;
 import org.elasticsearch.common.xcontent.XContentHelper;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskCancelledException;
 import org.elasticsearch.tasks.TaskId;
@@ -188,7 +189,7 @@ public class TransportTasksActionTests extends TaskManagerTestCase {
 
         @Override
         public CancellableTask createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, "testTasksRequest", parentTaskId, headers);
+            return new BaseCancellableTask(id, type, action, "testTasksRequest", parentTaskId, headers);
         }
     }
 

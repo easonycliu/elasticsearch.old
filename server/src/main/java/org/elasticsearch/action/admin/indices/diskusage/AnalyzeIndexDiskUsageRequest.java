@@ -14,6 +14,7 @@ import org.elasticsearch.action.support.broadcast.BroadcastRequest;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 
@@ -58,7 +59,7 @@ public class AnalyzeIndexDiskUsageRequest extends BroadcastRequest<AnalyzeIndexD
 
     @Override
     public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-        return new CancellableTask(id, AnalyzeIndexDiskUsageAction.NAME, type, "", parentTaskId, headers) {
+        return new BaseCancellableTask(id, AnalyzeIndexDiskUsageAction.NAME, type, "", parentTaskId, headers) {
             @Override
             public String getDescription() {
                 return AnalyzeIndexDiskUsageRequest.this.getDescription();

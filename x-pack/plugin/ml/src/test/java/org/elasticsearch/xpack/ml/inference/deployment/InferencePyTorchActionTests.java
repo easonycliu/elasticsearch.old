@@ -11,6 +11,7 @@ import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskAwareRequest;
 import org.elasticsearch.tasks.TaskId;
@@ -204,7 +205,7 @@ public class InferencePyTorchActionTests extends ESTestCase {
 
             @Override
             public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-                return new CancellableTask(id, type, action, getDescription(), parentTaskId, headers);
+                return new BaseCancellableTask(id, type, action, getDescription(), parentTaskId, headers);
             }
         });
         InferencePyTorchAction action = new InferencePyTorchAction(

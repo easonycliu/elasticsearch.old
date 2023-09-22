@@ -37,6 +37,7 @@ import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.plugins.ActionPlugin;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskCancelledException;
 import org.elasticsearch.tasks.TaskId;
@@ -471,7 +472,7 @@ public class CancellableTasksIT extends ESIntegTestCase {
 
         @Override
         public Task createTask(long someId, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(someId, type, action, taskDescription(), parentTaskId, headers);
+            return new BaseCancellableTask(someId, type, action, taskDescription(), parentTaskId, headers);
         }
 
         @Override

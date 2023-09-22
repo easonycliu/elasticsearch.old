@@ -20,6 +20,7 @@ import org.elasticsearch.common.io.stream.Writeable;
 import org.elasticsearch.core.Nullable;
 import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.xcontent.ToXContentObject;
@@ -141,7 +142,7 @@ public class GetJobsStatsAction extends ActionType<GetJobsStatsAction.Response> 
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, format("get_job_stats[%s]", id), parentTaskId, headers);
+            return new BaseCancellableTask(id, type, action, format("get_job_stats[%s]", id), parentTaskId, headers);
         }
     }
 

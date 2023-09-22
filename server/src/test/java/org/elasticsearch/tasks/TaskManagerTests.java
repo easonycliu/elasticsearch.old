@@ -392,7 +392,7 @@ public class TaskManagerTests extends ESTestCase {
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, "request-" + requestId, parentTaskId, headers) {
+            return new BaseCancellableTask(id, type, action, "request-" + requestId, parentTaskId, headers) {
                 @Override
                 public boolean shouldCancelChildrenOnCancellation() {
                     return false;
@@ -493,7 +493,7 @@ public class TaskManagerTests extends ESTestCase {
             @Override
             public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
                 if (cancellable) {
-                    return new CancellableTask(id, type, action, "request-" + id, parentTaskId, headers) {
+                    return new BaseCancellableTask(id, type, action, "request-" + id, parentTaskId, headers) {
                         @Override
                         public boolean shouldCancelChildrenOnCancellation() {
                             return false;

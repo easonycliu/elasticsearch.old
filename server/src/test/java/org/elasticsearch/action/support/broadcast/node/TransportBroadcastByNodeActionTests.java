@@ -49,6 +49,7 @@ import org.elasticsearch.index.shard.ShardId;
 import org.elasticsearch.indices.EmptySystemIndices;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskCancelHelper;
 import org.elasticsearch.tasks.TaskCancelledException;
@@ -363,7 +364,7 @@ public class TransportBroadcastByNodeActionTests extends ESTestCase {
         final PlainActionFuture<TransportResponse> future = PlainActionFuture.newFuture();
         TestTransportChannel channel = new TestTransportChannel(future);
 
-        final CancellableTask cancellableTask = new CancellableTask(randomLong(), "transport", "action", "", null, emptyMap());
+        final CancellableTask cancellableTask = new BaseCancellableTask(randomLong(), "transport", "action", "", null, emptyMap());
         TaskCancelHelper.cancel(cancellableTask, "simulated");
         handler.messageReceived(action.new NodeRequest(new Request(), new ArrayList<>(shards), nodeId), channel, cancellableTask);
         expectThrows(TaskCancelledException.class, future::actionGet);
@@ -529,7 +530,7 @@ public class TransportBroadcastByNodeActionTests extends ESTestCase {
     }
 
     public void testResponsesReleasedOnCancellation() {
-        final CancellableTask cancellableTask = new CancellableTask(randomLong(), "transport", "action", "", null, emptyMap());
+        final CancellableTask cancellableTask = new BaseCancellableTask(randomLong(), "transport", "action", "", null, emptyMap());
         final PlainActionFuture<Response> listener = new PlainActionFuture<>();
         action.execute(cancellableTask, new Request(TEST_INDEX), listener);
 
@@ -620,7 +621,7 @@ public class TransportBroadcastByNodeActionTests extends ESTestCase {
                     .toList(), "node-id"
             ),
             new TestTransportChannel(nodeResponseFuture),
-            new CancellableTask(randomLong(), "transport", "action", "", null, emptyMap())
+            new BaseCancellableTask(randomLong(), "transport", "action", "", null, emptyMap())
         );
 
         assertTrue(nodeResponseFuture.isDone());
@@ -645,7 +646,7 @@ public class TransportBroadcastByNodeActionTests extends ESTestCase {
         };
 
         final PlainActionFuture<TransportResponse> nodeResponseFuture = new PlainActionFuture<>();
-        final CancellableTask task = new CancellableTask(randomLong(), "transport", "action", "", null, emptyMap());
+        final CancellableTask task = new BaseCancellableTask(randomLong(), "transport", "action", "", null, emptyMap());
 
         action.new BroadcastByNodeTransportRequestHandler().messageReceived(
             action.new NodeRequest(

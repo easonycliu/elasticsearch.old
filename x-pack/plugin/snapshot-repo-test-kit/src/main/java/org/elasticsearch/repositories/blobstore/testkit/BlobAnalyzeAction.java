@@ -39,6 +39,7 @@ import org.elasticsearch.repositories.Repository;
 import org.elasticsearch.repositories.RepositoryVerificationException;
 import org.elasticsearch.repositories.blobstore.BlobStoreRepository;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.threadpool.ThreadPool;
@@ -745,7 +746,7 @@ public class BlobAnalyzeAction extends ActionType<BlobAnalyzeAction.Response> {
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, getDescription(), parentTaskId, headers) {
+            return new BaseCancellableTask(id, type, action, getDescription(), parentTaskId, headers) {
                 @Override
                 public boolean shouldCancelChildrenOnCancellation() {
                     return true;
