@@ -26,6 +26,7 @@ import org.elasticsearch.core.IOUtils;
 import org.elasticsearch.index.seqno.SequenceNumbers;
 import org.elasticsearch.index.translog.Translog;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.tasks.TaskManager;
 import org.elasticsearch.transport.TransportService;
@@ -401,7 +402,7 @@ public class PrimaryReplicaSyncer {
         }
     }
 
-    public static class ResyncTask extends Task {
+    public static class ResyncTask extends BaseTask {
         private volatile String phase = "starting";
         private volatile int totalOperations;
         private volatile int resyncedOperations;

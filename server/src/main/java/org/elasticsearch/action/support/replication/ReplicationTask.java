@@ -12,6 +12,7 @@ import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.xcontent.XContentBuilder;
 
@@ -23,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Task that tracks replication actions.
  */
-public class ReplicationTask extends Task {
+public class ReplicationTask extends BaseTask {
     private volatile String phase = "starting";
 
     public ReplicationTask(long id, String type, String action, String description, TaskId parentTaskId, Map<String, String> headers) {

@@ -8,6 +8,7 @@ package org.elasticsearch.xpack.rollup.action;
 
 import org.elasticsearch.common.util.Maps;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.tasks.TaskManager;
 import org.elasticsearch.test.ESTestCase;
@@ -97,7 +98,7 @@ public class TransportTaskHelperTests extends ESTestCase {
         return tasks;
     }
 
-    private static class TestTask extends Task {
+    private static class TestTask extends BaseTask {
         TestTask(long id, String type, String action, String description, TaskId parentTask, Map<String, String> headers) {
             super(id, type, action, description, parentTask, headers);
         }

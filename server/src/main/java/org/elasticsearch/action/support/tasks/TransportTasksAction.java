@@ -28,6 +28,7 @@ import org.elasticsearch.common.io.stream.Writeable;
 import org.elasticsearch.tasks.CancellableTask;
 import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.transport.TransportChannel;
 import org.elasticsearch.transport.TransportRequest;
@@ -46,7 +47,7 @@ import java.util.Map;
  * The base class for transport actions that are interacting with currently running tasks.
  */
 public abstract class TransportTasksAction<
-    OperationTask extends Task,
+    OperationTask extends BaseTask,
     TasksRequest extends BaseTasksRequest<TasksRequest>,
     TasksResponse extends BaseTasksResponse,
     TaskResponse extends Writeable> extends HandledTransportAction<TasksRequest, TasksResponse> {

@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * Current task information
  */
-public class Task {
+public interface Task {
 
     /**
      * The request header to mark tasks with specific ids

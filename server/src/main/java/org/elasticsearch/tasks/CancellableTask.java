@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * A task that can be cancelled
  */
-public class CancellableTask extends Task {
+public interface CancellableTask extends Task {
 
     private volatile String reason;
     private volatile boolean isCancelled;
