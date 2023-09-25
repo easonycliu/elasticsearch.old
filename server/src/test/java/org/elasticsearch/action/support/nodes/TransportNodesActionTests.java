@@ -25,6 +25,7 @@ import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.io.stream.Writeable;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskCancelHelper;
 import org.elasticsearch.tasks.TaskCancelledException;
@@ -156,7 +157,7 @@ public class TransportNodesActionTests extends ESTestCase {
     public void testResponsesReleasedOnCancellation() {
         final TestTransportNodesAction action = getTestTransportNodesAction();
 
-        final CancellableTask cancellableTask = new CancellableTask(randomLong(), "transport", "action", "", null, emptyMap());
+        final CancellableTask cancellableTask = new BaseCancellableTask(randomLong(), "transport", "action", "", null, emptyMap());
         final PlainActionFuture<TestNodesResponse> listener = new PlainActionFuture<>();
         action.execute(cancellableTask, new TestNodesRequest(), listener);
 

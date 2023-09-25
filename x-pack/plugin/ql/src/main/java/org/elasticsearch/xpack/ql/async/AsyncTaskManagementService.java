@@ -23,6 +23,7 @@ import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskAwareRequest;
 import org.elasticsearch.tasks.TaskId;
@@ -63,7 +64,7 @@ public class AsyncTaskManagementService<
     public interface AsyncOperation<
         Request extends TaskAwareRequest,
         Response extends ActionResponse,
-        T extends CancellableTask & AsyncTask> {
+        T extends BaseCancellableTask & AsyncTask> {
 
         T createTask(
             Request request,

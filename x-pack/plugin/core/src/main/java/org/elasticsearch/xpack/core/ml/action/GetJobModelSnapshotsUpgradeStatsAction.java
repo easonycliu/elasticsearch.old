@@ -16,6 +16,7 @@ import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.io.stream.Writeable;
 import org.elasticsearch.core.Nullable;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.xcontent.ParseField;
@@ -122,7 +123,7 @@ public class GetJobModelSnapshotsUpgradeStatsAction extends ActionType<GetJobMod
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(
+            return new BaseCancellableTask(
                 id,
                 type,
                 action,

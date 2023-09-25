@@ -123,6 +123,7 @@ public class TaskCancellationService {
                 });
 
                 taskManager.cancel(task, reason, () -> {
+                    System.out.println(task.toString() + " is cancelled");
                     logger.trace("task [{}] is cancelled", taskId);
                     cancelTaskRef.close();
                 });
@@ -340,6 +341,7 @@ public class TaskCancellationService {
                     new ChannelActionListener<>(channel).map(r -> TransportResponse.Empty.INSTANCE)
                 );
                 for (CancellableTask childTask : childTasks) {
+                    System.out.println("Set ban on " + childTask.toString());
                     cancelTaskAndDescendants(childTask, request.reason, request.waitForCompletion, listener);
                 }
                 listener.onResponse(null);

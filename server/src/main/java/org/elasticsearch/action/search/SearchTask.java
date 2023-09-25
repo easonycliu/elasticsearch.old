@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.TaskId;
 
 import java.util.Map;
@@ -20,7 +21,7 @@ import java.util.function.Supplier;
 /**
  * Task storing information about a currently running {@link SearchRequest}.
  */
-public class SearchTask extends CancellableTask {
+public class SearchTask extends BaseCancellableTask {
     // generating description in a lazy way since source can be quite big
     private final Supplier<String> descriptionSupplier;
     private SearchProgressListener progressListener = SearchProgressListener.NOOP;

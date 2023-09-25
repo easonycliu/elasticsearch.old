@@ -25,6 +25,7 @@ import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskCancelHelper;
 import org.elasticsearch.tasks.TaskCancelledException;
@@ -92,7 +93,7 @@ public class CancellableTasksTests extends TaskManagerTestCase {
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, getDescription(), parentTaskId, headers) {
+            return new BaseCancellableTask(id, type, action, getDescription(), parentTaskId, headers) {
                 @Override
                 public boolean shouldCancelChildrenOnCancellation() {
                     return false;
@@ -127,7 +128,7 @@ public class CancellableTasksTests extends TaskManagerTestCase {
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, getDescription(), parentTaskId, headers);
+            return new BaseCancellableTask(id, type, action, getDescription(), parentTaskId, headers);
         }
     }
 
@@ -608,7 +609,7 @@ public class CancellableTasksTests extends TaskManagerTestCase {
     }
 
     public void testEnsureNotCancelled() throws Exception {
-        final CancellableTask task = new CancellableTask(randomLong(), "transport", "action", "", TaskId.EMPTY_TASK_ID, emptyMap());
+        final CancellableTask task = new BaseCancellableTask(randomLong(), "transport", "action", "", TaskId.EMPTY_TASK_ID, emptyMap());
         task.ensureNotCancelled(); // does not throw
         TaskCancelHelper.cancel(task, "simulated");
         assertThat(
@@ -618,7 +619,7 @@ public class CancellableTasksTests extends TaskManagerTestCase {
     }
 
     public void testNotifyIfCancelled() throws Exception {
-        final CancellableTask task = new CancellableTask(randomLong(), "transport", "action", "", TaskId.EMPTY_TASK_ID, emptyMap());
+        final CancellableTask task = new BaseCancellableTask(randomLong(), "transport", "action", "", TaskId.EMPTY_TASK_ID, emptyMap());
 
         final PlainActionFuture<Void> future = new PlainActionFuture<>();
         task.notifyIfCancelled(future);

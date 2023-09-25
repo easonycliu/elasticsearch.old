@@ -13,6 +13,7 @@ import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.io.stream.Writeable;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.threadpool.ThreadPool;
@@ -160,7 +161,7 @@ public final class TransportActionProxy {
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, "", parentTaskId, headers) {
+            return new BaseCancellableTask(id, type, action, "", parentTaskId, headers) {
                 @Override
                 public String getDescription() {
                     return "proxy task [" + wrapped.getDescription() + "]";

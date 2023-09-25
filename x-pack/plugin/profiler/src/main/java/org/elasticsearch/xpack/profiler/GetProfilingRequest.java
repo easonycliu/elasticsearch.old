@@ -16,6 +16,7 @@ import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.xcontent.ParseField;
@@ -128,7 +129,7 @@ public class GetProfilingRequest extends ActionRequest implements IndicesRequest
 
     @Override
     public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-        return new CancellableTask(id, type, action, null, parentTaskId, headers) {
+        return new BaseCancellableTask(id, type, action, null, parentTaskId, headers) {
             @Override
             public String getDescription() {
                 // generating description lazily since the query could be large

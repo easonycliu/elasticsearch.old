@@ -18,6 +18,7 @@ import org.elasticsearch.cluster.node.TestDiscoveryNode;
 import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.io.stream.BytesStreamOutput;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.test.ESTestCase;
 import org.elasticsearch.transport.TransportService;
 import org.elasticsearch.xpack.core.XPackFeatureSet;
@@ -67,7 +68,7 @@ public class SpatialInfoTransportActionTests extends ESTestCase {
             mockClient()
         );
         PlainActionFuture<XPackUsageFeatureResponse> future = new PlainActionFuture<>();
-        Task task = new Task(1L, "_type", "_action", "_description", null, Collections.emptyMap());
+        Task task = new BaseTask(1L, "_type", "_action", "_description", null, Collections.emptyMap());
         usageAction.masterOperation(task, null, clusterService.state(), future);
         XPackFeatureSet.Usage usage = future.get().getUsage();
         assertThat(usage.available(), is(true));

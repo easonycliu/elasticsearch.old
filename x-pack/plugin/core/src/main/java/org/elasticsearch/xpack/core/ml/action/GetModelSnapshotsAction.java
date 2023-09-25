@@ -13,6 +13,7 @@ import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.core.Nullable;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.xcontent.ObjectParser;
@@ -214,7 +215,7 @@ public class GetModelSnapshotsAction extends ActionType<GetModelSnapshotsAction.
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, format("get_job_model_snapshot[%s:%s]", jobId, snapshotId), parentTaskId, headers);
+            return new BaseCancellableTask(id, type, action, format("get_job_model_snapshot[%s:%s]", jobId, snapshotId), parentTaskId, headers);
         }
     }
 

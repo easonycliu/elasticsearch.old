@@ -10,6 +10,7 @@ package org.elasticsearch.xpack.core.transform.action;
 import org.elasticsearch.common.io.stream.Writeable;
 import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.test.AbstractWireSerializingTestCase;
 import org.elasticsearch.xpack.core.transform.TransformField;
@@ -66,7 +67,7 @@ public class StopTransformActionRequestTests extends AbstractWireSerializingTest
     public void testMatch() {
         String transformId = "transform-id";
 
-        Task transformTask = new Task(
+        Task transformTask = new BaseTask(
             1L,
             "persistent",
             "action",
@@ -83,7 +84,7 @@ public class StopTransformActionRequestTests extends AbstractWireSerializingTest
         matchingRequest.setExpandedIds(Set.of(transformId));
         assertTrue(matchingRequest.match(transformTask));
 
-        Task notATransformTask = new Task(
+        Task notATransformTask = new BaseTask(
             1L,
             "persistent",
             "action",

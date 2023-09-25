@@ -20,6 +20,7 @@ import org.elasticsearch.core.Nullable;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 
@@ -411,7 +412,7 @@ public class GetSnapshotsRequest extends MasterNodeRequest<GetSnapshotsRequest> 
 
     @Override
     public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-        return new CancellableTask(id, type, action, getDescription(), parentTaskId, headers);
+        return new BaseCancellableTask(id, type, action, getDescription(), parentTaskId, headers);
     }
 
     public enum SortBy {

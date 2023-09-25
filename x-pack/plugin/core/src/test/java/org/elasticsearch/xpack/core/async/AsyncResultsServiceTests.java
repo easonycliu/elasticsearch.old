@@ -16,6 +16,7 @@ import org.elasticsearch.cluster.service.ClusterService;
 import org.elasticsearch.common.util.BigArrays;
 import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.tasks.TaskManager;
@@ -43,7 +44,7 @@ public class AsyncResultsServiceTests extends ESSingleNodeTestCase {
     private TaskManager taskManager;
     private AsyncTaskIndexService<TestAsyncResponse> indexService;
 
-    public static class TestTask extends CancellableTask implements AsyncTask {
+    public static class TestTask extends BaseCancellableTask implements AsyncTask {
         private final AsyncExecutionId executionId;
         private final Map<ActionListener<TestAsyncResponse>, TimeValue> listeners = new HashMap<>();
         private long expirationTimeMillis;

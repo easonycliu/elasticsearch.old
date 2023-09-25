@@ -11,7 +11,9 @@ package org.elasticsearch.action.support;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskCancelHelper;
 import org.elasticsearch.tasks.TaskCancelledException;
 import org.elasticsearch.tasks.TaskId;
@@ -28,8 +30,8 @@ public class CancellableFanOutTests extends ESTestCase {
 
     public void testFanOutWithoutCancellation() {
         final var task = randomFrom(
-            new Task(1, "test", "test", "", TaskId.EMPTY_TASK_ID, Map.of()),
-            new CancellableTask(1, "test", "test", "", TaskId.EMPTY_TASK_ID, Map.of()),
+            new BaseTask(1, "test", "test", "", TaskId.EMPTY_TASK_ID, Map.of()),
+            new BaseCancellableTask(1, "test", "test", "", TaskId.EMPTY_TASK_ID, Map.of()),
             null
         );
         final var future = new PlainActionFuture<String>();
@@ -83,7 +85,7 @@ public class CancellableFanOutTests extends ESTestCase {
     }
 
     public void testReleaseOnCancellation() {
-        final var task = new CancellableTask(1, "test", "test", "", TaskId.EMPTY_TASK_ID, Map.of());
+        final var task = new BaseCancellableTask(1, "test", "test", "", TaskId.EMPTY_TASK_ID, Map.of());
         final var future = new PlainActionFuture<String>();
 
         final var itemListeners = new HashMap<String, ActionListener<String>>();

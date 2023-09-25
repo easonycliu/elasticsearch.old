@@ -72,3 +72,4 @@ checkstyle_ide.xml
 .VSCodeCounter
 buildSrc
 benchmarks/bin
+log.tmp

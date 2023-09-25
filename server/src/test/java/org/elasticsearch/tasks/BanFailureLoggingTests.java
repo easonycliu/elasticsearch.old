@@ -136,7 +136,7 @@ public class BanFailureLoggingTests extends TaskManagerTestCase {
                 (StreamInput in) -> new TransportRequest.Empty(in) {
                     @Override
                     public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-                        return new CancellableTask(id, type, action, "", parentTaskId, headers);
+                        return new BaseCancellableTask(id, type, action, "", parentTaskId, headers);
                     }
                 },
                 (request, channel, task) -> {
@@ -217,7 +217,7 @@ public class BanFailureLoggingTests extends TaskManagerTestCase {
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, "", parentTaskId, headers);
+            return new BaseCancellableTask(id, type, action, "", parentTaskId, headers);
         }
     }
 

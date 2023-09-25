@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static org.elasticsearch.core.Strings.format;
 
@@ -209,10 +210,25 @@ public abstract class TransportWriteAction<
         IndexShard primary,
         ActionListener<PrimaryResult<ReplicaRequest, Response>> listener
     ) {
+        shardOperationOnPrimary(
+            request,
+            primary,
+            listener,
+            () -> { return false; }
+        );
+    }
+
+    @Override
+    protected void shardOperationOnPrimary(
+        Request request,
+        IndexShard primary,
+        ActionListener<PrimaryResult<ReplicaRequest, Response>> listener,
+        Supplier<Boolean> isCanceled
+    ) {
         threadPool.executor(executorFunction.apply(executorSelector, primary)).execute(new ActionRunnable<>(listener) {
             @Override
             protected void doRun() {
-                dispatchedShardOperationOnPrimary(request, primary, listener);
+                dispatchedShardOperationOnPrimary(request, primary, listener, isCanceled);
             }
 
             @Override
@@ -227,6 +243,15 @@ public abstract class TransportWriteAction<
         IndexShard primary,
         ActionListener<PrimaryResult<ReplicaRequest, Response>> listener
     );
+
+    protected void dispatchedShardOperationOnPrimary(
+        Request request,
+        IndexShard primary,
+        ActionListener<PrimaryResult<ReplicaRequest, Response>> listener,
+        Supplier<Boolean> isCanceled
+    ) {
+        dispatchedShardOperationOnPrimary(request, primary, listener);
+    }
 
     /**
      * Called once per replica with a reference to the replica {@linkplain IndexShard} to modify.

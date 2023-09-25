@@ -13,6 +13,7 @@ import org.elasticsearch.action.support.ActionFilters;
 import org.elasticsearch.action.support.PlainActionFuture;
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.TaskCancelHelper;
 import org.elasticsearch.tasks.TaskCancelledException;
 import org.elasticsearch.tasks.TaskId;
@@ -256,7 +257,7 @@ public class TransportProfileHasPrivilegesActionTests extends ESTestCase {
 
         final AtomicInteger cancelCountDown = new AtomicInteger(randomIntBetween(1, profileUids.size() + 1));
         final boolean taskActuallyCancelled = cancelCountDown.get() <= profileUids.size();
-        final CancellableTask cancellableTask = new CancellableTask(0, "type", "action", "description", TaskId.EMPTY_TASK_ID, Map.of());
+        final CancellableTask cancellableTask = new BaseCancellableTask(0, "type", "action", "description", TaskId.EMPTY_TASK_ID, Map.of());
 
         if (cancelCountDown.decrementAndGet() == 0) {
             TaskCancelHelper.cancel(cancellableTask, "reason");

@@ -164,7 +164,7 @@ public class CancellableTasksTrackerTests extends ESTestCase {
 
         for (int i = 0; i < tasks.length; i++) {
             tasks[i] = new TestTask(
-                new Task(
+                new BaseTask(
                     randomNonNegativeLong(),
                     randomAlphaOfLength(5),
                     randomAlphaOfLength(5),

@@ -9,6 +9,7 @@ package org.elasticsearch.xpack.core.rollup.action;
 
 import org.elasticsearch.index.shard.ShardId;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.xpack.core.downsample.DownsampleConfig;
 import org.elasticsearch.xpack.core.rollup.RollupField;
@@ -16,7 +17,7 @@ import org.elasticsearch.xpack.core.rollup.RollupField;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class RollupShardTask extends CancellableTask {
+public class RollupShardTask extends BaseCancellableTask {
     private final String rollupIndex;
     private final DownsampleConfig config;
     private final ShardId shardId;

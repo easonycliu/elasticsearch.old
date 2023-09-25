@@ -7,12 +7,13 @@
 package org.elasticsearch.xpack.enrich;
 
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.xpack.core.enrich.action.ExecuteEnrichPolicyStatus;
 
 import java.util.Map;
 
-public class ExecuteEnrichPolicyTask extends CancellableTask {
+public class ExecuteEnrichPolicyTask extends BaseCancellableTask {
 
     private volatile ExecuteEnrichPolicyStatus status;
 

@@ -18,6 +18,7 @@ import org.elasticsearch.index.store.Store;
 import org.elasticsearch.indices.IndicesService;
 import org.elasticsearch.indices.recovery.plan.RecoveryPlannerService;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.test.NodeRoles;
 import org.elasticsearch.transport.TransportService;
@@ -57,7 +58,7 @@ public class PeerRecoverySourceServiceTests extends IndexShardTestCase {
         );
         peerRecoverySourceService.start();
 
-        final Task recoveryTask = new Task(
+        final Task recoveryTask = new BaseTask(
             randomNonNegativeLong(),
             "test",
             START_RECOVERY,

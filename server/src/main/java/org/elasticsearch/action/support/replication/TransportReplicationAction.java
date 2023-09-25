@@ -56,6 +56,7 @@ import org.elasticsearch.indices.IndexClosedException;
 import org.elasticsearch.indices.IndicesService;
 import org.elasticsearch.node.NodeClosedException;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.CancellableTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.ConnectTransportException;
@@ -71,6 +72,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import static org.elasticsearch.core.Strings.format;
 
@@ -263,6 +265,15 @@ public abstract class TransportReplicationAction<
         ActionListener<PrimaryResult<ReplicaRequest, Response>> listener
     );
 
+    protected void shardOperationOnPrimary(
+        Request shardRequest,
+        IndexShard primary,
+        ActionListener<PrimaryResult<ReplicaRequest, Response>> listener,
+        Supplier<Boolean> isCanceled
+    ) {
+        shardOperationOnPrimary(shardRequest, primary, listener);
+    }
+
     /**
      * Execute the specified replica operation. This is done under a permit from
      * {@link IndexShard#acquireReplicaOperationPermit(long, long, long, ActionListener, String)}.
@@ -405,7 +416,10 @@ public abstract class TransportReplicationAction<
             acquirePrimaryOperationPermit(
                 indexShard,
                 primaryRequest.getRequest(),
-                ActionListener.wrap(releasable -> runWithPrimaryShardReference(new PrimaryShardReference(indexShard, releasable)), e -> {
+                ActionListener.wrap(releasable -> runWithPrimaryShardReference(new PrimaryShardReference(indexShard, releasable, () -> {
+                    // System.out.println("Checking isCancelled");
+                    return this.replicationTask instanceof CancellableTask && ((CancellableTask) this.replicationTask).isCancelled();
+                })), e -> {
                     if (e instanceof ShardNotInPrimaryModeException) {
                         onFailure(new ReplicationOperation.RetryOnPrimaryException(shardId, "shard is not in primary mode", e));
                     } else {
@@ -1082,10 +1096,20 @@ public abstract class TransportReplicationAction<
 
         protected final IndexShard indexShard;
         private final Releasable operationLock;
+        private final Supplier<Boolean> isCanceled;
 
         PrimaryShardReference(IndexShard indexShard, Releasable operationLock) {
+            this(
+                indexShard, 
+                operationLock,
+                () -> { return false; }
+            );
+        }
+
+        PrimaryShardReference(IndexShard indexShard, Releasable operationLock, Supplier<Boolean> isCanceled) {
             this.indexShard = indexShard;
             this.operationLock = operationLock;
+            this.isCanceled = isCanceled;
         }
 
         @Override
@@ -1120,7 +1144,7 @@ public abstract class TransportReplicationAction<
                 });
             }
             assert indexShard.getActiveOperationsCount() != 0 : "must perform shard operation under a permit";
-            shardOperationOnPrimary(request, indexShard, listener);
+            shardOperationOnPrimary(request, indexShard, listener, this.isCanceled);
         }
 
         @Override

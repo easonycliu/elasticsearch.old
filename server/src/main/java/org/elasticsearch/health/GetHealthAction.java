@@ -25,6 +25,7 @@ import org.elasticsearch.common.xcontent.ChunkedToXContent;
 import org.elasticsearch.core.Nullable;
 import org.elasticsearch.health.stats.HealthApiStats;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.transport.TransportService;
@@ -171,7 +172,7 @@ public class GetHealthAction extends ActionType<GetHealthAction.Response> {
 
         @Override
         public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
-            return new CancellableTask(id, type, action, "", parentTaskId, headers);
+            return new BaseCancellableTask(id, type, action, "", parentTaskId, headers);
         }
     }
 

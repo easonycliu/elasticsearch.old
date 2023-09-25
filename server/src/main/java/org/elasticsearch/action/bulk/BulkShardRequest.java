@@ -14,7 +14,11 @@ import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.support.replication.ReplicatedWriteRequest;
 import org.elasticsearch.action.support.replication.ReplicationRequest;
+import org.elasticsearch.action.support.replication.CancellableReplicationTask;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.tasks.TaskCancelledException;
+import org.elasticsearch.tasks.TaskId;
+import org.elasticsearch.tasks.Task;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.common.util.set.Sets;
@@ -23,6 +27,7 @@ import org.elasticsearch.transport.RawIndexingDataTransportRequest;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.Map;
 
 public class BulkShardRequest extends ReplicatedWriteRequest<BulkShardRequest> implements Accountable, RawIndexingDataTransportRequest {
 
@@ -150,5 +155,10 @@ public class BulkShardRequest extends ReplicatedWriteRequest<BulkShardRequest> i
             sum += item.ramBytesUsed();
         }
         return sum;
+    }
+
+    @Override
+    public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
+        return new CancellableReplicationTask(id, type, action, getDescription(), parentTaskId, headers);
     }
 }

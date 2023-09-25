@@ -20,6 +20,10 @@ import org.elasticsearch.action.support.ActiveShardCount;
 import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.support.replication.ReplicationRequest;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.support.replication.CancellableReplicationTask;
+import org.elasticsearch.tasks.TaskCancelledException;
+import org.elasticsearch.tasks.TaskId;
+import org.elasticsearch.tasks.Task;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.bytes.BytesReference;
@@ -39,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Map;
 
 import static org.elasticsearch.action.ValidateActions.addValidationError;
 
@@ -454,5 +459,10 @@ public class BulkRequest extends ActionRequest
 
     public Set<String> getIndices() {
         return Collections.unmodifiableSet(indices);
+    }
+
+    @Override
+    public Task createTask(long id, String type, String action, TaskId parentTaskId, Map<String, String> headers) {
+        return new CancellableReplicationTask(id, type, action, getDescription(), parentTaskId, headers);
     }
 }

@@ -184,6 +184,7 @@ public class ThreadPool implements ReportingService<ThreadPoolInfo>, Scheduler {
         final int halfProcMaxAt5 = halfAllocatedProcessorsMaxFive(allocatedProcessors);
         final int halfProcMaxAt10 = halfAllocatedProcessorsMaxTen(allocatedProcessors);
         final int genericThreadPoolMax = boundedBy(4 * allocatedProcessors, 128, 512);
+        System.out.println(String.format("Allocated processor number: %d", allocatedProcessors));
         builders.put(
             Names.GENERIC,
             new ScalingExecutorBuilder(Names.GENERIC, 4, genericThreadPoolMax, TimeValue.timeValueSeconds(30), false)

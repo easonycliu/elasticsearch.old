@@ -18,6 +18,7 @@ import org.elasticsearch.license.LicensedFeature;
 import org.elasticsearch.license.XPackLicenseState;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.tasks.CancellableTask;
+import org.elasticsearch.tasks.BaseCancellableTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.xpack.core.ml.MlTasks;
 import org.elasticsearch.xpack.core.ml.action.StartTrainedModelDeploymentAction;
@@ -32,7 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class TrainedModelDeploymentTask extends CancellableTask implements StartTrainedModelDeploymentAction.TaskMatcher {
+public class TrainedModelDeploymentTask extends BaseCancellableTask implements StartTrainedModelDeploymentAction.TaskMatcher {
 
     private static final Logger logger = LogManager.getLogger(TrainedModelDeploymentTask.class);
 

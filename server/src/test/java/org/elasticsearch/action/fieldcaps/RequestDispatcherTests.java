@@ -48,6 +48,7 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.shard.ShardId;
 import org.elasticsearch.indices.breaker.NoneCircuitBreakerService;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.test.gateway.TestGatewayAllocator;
 import org.elasticsearch.threadpool.TestThreadPool;
@@ -884,7 +885,7 @@ public class RequestDispatcherTests extends ESAllocationTestCase {
     }
 
     static Task newRandomParentTask() {
-        return new Task(0, "type", "action", randomAlphaOfLength(10), TaskId.EMPTY_TASK_ID, Collections.emptyMap());
+        return new BaseTask(0, "type", "action", randomAlphaOfLength(10), TaskId.EMPTY_TASK_ID, Collections.emptyMap());
     }
 
     private ClusterState newClusterState(Metadata metadata, DiscoveryNodes discoveryNodes) {

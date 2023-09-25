@@ -30,6 +30,7 @@ import org.elasticsearch.index.shard.IndexShard;
 import org.elasticsearch.indices.EmptySystemIndices;
 import org.elasticsearch.indices.IndicesService;
 import org.elasticsearch.tasks.Task;
+import org.elasticsearch.tasks.BaseTask;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.test.ESSingleNodeTestCase;
 import org.elasticsearch.test.transport.MockTransport;
@@ -124,7 +125,7 @@ public class TransformGetCheckpointTests extends ESSingleNodeTestCase {
         testIndices = testIndicesList.toArray(new String[0]);
         clusterStateWithIndex = ClusterStateCreationUtils.state(numberOfNodes, testIndices, numberOfShards);
 
-        transformTask = new Task(
+        transformTask = new BaseTask(
             1L,
             "persistent",
             "action",
