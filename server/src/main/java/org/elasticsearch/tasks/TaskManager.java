@@ -144,7 +144,9 @@ public class TaskManager implements ClusterStateApplier {
             }
         }
         Task task = request.createTask(taskIdGenerator.incrementAndGet(), type, action, request.getParentTask(), headers);
-        // System.out.println(request.getClass().toString() + " " + task.toString());
+        // if (task.getAction().contains("bulk")) {
+        //     System.out.println(request.getClass().toString() + " " + task.toString() + " cancellable: " + (task instanceof CancellableTask));
+        // }
         Objects.requireNonNull(task);
         assert task.getParentTaskId().equals(request.getParentTask()) : "Request [ " + request + "] didn't preserve it parentTaskId";
         if (logger.isTraceEnabled()) {

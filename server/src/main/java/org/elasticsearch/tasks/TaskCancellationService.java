@@ -107,10 +107,6 @@ public class TaskCancellationService {
 
     void doCancelTaskAndDescendants(CancellableTask task, String reason, boolean waitForCompletion, ActionListener<Void> listener) {
         final TaskId taskId = task.taskInfo(localNodeId(), false).taskId();
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-        }
         if (task.shouldCancelChildrenOnCancellation()) {
             logger.trace("cancelling task [{}] and its descendants", taskId);
             StepListener<Void> completedListener = new StepListener<>();
@@ -127,6 +123,7 @@ public class TaskCancellationService {
                 });
 
                 taskManager.cancel(task, reason, () -> {
+                    System.out.println(task.toString() + " is cancelled");
                     logger.trace("task [{}] is cancelled", taskId);
                     cancelTaskRef.close();
                 });
@@ -344,6 +341,7 @@ public class TaskCancellationService {
                     new ChannelActionListener<>(channel).map(r -> TransportResponse.Empty.INSTANCE)
                 );
                 for (CancellableTask childTask : childTasks) {
+                    System.out.println("Set ban on " + childTask.toString());
                     cancelTaskAndDescendants(childTask, request.reason, request.waitForCompletion, listener);
                 }
                 listener.onResponse(null);

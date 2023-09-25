@@ -28,6 +28,7 @@ import org.elasticsearch.action.support.replication.TransportWriteAction;
 import org.elasticsearch.action.update.UpdateHelper;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
+import org.elasticsearch.tasks.TaskCancelledException;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.ClusterStateObserver;
 import org.elasticsearch.cluster.action.index.MappingUpdatedAction;
@@ -66,6 +67,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.function.LongSupplier;
 
 import static org.elasticsearch.core.Strings.format;
@@ -133,6 +135,20 @@ public class TransportShardBulkAction extends TransportWriteAction<BulkShardRequ
         IndexShard primary,
         ActionListener<PrimaryResult<BulkShardRequest, BulkShardResponse>> listener
     ) {
+        dispatchedShardOperationOnPrimary(
+            request, 
+            primary, 
+            listener, 
+            () -> { return false; });
+    }
+
+    @Override
+    protected void dispatchedShardOperationOnPrimary(
+        BulkShardRequest request,
+        IndexShard primary,
+        ActionListener<PrimaryResult<BulkShardRequest, BulkShardResponse>> listener,
+        Supplier<Boolean> isCanceled
+    ) {
         ClusterStateObserver observer = new ClusterStateObserver(clusterService, request.timeout(), logger, threadPool.getThreadContext());
         performOnPrimary(request, primary, updateHelper, threadPool::absoluteTimeInMillis, (update, shardId, mappingListener) -> {
             assert update != null;
@@ -153,7 +169,7 @@ public class TransportShardBulkAction extends TransportWriteAction<BulkShardRequ
             public void onTimeout(TimeValue timeout) {
                 mappingUpdateListener.onFailure(new MapperException("timed out while waiting for a dynamic mapping update"));
             }
-        }), listener, threadPool, executor(primary), postWriteRefresh, postWriteAction);
+        }), listener, threadPool, executor(primary), postWriteRefresh, postWriteAction, isCanceled);
     }
 
     @Override
@@ -205,6 +221,36 @@ public class TransportShardBulkAction extends TransportWriteAction<BulkShardRequ
         @Nullable PostWriteRefresh postWriteRefresh,
         @Nullable Consumer<Runnable> postWriteAction
     ) {
+        performOnPrimary(
+            request,
+            primary,
+            updateHelper,
+            nowInMillisSupplier,
+            mappingUpdater,
+            waitForMappingUpdate,
+            listener,
+            threadPool,
+            executorName,
+            postWriteRefresh,
+            postWriteAction,
+            null
+        );
+    }
+
+    static void performOnPrimary(
+        BulkShardRequest request,
+        IndexShard primary,
+        UpdateHelper updateHelper,
+        LongSupplier nowInMillisSupplier,
+        MappingUpdatePerformer mappingUpdater,
+        Consumer<ActionListener<Void>> waitForMappingUpdate,
+        ActionListener<PrimaryResult<BulkShardRequest, BulkShardResponse>> listener,
+        ThreadPool threadPool,
+        String executorName,
+        @Nullable PostWriteRefresh postWriteRefresh,
+        @Nullable Consumer<Runnable> postWriteAction,
+        @Nullable Supplier<Boolean> isCanceled
+    ) {
         new ActionRunnable<>(listener) {
 
             private final Executor executor = threadPool.executor(executorName);
@@ -215,6 +261,7 @@ public class TransportShardBulkAction extends TransportWriteAction<BulkShardRequ
 
             @Override
             protected void doRun() throws Exception {
+                Integer iter = 0;
                 while (context.hasMoreOperationsToExecute()) {
                     if (executeBulkItemRequest(
                         context,
@@ -227,6 +274,10 @@ public class TransportShardBulkAction extends TransportWriteAction<BulkShardRequ
                         // We are waiting for a mapping update on another thread, that will invoke this action again once its done
                         // so we just break out here.
                         return;
+                    }
+                    if (isCanceled != null && isCanceled.get()) {
+                        System.out.println("Breaking out from performOnPrimary with " + isCanceled.get().toString() + " at iter " + iter.toString());
+                        throw new TaskCancelledException(String.format("Task cancelled after executing %d bulk request", iter.toString()));
                     }
                     assert context.isInitial(); // either completed and moved to next or reset
                 }

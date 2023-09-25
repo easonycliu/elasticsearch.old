@@ -17,6 +17,7 @@ public class CancellableReplicationTask extends ReplicationTask implements Cance
     
     public CancellableReplicationTask(long id, String type, String action, String description, TaskId parentTaskId, Map<String, String> headers) {
         super(id, type, action, description, parentTaskId, headers);
+        this.isCancelled = false;
     }
 
     /**
@@ -24,6 +25,7 @@ public class CancellableReplicationTask extends ReplicationTask implements Cance
      */
     public final void cancel(String reason) {
         assert reason != null;
+        System.out.println("Cancelling " + this.toString());
         synchronized (this) {
             if (this.isCancelled) {
                 return;
