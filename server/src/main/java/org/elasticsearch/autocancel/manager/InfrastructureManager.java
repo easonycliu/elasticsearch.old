@@ -9,10 +9,8 @@ import org.elasticsearch.autocancel.infrastructure.AbstractInfrastructure;
 import org.elasticsearch.autocancel.infrastructure.jvm.JavaThreadStatusReader;
 import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadStatusReader;
 import org.elasticsearch.autocancel.utils.Settings;
-import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
-import org.elasticsearch.autocancel.utils.resource.ResourceType;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;

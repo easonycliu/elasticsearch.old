@@ -1,12 +1,8 @@
 package org.elasticsearch.autocancel.core.utils;
 
 import org.elasticsearch.autocancel.utils.logger.Logger;
-import org.elasticsearch.autocancel.utils.resource.CPUResource;
-import org.elasticsearch.autocancel.utils.resource.MemoryResource;
-import org.elasticsearch.autocancel.utils.resource.QueueResource;
 import org.elasticsearch.autocancel.utils.resource.Resource;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
-import org.elasticsearch.autocancel.utils.resource.ResourceType;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -75,7 +71,7 @@ public class ResourcePool {
             if (logger != null) {
                 logger.log(entries.getValue().toString());
             }
-            entries.getValue().reset();
+            entries.getValue().refresh();
         }
     }
 

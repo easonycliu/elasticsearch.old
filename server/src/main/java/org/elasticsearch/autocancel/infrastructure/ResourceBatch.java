@@ -1,6 +1,5 @@
 package org.elasticsearch.autocancel.infrastructure;
 
-import org.elasticsearch.autocancel.core.utils.ResourceUsage;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
 
 import java.util.Map;

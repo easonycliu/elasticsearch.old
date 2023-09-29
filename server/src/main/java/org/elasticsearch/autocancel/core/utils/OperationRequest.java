@@ -1,6 +1,5 @@
 package org.elasticsearch.autocancel.core.utils;
 
-import org.elasticsearch.autocancel.core.utils.OperationMethod;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
 import org.elasticsearch.autocancel.utils.resource.ResourceType;

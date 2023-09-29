@@ -94,6 +94,7 @@ import org.elasticsearch.index.translog.TranslogDeletionPolicy;
 import org.elasticsearch.index.translog.TranslogStats;
 import org.elasticsearch.search.suggest.completion.CompletionStats;
 import org.elasticsearch.threadpool.ThreadPool;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -1066,11 +1067,14 @@ public class InternalEngine extends Engine {
             ensureOpen();
             assert assertIncomingSequenceNumber(index.origin(), index.seqNo());
             int reservedDocs = 0;
+            AutoCancel.startQueueWait("Index-Document");
             try (
                 Releasable ignored = versionMap.acquireLock(index.uid().bytes());
                 Releasable indexThrottle = doThrottle ? throttle.acquireThrottle() : () -> {}
             ) {
                 lastWriteNanos = index.startTime();
+                AutoCancel.endQueueWait("Index-Document");
+                AutoCancel.startQueueOccupy("Index-Document");
                 // StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
                 // for (StackTraceElement element : stackTraceElements) {
                 //     System.out.println(element.toString());
@@ -1189,6 +1193,7 @@ public class InternalEngine extends Engine {
                 // System.out.println(String.format("Write end at %d, Write duration: %d ns", writeEndTimeNano, writeEndTimeNano - writeStartTimeNano));
                 return indexResult;
             } finally {
+                AutoCancel.endQueueOccupy("Index-Document");
                 releaseInFlightDocs(reservedDocs);
             }
         } catch (RuntimeException | IOException e) {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.autocancel.core.monitor.Monitor;
 import org.elasticsearch.autocancel.core.utils.OperationRequest;
 import org.elasticsearch.autocancel.core.utils.OperationMethod;
 import org.elasticsearch.autocancel.manager.MainManager;

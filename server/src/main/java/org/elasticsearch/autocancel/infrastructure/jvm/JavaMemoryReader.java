@@ -1,16 +1,11 @@
 package org.elasticsearch.autocancel.infrastructure.jvm;
 
 import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.RuntimeMXBean;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 
-import org.elasticsearch.autocancel.infrastructure.CPUTimeInfo;
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
 import org.elasticsearch.autocancel.utils.id.ID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;

@@ -1,5 +1,6 @@
 package org.elasticsearch.autocancel.infrastructure.linux;
 
+import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.ID;
 
 class LinuxThreadID implements ID {
@@ -24,8 +25,10 @@ class LinuxThreadID implements ID {
 
     @Override
     public boolean equals(Object o) {
-        // TODO: Class should be the same
-        return this.id == ((LinuxThreadID) o).id;
+        if (o instanceof LinuxThreadID nid) {
+            return this.toLong().equals(nid.toLong());
+        }
+        return false;
     }
 
     @Override
@@ -39,6 +42,10 @@ class LinuxThreadID implements ID {
     }
 
     public Long unwrap() {
+        return this.id;
+    }
+
+    public Long toLong() {
         return this.id;
     }
 }

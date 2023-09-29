@@ -1,14 +1,6 @@
 package org.elasticsearch.autocancel.app.elasticsearch;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
-
 import org.elasticsearch.autocancel.manager.MainManager;
-import org.elasticsearch.autocancel.utils.Settings;
-import org.elasticsearch.autocancel.utils.id.CancellableID;
-import org.elasticsearch.autocancel.utils.id.IDInfo;
-import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
 
 public class Log {
@@ -25,14 +17,4 @@ public class Log {
     public void stop() {
         this.logger.close();
     }
-
-    public void logCancellableJavaThreadIDInfo(CancellableID cid, Object task) {
-        List<IDInfo<JavaThreadID>> javaThreadIDInfos = this.mainManager.getAllJavaThreadIDInfoOfCancellableID(cid);
-
-        this.logger.log(String.format("========== Cancellable %s %s ==========", cid.toString(), task.toString()));
-        for (IDInfo<JavaThreadID> javaThreadIDInfo : javaThreadIDInfos) {
-            this.logger.log(javaThreadIDInfo.toString());
-        }
-    }
-
 }

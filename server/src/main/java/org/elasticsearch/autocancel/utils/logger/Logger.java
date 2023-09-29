@@ -1,7 +1,6 @@
 package org.elasticsearch.autocancel.utils.logger;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +34,7 @@ public class Logger implements Closeable {
         this.writer = this.createFileWriter();
     }
 
-    public void log(String line) {
+    synchronized public void log(String line) {
         this.checkCurrentLine();
         if (this.writer != null) {
             if (!line.endsWith("\n")) {
@@ -43,12 +42,15 @@ public class Logger implements Closeable {
             }
 
             try {
-                this.writer.write(line);
+                this.writer.append(line);
                 this.currentLine += 1;
             }
             catch (Exception e) {
-
+                System.out.print(String.format("Error occored in %s logger: %s", this.fileBaseName, e.toString()));
             }
+        }
+        else {
+            System.out.print(String.format("Write is null"));
         }
     }
 

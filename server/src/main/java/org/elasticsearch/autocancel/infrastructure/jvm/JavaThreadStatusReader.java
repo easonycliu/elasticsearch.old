@@ -2,14 +2,12 @@ package org.elasticsearch.autocancel.infrastructure.jvm;
 
 import org.elasticsearch.autocancel.infrastructure.AbstractInfrastructure;
 import org.elasticsearch.autocancel.utils.Settings;
-import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
 import org.elasticsearch.autocancel.infrastructure.ResourceBatch;
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
 import org.elasticsearch.autocancel.utils.id.ID;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,17 +1,15 @@
 package org.elasticsearch.autocancel.core.policy;
 
-import java.util.Comparator;
 import java.util.Map;
 
 import org.elasticsearch.autocancel.utils.Policy;
-import org.elasticsearch.autocancel.utils.Settings;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
 
 public class BasePolicy extends Policy {
 
-    private static final Integer ABNORMAL_PERFORMANCE_THRESHOLD = 0;
+    private static final Integer ABNORMAL_PERFORMANCE_THRESHOLD = 15;
 
     private static final Long MAX_CONTINUOUS_ABNORMAL_MILLI = 5000L;
 

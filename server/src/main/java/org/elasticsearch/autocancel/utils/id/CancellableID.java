@@ -1,7 +1,5 @@
 package org.elasticsearch.autocancel.utils.id;
 
-import org.elasticsearch.autocancel.utils.id.ID;
-
 public class CancellableID implements ID {
     
     private Long id;
@@ -24,10 +22,10 @@ public class CancellableID implements ID {
 
     @Override
     public boolean equals(Object o) {
-        // TODO: Class should be the same
-        Long id = this.id;
-        Long input_id = ((CancellableID) o).id;
-        return id == input_id;
+        if (o instanceof CancellableID cid) {
+            return this.toLong().equals(cid.toLong());
+        }
+        return false;
     }
 
     @Override
@@ -38,5 +36,9 @@ public class CancellableID implements ID {
     @Override
     public Boolean isValid() {
         return this.id != INVALID_ID;
+    }
+
+    public Long toLong() {
+        return this.id;
     }
 }

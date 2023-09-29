@@ -14,6 +14,7 @@ public abstract class Resource {
 
     protected final ResourceName resourceName;
 
+    // TODO: REMOVE
     protected static final List<String> acceptedInfoKeywords = Arrays.asList(
             "wait_time", "occupy_time");
 
@@ -66,6 +67,8 @@ public abstract class Resource {
     public abstract void setResourceUpdateInfo(Map<String, Object> resourceUpdateInfo);
 
     public abstract void reset();
+
+    public abstract void refresh();
 
     public abstract String toString();
 }

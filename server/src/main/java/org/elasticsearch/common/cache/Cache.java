@@ -526,10 +526,10 @@ public class Cache<K, V> {
                 segments[i].segmentLock.writeLock().lock();
                 haveSegmentLock[i] = true;
             }
-            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-            for (StackTraceElement element : stackTraceElements) {
-                System.out.println(element.toString());
-            }
+            // StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+            // for (StackTraceElement element : stackTraceElements) {
+            //     System.out.println(element.toString());
+            // }
             try (ReleasableLock ignored = lruLock.acquire()) {
                 h = head;
                 for (CacheSegment segment : segments) {

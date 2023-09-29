@@ -1,11 +1,8 @@
 package org.elasticsearch.autocancel.core.monitor;
 
-import org.elasticsearch.autocancel.core.monitor.Monitor;
 import org.elasticsearch.autocancel.core.utils.Cancellable;
 import org.elasticsearch.autocancel.core.utils.CancellableGroup;
 import org.elasticsearch.autocancel.core.utils.OperationRequest;
-import org.elasticsearch.autocancel.core.monitor.CPUMonitor;
-import org.elasticsearch.autocancel.core.monitor.MemoryMonitor;
 import org.elasticsearch.autocancel.manager.MainManager;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
@@ -14,7 +11,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 public class MainMonitor {
 

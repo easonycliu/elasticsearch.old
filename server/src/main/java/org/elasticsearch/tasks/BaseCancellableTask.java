@@ -59,11 +59,11 @@ public class BaseCancellableTask extends BaseTask implements CancellableTask {
     */
     public final boolean isCancelled() {
         if (this.getAction().contains("byquery")) {
-            System.out.println(this.toString());
-            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-            for (StackTraceElement element : stackTraceElements) {
-                System.out.println(element.toString());
-            }
+            // System.out.println(this.toString());
+            // StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+            // for (StackTraceElement element : stackTraceElements) {
+            //     System.out.println(element.toString());
+            // }
         }
         return isCancelled;
     }

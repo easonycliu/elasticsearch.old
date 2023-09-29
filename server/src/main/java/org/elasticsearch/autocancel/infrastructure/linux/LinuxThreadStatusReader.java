@@ -3,12 +3,10 @@ package org.elasticsearch.autocancel.infrastructure.linux;
 import org.elasticsearch.autocancel.infrastructure.AbstractInfrastructure;
 import org.elasticsearch.autocancel.infrastructure.ResourceBatch;
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
-import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.id.ID;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
-import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadID;
 import org.elasticsearch.autocancel.utils.Settings;
 
 import java.util.Map;
@@ -18,7 +16,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 

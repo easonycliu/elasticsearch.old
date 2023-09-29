@@ -4,7 +4,6 @@ import org.elasticsearch.autocancel.core.performance.Performance;
 import org.elasticsearch.autocancel.core.utils.Cancellable;
 import org.elasticsearch.autocancel.core.utils.CancellableGroup;
 import org.elasticsearch.autocancel.core.utils.ResourcePool;
-import org.elasticsearch.autocancel.core.utils.ResourceUsage;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
 

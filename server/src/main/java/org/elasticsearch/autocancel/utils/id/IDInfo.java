@@ -1,7 +1,5 @@
 package org.elasticsearch.autocancel.utils.id;
 
-import org.elasticsearch.autocancel.utils.id.ID;
-
 public class IDInfo<ObjectID extends ID> {
     
     private Long timestamp;

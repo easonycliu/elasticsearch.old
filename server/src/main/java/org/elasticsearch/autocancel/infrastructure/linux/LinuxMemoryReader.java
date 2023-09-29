@@ -3,10 +3,8 @@ package org.elasticsearch.autocancel.infrastructure.linux;
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
 import org.elasticsearch.autocancel.utils.id.ID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
-import org.elasticsearch.autocancel.utils.resource.ResourceName;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Map;

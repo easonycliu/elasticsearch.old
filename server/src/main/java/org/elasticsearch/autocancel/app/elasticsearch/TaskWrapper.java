@@ -2,9 +2,7 @@ package org.elasticsearch.autocancel.app.elasticsearch;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.lang.Comparable;
 
-import org.elasticsearch.autocancel.app.AppID;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 
 public class TaskWrapper {
@@ -21,9 +19,9 @@ public class TaskWrapper {
     
     private Object task;
 
-    private TaskID taskID;
+    private CancellableID taskID;
 
-    private TaskID parentID;
+    private CancellableID parentID;
 
     private String action;
 
@@ -41,12 +39,12 @@ public class TaskWrapper {
         if (parentMatcher.find()) {
             String id = parentMatcher.group(3);
             if (id.equals("unset")) {
-                this.parentID = new TaskID(-1L);
+                this.parentID = new CancellableID();
             }
             else {
                 String[] items = id.split(":");
                 assert items.length == 2 && items[1].matches("^[0-9]+$") : "Illegal task name format " + this.task.toString();
-                this.parentID = new TaskID(Long.valueOf(items[1]));
+                this.parentID = new CancellableID(Long.valueOf(items[1]));
             }
         }
         else {
@@ -56,7 +54,7 @@ public class TaskWrapper {
         Matcher taskMatcher = taskPattern.matcher(this.task.toString());
 
         if (taskMatcher.find()) {
-            this.taskID = new TaskID(Long.valueOf(taskMatcher.group(3)));
+            this.taskID = new CancellableID(Long.valueOf(taskMatcher.group(3)));
         }
         else {
             assert false : "Illegal task name format " + this.task.toString();
@@ -89,13 +87,18 @@ public class TaskWrapper {
             assert false : "Illegal task name format " + this.task.toString();
         }
 
+        if (this.taskID.equals(this.parentID)) {
+            this.parentID = new CancellableID();
+        }
+
     }
 
-    public TaskID getParentTaskID() {
+    public CancellableID getParentTaskID() {
         return this.parentID;
     }
 
-    public TaskID getTaskID() {
+    public CancellableID getTaskID() {
+        assert this.taskID.isValid() : "Task id should never be invalid";
         return this.taskID;
     }
 
@@ -124,50 +127,5 @@ public class TaskWrapper {
     @Override
     public boolean equals(Object o) {
         return this.hashCode() == o.hashCode();
-    }
-
-    public class TaskID implements AppID, Comparable<TaskID> {
-
-        private Long id;
-
-        public TaskID(Long id) {
-            this.id = id;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("Task ID : %d", this.id);
-        }
-
-        @Override
-        public int hashCode() {
-            return this.id.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return TaskID.class.equals(o.getClass()) && this.hashCode() == o.hashCode();
-        }
-
-        public Long unwrap() {
-            return this.id;
-        }
-
-        @Override
-        public int compareTo(TaskID o) {
-            if (this.id < o.unwrap()) {
-                return -1;
-            }
-            else if (this.id == o.unwrap()) {
-                return 0;
-            }
-            else {
-                return 1;
-            }
-        }
-
-        public Boolean isValid() {
-            return this.id != -1L;
-        }
     }
 }

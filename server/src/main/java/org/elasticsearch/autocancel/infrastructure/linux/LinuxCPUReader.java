@@ -2,8 +2,6 @@ package org.elasticsearch.autocancel.infrastructure.linux;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -15,7 +13,6 @@ import org.elasticsearch.autocancel.infrastructure.CPUTimeInfo;
 import org.elasticsearch.autocancel.infrastructure.ResourceReader;
 import org.elasticsearch.autocancel.utils.id.ID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
-import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadID;
 
 public class LinuxCPUReader extends ResourceReader {
     

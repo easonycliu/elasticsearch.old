@@ -8,4 +8,6 @@ public interface ID {
     public int hashCode();
 
     public Boolean isValid();
+
+    public Long toLong();
 }

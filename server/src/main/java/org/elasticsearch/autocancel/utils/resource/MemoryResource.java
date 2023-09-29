@@ -60,6 +60,11 @@ public abstract class MemoryResource extends Resource {
 
     }
 
+    @Override 
+    public void refresh() {
+
+    }
+
     @Override
     public String toString() {
         return String.format("Resource Type: %s, name: %s, total memory: %d, using memory: %d",

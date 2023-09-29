@@ -17,22 +17,32 @@ public class CPUTimeInfo {
     }
 
     public CPUTimeInfo(Integer version, Long cpuTime) {
-        assert version > 0 && cpuTime > 0L : "version and cpu time should be a positive value.";
+        if (cpuTime > 0) {
+            assert version > 0 : "version and cpu time should be a positive value.";
 
-        this.previousVersion = 0;
-        this.version = version;
-        this.previousCPUTime = 0L;
-        this.cpuTime = cpuTime;
+            this.previousVersion = 0;
+            this.version = version;
+            this.previousCPUTime = 0L;
+            this.cpuTime = cpuTime;
+        }
+        else {
+            this.previousVersion = 0;
+            this.version = 0;
+            this.previousCPUTime = 0L;
+            this.cpuTime = 0L;
+        }
     }
 
     public void update(Integer version, Long cpuTime) {
-        assert version >= this.version && cpuTime >= this.cpuTime : "version and cpu time should never decrease.";
+        if (cpuTime > 0) {
+            assert version >= this.version && cpuTime >= this.cpuTime : "version and cpu time should never decrease.";
 
-        this.previousVersion = this.version;
-        this.previousCPUTime = this.cpuTime;
+            this.previousVersion = this.version;
+            this.previousCPUTime = this.cpuTime;
 
-        this.version = version;
-        this.cpuTime = cpuTime;
+            this.version = version;
+            this.cpuTime = cpuTime;
+        }
     }
 
     public Integer getPreviousVersion() {

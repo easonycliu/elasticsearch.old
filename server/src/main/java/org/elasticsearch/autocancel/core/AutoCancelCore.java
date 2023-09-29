@@ -3,9 +3,6 @@ package org.elasticsearch.autocancel.core;
 import org.elasticsearch.autocancel.manager.MainManager;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
-import org.elasticsearch.autocancel.utils.resource.CPUResource;
-import org.elasticsearch.autocancel.utils.resource.MemoryResource;
-import org.elasticsearch.autocancel.utils.resource.QueueResource;
 import org.elasticsearch.autocancel.utils.resource.Resource;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
 import org.elasticsearch.autocancel.utils.resource.ResourceType;
@@ -13,22 +10,17 @@ import org.elasticsearch.autocancel.core.monitor.MainMonitor;
 import org.elasticsearch.autocancel.core.performance.Performance;
 import org.elasticsearch.autocancel.core.utils.OperationRequest;
 import org.elasticsearch.autocancel.core.utils.ResourcePool;
-import org.elasticsearch.autocancel.core.utils.ResourceUsage;
 import org.elasticsearch.autocancel.core.utils.Cancellable;
 import org.elasticsearch.autocancel.core.utils.CancellableGroup;
-import org.elasticsearch.autocancel.core.utils.OperationMethod;
 import org.elasticsearch.autocancel.utils.Settings;
 
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.lang.Thread;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 public class AutoCancelCore {
 
@@ -220,7 +212,8 @@ public class AutoCancelCore {
                 System.out.println("Cannot find cancellable group for " + cancellable.toString() + " at " + e.getStackTrace()[0]);
             }
         } else {
-            cancellable.exit();
+            // Don't care about single cancellable
+            // We will remove it in removeCancellableGroup when its cancellable group is moved
         }
     }
 
@@ -235,6 +228,14 @@ public class AutoCancelCore {
         else {
             System.out.println("Cancellable group to be removed does not exist");
         }
+    }
+
+    private Map<String, Object> addCoreLeveUpdateInfo(Map<String, Object> resourceUpdateInfo, OperationRequest request) {
+        CancellableID cid = request.getCancellableID();
+        assert cid.isValid() : "Should use valid cid to update cancellable group";
+        Map<String, Object> updateInfo = new HashMap<>(resourceUpdateInfo);
+        updateInfo.putIfAbsent("cancellable_id", cid);
+        return updateInfo;
     }
 
     private class RequestParser {
@@ -319,7 +320,14 @@ public class AutoCancelCore {
                 // Itself is a root cancellable
                 rootID = request.getCancellableID();
             } else {
-                rootID = cancellables.get(parentID).getRootID();
+                Cancellable parentCancellable = cancellables.get(parentID);
+                if (parentCancellable == null) {
+                    System.out.println(String.format("Failed to find parenct , pretending to be cancellable itself", parentID.toString()));
+                    rootID = request.getCancellableID();
+                }
+                else {
+                    rootID = cancellables.get(parentID).getRootID();
+                }
             }
             return rootID;
         }
@@ -378,14 +386,24 @@ public class AutoCancelCore {
 
         private void cancellableStartTime(OperationRequest request) {
             Cancellable cancellable = cancellables.get(request.getCancellableID());
-            Long startTime = (Long) request.getParams().get("cancellable_start_time");
-            cancellable.setStartTime(startTime);
+            if (cancellable.isRoot()) {
+                // This is a root cancellable
+                // Parameter cancellable_start_time is useful only if this cancellable is a root cancellable
+                // TODO: Add a warning if this is not a root cancellable
+                Long startTime = (Long) request.getParams().get("cancellable_start_time");
+                rootCancellableToCancellableGroup.get(cancellable.getID()).setStartTime(startTime);
+            }
         }
 
         private void cancellableStartTimeNano(OperationRequest request) {
             Cancellable cancellable = cancellables.get(request.getCancellableID());
-            Long startTimeNano = (Long) request.getParams().get("cancellable_start_time_nano");
-            cancellable.setStartTimeNano(startTimeNano);
+            if (cancellable.isRoot()) {
+                // This is a root cancellable
+                // Parameter cancellable_start_time_nano is useful only if this cancellable is a root cancellable
+                // TODO: Add a warning if this is not a root cancellable
+                Long startTimeNano = (Long) request.getParams().get("cancellable_start_time_nano");
+                rootCancellableToCancellableGroup.get(cancellable.getID()).setStartTimeNano(startTimeNano);
+            }
         }
 
         @SuppressWarnings("unchecked")
@@ -395,10 +413,12 @@ public class AutoCancelCore {
                 ResourceType resourceType = request.getResourceType();
                 ResourceName resourceName = request.getResourceName();
                 if (!resourceName.equals(ResourceName.NULL) && !resourceType.equals(ResourceType.NULL)) {
-                    Map<String, Object> resourceUpdateInfo = (Map<String, Object>) request.getParams().get("update_group_resource");
+                    Map<String, Object> resourceUpdateInfo = AutoCancelCore.this.addCoreLeveUpdateInfo(
+                        (Map<String, Object>) request.getParams().get("update_group_resource"),
+                        request
+                    );
                     try {
                         rootCancellableToCancellableGroup.get(cancellable.getRootID()).updateResource(resourceType, resourceName, resourceUpdateInfo);
-                        cancellable.updateResource(resourceType, resourceName, resourceUpdateInfo);
                         if (!resourcePool.isResourceExist(request.getResourceName())) {
                             resourcePool.addResource(Resource.createResource(resourceType, resourceName));
                         }
@@ -408,9 +428,8 @@ public class AutoCancelCore {
                         System.out.println("Cannot find cancellable group for " + cancellable.toString() + " at " + e.getStackTrace()[0]);
                     }
                 }
-
             } else {
-                System.out.println("Can't find cancellable for cid " + request.getCancellableID());
+                // System.out.println("Can't find cancellable for cid " + request.getCancellableID());
             }
         }
     }

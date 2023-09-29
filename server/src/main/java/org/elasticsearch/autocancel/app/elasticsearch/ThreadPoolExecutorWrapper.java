@@ -1,6 +1,5 @@
 package org.elasticsearch.autocancel.app.elasticsearch;
 
-import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 import org.elasticsearch.autocancel.utils.Syscall;
 
 import java.util.concurrent.BlockingQueue;
@@ -51,16 +50,22 @@ public class ThreadPoolExecutorWrapper extends ThreadPoolExecutor {
         assert t.equals(Thread.currentThread());
         this.checkThreadName(t);
         AutoCancel.onTaskStartInThread(r);
+        AutoCancel.startCPUUsing("CPU-hiRes");
+        AutoCancel.endQueueWait("ThreadPool");
+        AutoCancel.startQueueOccupy("ThreadPool");
         super.beforeExecute(t, r);
     }
 
     protected void afterExecute(Runnable r, Throwable t) {
         super.afterExecute(r, t);
+        AutoCancel.endQueueOccupy("ThreadPool");
+        AutoCancel.endCPUUsing("CPU-hiRes");
         AutoCancel.onTaskFinishInThread();
     }
 
     public void execute(Runnable command) {
         AutoCancel.onTaskQueueInThread(command);
+        AutoCancel.startQueueWait("ThreadPool");
         super.execute(command);
     }
 

@@ -1,7 +1,5 @@
 package org.elasticsearch.autocancel.utils.resource;
 
-import org.elasticsearch.autocancel.utils.logger.Logger;
-
 import java.util.Map;
 
 public class EvictableMemoryResource extends MemoryResource {
