@@ -29,10 +29,6 @@ public class CPUResource extends Resource {
 
     private Map<ID, CPUDataPoint> cpuDataPoints;
 
-    private Long currentSystemTime;
-
-    private Long prevSystemTime;
-
     private ThreadMXBean threadMXBean;
 
     public CPUResource() {
@@ -44,8 +40,6 @@ public class CPUResource extends Resource {
         this.gcMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
         this.startGCTime = this.getTotalGCTime();
         this.cpuDataPoints = new HashMap<ID, CPUDataPoint>();
-        this.currentSystemTime = 0L;
-        this.prevSystemTime = 0L;
         this.threadMXBean = ManagementFactory.getThreadMXBean();
     }
 
@@ -58,15 +52,13 @@ public class CPUResource extends Resource {
         this.gcMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
         this.startGCTime = this.getTotalGCTime();
         this.cpuDataPoints = new HashMap<ID, CPUDataPoint>();
-        this.currentSystemTime = 0L;
-        this.prevSystemTime = 0L;
         this.threadMXBean = ManagementFactory.getThreadMXBean();
     }
 
     @Override
     public Double getSlowdown(Map<String, Object> slowdownInfo) {
         Double slowdown = 0.0;
-        if (this.cpuDataPoints.size() > 0) {
+        if (this.totalSystemTime > 0 && this.cpuDataPoints.size() > 0) {
             slowdown = 1.0 - 
             Double.valueOf(this.usedSystemTime + (this.getTotalGCTime() - this.startGCTime) * 1000000 * this.cpuDataPoints.size()) / 
             this.totalSystemTime;
@@ -152,13 +144,12 @@ public class CPUResource extends Resource {
     @Override 
     public void refresh() {
         this.cpuUsageThreads.clear();
-        this.prevSystemTime = this.currentSystemTime;
-        this.currentSystemTime = System.nanoTime();
+        Long currentSystemTime = System.nanoTime();
         AtomicLong totalSystemTimeAtomic = new AtomicLong(this.totalSystemTime);
         AtomicLong usedSystemTimeAtomic = new AtomicLong(this.usedSystemTime);
         this.cpuDataPoints.forEach((key, value) -> {
-            totalSystemTimeAtomic.addAndGet(this.currentSystemTime - Math.max(this.prevSystemTime, value.getCPUTimeSystem()));
-            usedSystemTimeAtomic.addAndGet(value.refresh(threadMXBean));
+            totalSystemTimeAtomic.addAndGet(value.refreshCPUTimeSystem(currentSystemTime));
+            usedSystemTimeAtomic.addAndGet(value.refreshCPUTimeThread(threadMXBean.getThreadCpuTime(value.getThreadID().toLong())));
         });
         Long usedSystemTimeTmp = usedSystemTimeAtomic.get();
         this.usedSystemTimeDecay =  (long) ((Double) Settings.getSetting("resource_usage_decay") * this.usedSystemTimeDecay + 
@@ -188,41 +179,46 @@ public class CPUResource extends Resource {
 
     class CPUDataPoint {
 
-        private final Long cpuTimeSystem;
+        private Long cpuTimeSystem;
 
-        private final Long cpuTimeThread;
+        private Long cpuTimeThread;
 
         private final ID threadID;
-
-        private Long currentTimeThread;
-
-        private Long prevTimeThread;
 
         public CPUDataPoint(Long cpuTimeSystem, Long cpuTimeThread, ID threadID) {
             this.cpuTimeSystem = cpuTimeSystem;
             this.cpuTimeThread = cpuTimeThread;
             this.threadID = threadID;
-            this.currentTimeThread = 0L;
-            this.prevTimeThread = 0L;
         }
 
         public Long getCPUTimeSystem() {
             return this.cpuTimeSystem;
         }
 
+        public Long refreshCPUTimeSystem(Long cpuTimeSystem) {
+            Long addValue = 0L;
+            if (cpuTimeSystem > 0) {
+                addValue = cpuTimeSystem - this.cpuTimeSystem;
+                this.cpuTimeSystem = cpuTimeSystem;
+            }
+            return addValue;
+        }
+
         public Long getCPUTimeThread() {
             return this.cpuTimeThread;
         }
 
-        public Long refresh(ThreadMXBean threadMXBean) {
-            long threadCPUTime = threadMXBean.getThreadCpuTime(this.threadID.toLong());
+        public Long refreshCPUTimeThread(Long cpuTimeThread) {
             Long addValue = 0L;
-            if (threadCPUTime > 0) {
-                this.prevTimeThread = this.currentTimeThread;
-                this.currentTimeThread = threadCPUTime;
-                addValue = this.currentTimeThread - Math.max(this.prevTimeThread, this.cpuTimeThread);
+            if (cpuTimeThread > 0) {
+                addValue = cpuTimeThread - this.cpuTimeThread;
+                this.cpuTimeThread = cpuTimeThread;
             }
             return addValue;
+        }
+
+        public ID getThreadID() {
+            return this.threadID;
         }
     }
 }

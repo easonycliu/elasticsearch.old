@@ -10,6 +10,7 @@ package org.elasticsearch.common.cache;
 
 import org.elasticsearch.common.util.concurrent.ReleasableLock;
 import org.elasticsearch.core.Tuple;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;
@@ -375,71 +376,77 @@ public class Cache<K, V> {
         // we have to eagerly evict expired entries or our putIfAbsent call below will fail
         V value = get(key, now, true);
         if (value == null) {
-            // we need to synchronize loading of a value for a given key; however, holding the segment lock while
-            // invoking load can lead to deadlock against another thread due to dependent key loading; therefore, we
-            // need a mechanism to ensure that load is invoked at most once, but we are not invoking load while holding
-            // the segment lock; to do this, we atomically put a future in the map that can load the value, and then
-            // get the value from this future on the thread that won the race to place the future into the segment map
-            CacheSegment segment = getCacheSegment(key);
-            CompletableFuture<Entry<K, V>> future;
-            CompletableFuture<Entry<K, V>> completableFuture = new CompletableFuture<>();
+            Long startComputeTime = System.nanoTime();
+            try {
+                // we need to synchronize loading of a value for a given key; however, holding the segment lock while
+                // invoking load can lead to deadlock against another thread due to dependent key loading; therefore, we
+                // need a mechanism to ensure that load is invoked at most once, but we are not invoking load while holding
+                // the segment lock; to do this, we atomically put a future in the map that can load the value, and then
+                // get the value from this future on the thread that won the race to place the future into the segment map
+                CacheSegment segment = getCacheSegment(key);
+                CompletableFuture<Entry<K, V>> future;
+                CompletableFuture<Entry<K, V>> completableFuture = new CompletableFuture<>();
 
-            try (ReleasableLock ignored = segment.writeLock.acquire()) {
-                if (segment.map == null) {
-                    segment.map = new HashMap<>();
+                try (ReleasableLock ignored = segment.writeLock.acquire()) {
+                    if (segment.map == null) {
+                        segment.map = new HashMap<>();
+                    }
+                    future = segment.map.putIfAbsent(key, completableFuture);
                 }
-                future = segment.map.putIfAbsent(key, completableFuture);
-            }
 
-            BiFunction<? super Entry<K, V>, Throwable, ? extends V> handler = (ok, ex) -> {
-                if (ok != null) {
-                    promote(ok, now);
-                    return ok.value;
-                } else {
-                    try (ReleasableLock ignored = segment.writeLock.acquire()) {
-                        CompletableFuture<Entry<K, V>> sanity = segment.map == null ? null : segment.map.get(key);
-                        if (sanity != null && sanity.isCompletedExceptionally()) {
-                            segment.map.remove(key);
-                            if (segment.map.isEmpty()) {
-                                segment.map = null;
+                BiFunction<? super Entry<K, V>, Throwable, ? extends V> handler = (ok, ex) -> {
+                    if (ok != null) {
+                        promote(ok, now);
+                        return ok.value;
+                    } else {
+                        try (ReleasableLock ignored = segment.writeLock.acquire()) {
+                            CompletableFuture<Entry<K, V>> sanity = segment.map == null ? null : segment.map.get(key);
+                            if (sanity != null && sanity.isCompletedExceptionally()) {
+                                segment.map.remove(key);
+                                if (segment.map.isEmpty()) {
+                                    segment.map = null;
+                                }
                             }
                         }
+                        return null;
                     }
-                    return null;
-                }
-            };
+                };
 
-            CompletableFuture<V> completableValue;
-            if (future == null) {
-                future = completableFuture;
-                completableValue = future.handle(handler);
-                V loaded;
-                try {
-                    loaded = loader.load(key);
-                } catch (Exception e) {
-                    future.completeExceptionally(e);
-                    throw new ExecutionException(e);
-                }
-                if (loaded == null) {
-                    NullPointerException npe = new NullPointerException("loader returned a null value");
-                    future.completeExceptionally(npe);
-                    throw new ExecutionException(npe);
+                CompletableFuture<V> completableValue;
+                if (future == null) {
+                    future = completableFuture;
+                    completableValue = future.handle(handler);
+                    V loaded;
+                    try {
+                        loaded = loader.load(key);
+                    } catch (Exception e) {
+                        future.completeExceptionally(e);
+                        throw new ExecutionException(e);
+                    }
+                    if (loaded == null) {
+                        NullPointerException npe = new NullPointerException("loader returned a null value");
+                        future.completeExceptionally(npe);
+                        throw new ExecutionException(npe);
+                    } else {
+                        future.complete(new Entry<>(key, loaded, now));
+                    }
                 } else {
-                    future.complete(new Entry<>(key, loaded, now));
+                    completableValue = future.handle(handler);
                 }
-            } else {
-                completableValue = future.handle(handler);
-            }
 
-            try {
-                value = completableValue.get();
-                // check to ensure the future hasn't been completed with an exception
-                if (future.isCompletedExceptionally()) {
-                    future.get(); // call get to force the exception to be thrown for other concurrent callers
-                    throw new IllegalStateException("the future was completed exceptionally but no exception was thrown");
+                try {
+                    value = completableValue.get();
+                    // check to ensure the future hasn't been completed with an exception
+                    if (future.isCompletedExceptionally()) {
+                        future.get(); // call get to force the exception to be thrown for other concurrent callers
+                        throw new IllegalStateException("the future was completed exceptionally but no exception was thrown");
+                    }
+                } catch (InterruptedException e) {
+                    throw new IllegalStateException(e);
                 }
-            } catch (InterruptedException e) {
-                throw new IllegalStateException(e);
+            }
+            finally {
+                AutoCancel.addMemoryUsage("Cache", System.nanoTime() - startComputeTime, this.maximumWeight, this.weigher.applyAsLong(key, value), 0L);
             }
         }
         return value;

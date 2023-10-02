@@ -419,7 +419,7 @@ public class AutoCancelCore {
                     );
                     try {
                         rootCancellableToCancellableGroup.get(cancellable.getRootID()).updateResource(resourceType, resourceName, resourceUpdateInfo);
-                        if (!resourcePool.isResourceExist(request.getResourceName())) {
+                        if (!resourcePool.isResourceExist(resourceName)) {
                             resourcePool.addResource(Resource.createResource(resourceType, resourceName));
                         }
                         resourcePool.setResourceUpdateInfo(resourceName, resourceUpdateInfo);

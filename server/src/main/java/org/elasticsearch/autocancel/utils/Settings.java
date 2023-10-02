@@ -18,14 +18,10 @@ public class Settings {
             "CPU", "JVM",
             "MEMORY", "JVM"
         ),
-        "monitor_locks", Arrays.asList(
-            // Map.of("class_name", "Cache..."), // use ... to include all classes inside specified class
-            // Map.of("class_name", "InternalEngine...")
-            // Map.of("file_name", "InternalEngine.java", "line_number", "1072")
-        ),
         "monitor_actions", Set.of(
             "indices:data/read/search",
-            "indices:data/write/bulk"
+            "indices:data/write/bulk",
+            "indices:data/write/index"
         )
     );
 

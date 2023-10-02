@@ -47,9 +47,13 @@ public abstract class MemoryResource extends Resource {
                 case "reuse_memory":
                     // TODO: Find a method to get reused memory
                     break;
+                case "evict_time":
+                    // It only used in evictable memory resource
+                    // Only used as a placeholder here
+                    break;
                 default:
-                    Logger.systemWarn("Invalid info name " + entry.getKey() + " in resource type " + this.resourceType
-                            + " ,name " + this.resourceName);
+                    // Logger.systemWarn("Invalid info name " + entry.getKey() + " in resource type " + this.resourceType
+                    //         + " ,name " + this.resourceName);
                     break;
             }
         }

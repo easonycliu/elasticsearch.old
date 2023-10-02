@@ -46,14 +46,15 @@ public class Resource {
         );
     }
     
-    public void addMemoryUsage(String name, Long totalMemory, Long usingMemory, Long reuseMemory) {
+    public void addMemoryUsage(String name, Long evictTime, Long totalMemory, Long usingMemory, Long reuseMemory) {
         this.mainManager.updateCancellableGroup(
             ResourceType.MEMORY, 
             name, 
             Map.of(
                 "total_memory", totalMemory,
                 "using_memory", usingMemory,
-                "reuse_memory", reuseMemory
+                "reuse_memory", reuseMemory,
+                "evict_time", evictTime
             )
         );
     }

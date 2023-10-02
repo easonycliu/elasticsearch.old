@@ -106,9 +106,9 @@ public class AutoCancel {
         }
     }
 
-    public static void addMemoryUsage(String name, Long usingMemory, Long totalMemory, Long reuseMemory) {
+    public static void addMemoryUsage(String name, Long evictTime, Long usingMemory, Long totalMemory, Long reuseMemory) {
         if (AutoCancel.started) {
-            AutoCancel.resourceTracker.addMemoryUsage(name, totalMemory, usingMemory, reuseMemory);
+            AutoCancel.resourceTracker.addMemoryUsage(name, evictTime, totalMemory, usingMemory, reuseMemory);
         }
         else if (warnNotStarted) {
             Logger.systemWarn("You should start lib AutoCancel first.");
