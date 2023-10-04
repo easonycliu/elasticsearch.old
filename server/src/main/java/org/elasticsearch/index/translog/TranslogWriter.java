@@ -27,6 +27,7 @@ import org.elasticsearch.core.SuppressForbidden;
 import org.elasticsearch.core.Tuple;
 import org.elasticsearch.index.seqno.SequenceNumbers;
 import org.elasticsearch.index.shard.ShardId;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -526,7 +527,10 @@ public class TranslogWriter extends BaseTranslogReader implements Closeable {
     }
 
     private void writeBufferedOps(long offset, boolean blockOnExistingWriter) throws IOException {
+        AutoCancel.startQueueWait("Index-Document");
         try (ReleasableLock locked = blockOnExistingWriter ? writeLock.acquire() : writeLock.tryAcquire()) {
+            AutoCancel.endQueueWait("Index-Document");
+            AutoCancel.startQueueOccupy("Index-Document");
             try {
                 if (locked != null && offset > getWrittenOffset()) {
                     writeAndReleaseOps(pollOpsToWrite());
@@ -535,6 +539,9 @@ public class TranslogWriter extends BaseTranslogReader implements Closeable {
                 closeWithTragicEvent(e);
                 throw e;
             }
+        }
+        finally {
+            AutoCancel.endQueueOccupy("Index-Document");
         }
     }
 

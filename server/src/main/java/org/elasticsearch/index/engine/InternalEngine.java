@@ -821,9 +821,15 @@ public class InternalEngine extends Engine {
         assert readLock.isHeldByCurrentThread();
         assert get.realtime();
         final VersionValue versionValue;
+        AutoCancel.startQueueWait("Index-Document");
         try (Releasable ignore = versionMap.acquireLock(get.uid().bytes())) {
             // we need to lock here to access the version map to do this truly in RT
+            AutoCancel.endQueueWait("Index-Document");
+            AutoCancel.startQueueOccupy("Index-Document");
             versionValue = getVersionFromMap(get.uid().bytes());
+        }
+        finally {
+            AutoCancel.endQueueOccupy("Index-Document");
         }
         boolean getFromSearcherIfNotInTranslog = getFromSearcher;
         if (versionValue != null) {
