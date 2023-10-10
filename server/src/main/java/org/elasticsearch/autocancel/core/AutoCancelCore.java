@@ -3,6 +3,7 @@ package org.elasticsearch.autocancel.core;
 import org.elasticsearch.autocancel.manager.MainManager;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
+import org.elasticsearch.autocancel.utils.resource.JVMHeapResource;
 import org.elasticsearch.autocancel.utils.resource.Resource;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
 import org.elasticsearch.autocancel.utils.resource.ResourceType;
@@ -106,9 +107,11 @@ public class AutoCancelCore {
     public void startOneLoop() {
         if (this.isInitialized()) {
 
-            this.refreshCancellableGroups();
+            Map<String, Object> refreshInfo = this.addCoreLevelRefreshInfo();
 
-            this.resourcePool.refreshResources(this.logger);
+            this.refreshCancellableGroups(refreshInfo);
+
+            this.resourcePool.refreshResources(refreshInfo, this.logger);
 
             this.logger.log(this.performanceMetrix.toString());
 
@@ -157,7 +160,7 @@ public class AutoCancelCore {
         }
     }
 
-    private void refreshCancellableGroups() {
+    private void refreshCancellableGroups(Map<String, Object> refreshInfo) {
         List<CancellableGroup> toBeRemovedCancellableGroups = new ArrayList<CancellableGroup>();
         for (Map.Entry<CancellableID, CancellableGroup> entry : this.rootCancellableToCancellableGroup.entrySet()) {
 
@@ -166,11 +169,13 @@ public class AutoCancelCore {
                 continue;
             }
 
-            entry.getValue().refreshResourcePool();
+            entry.getValue().refreshResourcePool(refreshInfo);
         }
 
         for (CancellableGroup cancellableGroup : toBeRemovedCancellableGroups) {
-            this.removeCancellableGroup(cancellableGroup);
+            if (cancellableGroup.isExpired()) {
+                this.removeCancellableGroup(cancellableGroup);
+            }
         }
     }
 
@@ -236,6 +241,10 @@ public class AutoCancelCore {
         Map<String, Object> updateInfo = new HashMap<>(resourceUpdateInfo);
         updateInfo.putIfAbsent("cancellable_id", cid);
         return updateInfo;
+    }
+
+    private Map<String, Object> addCoreLevelRefreshInfo() {
+        return Map.of("current_gc_time", JVMHeapResource.getTotalGCTime());
     }
 
     private class RequestParser {

@@ -66,12 +66,12 @@ public class ResourcePool {
         }
     }
 
-    public void refreshResources(Logger logger) {
+    public void refreshResources(Map<String, Object> resourceRefreshInfo, Logger logger) {
         for (Map.Entry<ResourceName, Resource> entries : this.resources.entrySet()) {
             if (logger != null) {
                 logger.log(entries.getValue().toString());
             }
-            entries.getValue().refresh();
+            entries.getValue().refresh(resourceRefreshInfo);
         }
     }
 

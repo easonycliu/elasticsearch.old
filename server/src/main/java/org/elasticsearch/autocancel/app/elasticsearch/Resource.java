@@ -21,12 +21,14 @@ public class Resource {
     }
 
     public void startCPUUsing(String name) {
+        Long cpuTimeSystem = System.nanoTime();
+        Long cpuTimeThread = threadMXBean.getCurrentThreadCpuTime();
         this.mainManager.updateCancellableGroup(
             ResourceType.CPU, 
             name, 
             Map.of(
-                "cpu_time_system", System.nanoTime(),
-                "cpu_time_thread", threadMXBean.getCurrentThreadCpuTime(),
+                "cpu_time_system", cpuTimeSystem,
+                "cpu_time_thread", cpuTimeThread,
                 "thread_id", new JavaThreadID(Thread.currentThread().getId()),
                 "start", true
             )
@@ -34,12 +36,14 @@ public class Resource {
     }
 
     public void endCPUUsing(String name) {
+        Long cpuTimeThread = threadMXBean.getCurrentThreadCpuTime();
+        Long cpuTimeSystem = System.nanoTime();
         this.mainManager.updateCancellableGroup(
             ResourceType.CPU, 
             name, 
             Map.of(
-                "cpu_time_system", System.nanoTime(),
-                "cpu_time_thread", threadMXBean.getCurrentThreadCpuTime(),
+                "cpu_time_system", cpuTimeSystem,
+                "cpu_time_thread", cpuTimeThread,
                 "thread_id", new JavaThreadID(Thread.currentThread().getId()),
                 "start", false
             )

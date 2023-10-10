@@ -11,8 +11,9 @@ public class Settings {
         "core_update_cycle_ms", 100L,
         "max_child_cancellable_level", 1000,
         "log_file_max_line", 200000,
-        "system_log_level", "INFO",
+        "system_log_level", "WARN",
         "skip_first_ms", 60000L,
+        "save_history_ms", 0L,
         "resource_usage_decay", 0.8,
         "monitor_physical_resources", Map.of(
             "CPU", "JVM",

@@ -65,7 +65,7 @@ public abstract class MemoryResource extends Resource {
     }
 
     @Override 
-    public void refresh() {
+    public void refresh(Map<String, Object> refreshInfo) {
 
     }
 

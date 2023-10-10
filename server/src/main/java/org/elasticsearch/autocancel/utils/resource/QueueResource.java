@@ -19,6 +19,8 @@ public class QueueResource extends Resource {
 
     private Map<QueueEvent, List<Long>> queueEventDataPoints;
 
+    private Long currentTimeNano;
+
     public QueueResource(ResourceName resourceName) {
         super(ResourceType.QUEUE, resourceName);
         this.totalEventTime = new HashMap<QueueEvent, Long>();
@@ -31,16 +33,16 @@ public class QueueResource extends Resource {
         for (QueueEvent event : QueueEvent.values()) {
             this.queueEventDataPoints.put(event, new ArrayList<Long>());
         }
+        this.currentTimeNano = System.nanoTime();
     }
 
     @Override
     public Double getSlowdown(Map<String, Object> slowdownInfo) {
         Double slowdown = 0.0;
-        Long startTime = (Long) slowdownInfo.get("start_time_nano");
-        Long currentTime = System.nanoTime();
-        if (startTime != null && this.cancellableIDSet.size() > 0) {
+        Long startTimeNano = (Long) slowdownInfo.get("start_time_nano");
+        if (startTimeNano != null && this.cancellableIDSet.size() > 0) {
             slowdown = Double.valueOf(this.totalEventTime.get(QueueEvent.QUEUE)) / 
-            ((currentTime - startTime) * this.cancellableIDSet.size());
+            ((this.currentTimeNano - startTimeNano) * this.cancellableIDSet.size());
         }
 
         return slowdown;
@@ -105,14 +107,14 @@ public class QueueResource extends Resource {
     }
 
     @Override 
-    public void refresh() {
-        Long currentSystemTime = System.nanoTime();
+    public void refresh(Map<String, Object> refreshInfo) {
+        this.currentTimeNano = System.nanoTime();
         for (Map.Entry<QueueEvent, List<Long>> entry : this.queueEventDataPoints.entrySet()) {
             AtomicLong eventTime = new AtomicLong(this.totalEventTime.get(entry.getKey()));
             entry.getValue().replaceAll((startTime) -> {
-                Long addValue = currentSystemTime - startTime;
+                Long addValue = this.currentTimeNano - startTime;
                 eventTime.addAndGet(addValue);
-                return currentSystemTime;
+                return this.currentTimeNano;
             });
             this.totalEventTime.put(entry.getKey(), eventTime.get());
         }

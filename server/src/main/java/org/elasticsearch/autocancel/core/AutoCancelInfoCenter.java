@@ -39,11 +39,9 @@ public class AutoCancelInfoCenter {
         Long cancellableGroupNumber = 0L;
         Double averageSlowdown = 0.0;
         for (CancellableGroup cancellableGroup : this.rootCancellableToCancellableGroup.values()) {
-            if (!cancellableGroup.isExit()) {
-                Double cancellableGroupSlowdown = cancellableGroup.getResourceSlowdown(resourceName);
-                averageSlowdown = (averageSlowdown * cancellableGroupNumber + cancellableGroupSlowdown) / (cancellableGroupNumber + 1);
-                cancellableGroupNumber += 1;
-            }
+            Double cancellableGroupSlowdown = cancellableGroup.getResourceSlowdown(resourceName);
+            averageSlowdown = (averageSlowdown * cancellableGroupNumber + cancellableGroupSlowdown) / (cancellableGroupNumber + 1);
+            cancellableGroupNumber += 1;
         }
         return averageSlowdown;
     }

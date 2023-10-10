@@ -1,7 +1,6 @@
 package org.elasticsearch.autocancel.utils.resource;
 
 import java.util.Map;
-import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
@@ -23,9 +22,9 @@ public class CPUResource extends Resource {
 
     private List<Double> cpuUsageThreads;
 
-    private List<GarbageCollectorMXBean> gcMXBeans;
-
     private Long startGCTime;
+
+    private Long currentGCTime;
 
     private Map<ID, CPUDataPoint> cpuDataPoints;
 
@@ -37,8 +36,8 @@ public class CPUResource extends Resource {
         this.usedSystemTime = 0L;
         this.usedSystemTimeDecay = 0L;
         this.cpuUsageThreads = new ArrayList<Double>();
-        this.gcMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
-        this.startGCTime = this.getTotalGCTime();
+        this.startGCTime = JVMHeapResource.getTotalGCTime();
+        this.currentGCTime = this.startGCTime;
         this.cpuDataPoints = new HashMap<ID, CPUDataPoint>();
         this.threadMXBean = ManagementFactory.getThreadMXBean();
     }
@@ -49,8 +48,8 @@ public class CPUResource extends Resource {
         this.usedSystemTime = 0L;
         this.usedSystemTimeDecay = 0L;
         this.cpuUsageThreads = new ArrayList<Double>();
-        this.gcMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
-        this.startGCTime = this.getTotalGCTime();
+        this.startGCTime = JVMHeapResource.getTotalGCTime();
+        this.currentGCTime = this.startGCTime;
         this.cpuDataPoints = new HashMap<ID, CPUDataPoint>();
         this.threadMXBean = ManagementFactory.getThreadMXBean();
     }
@@ -58,10 +57,17 @@ public class CPUResource extends Resource {
     @Override
     public Double getSlowdown(Map<String, Object> slowdownInfo) {
         Double slowdown = 0.0;
-        if (this.totalSystemTime > 0 && this.cpuDataPoints.size() > 0) {
+        if (this.totalSystemTime > 0) {
             slowdown = 1.0 - 
-            Double.valueOf(this.usedSystemTime + (this.getTotalGCTime() - this.startGCTime) * 1000000 * this.cpuDataPoints.size()) / 
+            Double.valueOf(this.usedSystemTime + 
+            Math.max(this.currentGCTime - this.startGCTime, 0) * 1000000 * this.cpuDataPoints.size()) / 
             this.totalSystemTime;
+            if (this.usedSystemTime > this.totalSystemTime) {
+                System.out.println(String.format("Find abnormal slowdown in cpu, used system time: %d, total system time: %d", this.usedSystemTime, this.totalSystemTime));
+            }
+            // GC Time + used system time may larger than total system time
+            // TODO: Find a better way to handle GC time
+            slowdown = Math.max(slowdown, 0.0);
         }
         return slowdown;
     }
@@ -110,17 +116,22 @@ public class CPUResource extends Resource {
             start != null
         ) {
             if (start) {
-                if (this.cpuDataPoints.put(threadID, new CPUDataPoint(cpuTimeSystem, cpuTimeThread, threadID)) != null) {
+                if (this.cpuDataPoints.put(threadID, new CPUDataPoint(cpuTimeSystem, cpuTimeThread)) != null) {
                     Logger.systemWarn("Different runnables on the same thread simutanously");
                 }
             }
             else {
                 CPUDataPoint cpuDataPoint = this.cpuDataPoints.remove(threadID);
                 if (cpuDataPoint != null) {
-                    Long startTimeSystem = cpuDataPoint.getCPUTimeSystem();
-                    Long startTimeThread = cpuDataPoint.getCPUTimeThread();
-                    this.totalSystemTime += cpuTimeSystem - startTimeSystem;
-                    this.usedSystemTime += cpuTimeThread - startTimeThread;
+                    Long prevCPUTimeSystem = cpuDataPoint.getCPUTimeSystem();
+                    Long prevCPUTimeThread = cpuDataPoint.getCPUTimeThread();
+                    Long startTimeSystem = cpuDataPoint.getStartSystemTime();
+                    Long startTimeThread = cpuDataPoint.getStartThreadTime();
+                    this.totalSystemTime += cpuTimeSystem - prevCPUTimeSystem;
+                    this.usedSystemTime += cpuTimeThread - prevCPUTimeThread;
+                    if (cpuTimeThread - startTimeThread > cpuTimeSystem - startTimeSystem) {
+                        System.out.println(String.format("Find abnormal metrics in setResourceUpdateInfo, thread used system time: %d, thread total system time: %d", cpuTimeThread - startTimeThread, cpuTimeSystem - startTimeSystem));
+                    }
                 }
                 else {
                     Logger.systemWarn(String.format("Unmatched start - end events in cpu resource"));
@@ -142,20 +153,26 @@ public class CPUResource extends Resource {
     }
 
     @Override 
-    public void refresh() {
+    public void refresh(Map<String, Object> refreshInfo) {
         this.cpuUsageThreads.clear();
-        Long currentSystemTime = System.nanoTime();
         AtomicLong totalSystemTimeAtomic = new AtomicLong(this.totalSystemTime);
         AtomicLong usedSystemTimeAtomic = new AtomicLong(this.usedSystemTime);
         this.cpuDataPoints.forEach((key, value) -> {
-            totalSystemTimeAtomic.addAndGet(value.refreshCPUTimeSystem(currentSystemTime));
-            usedSystemTimeAtomic.addAndGet(value.refreshCPUTimeThread(threadMXBean.getThreadCpuTime(value.getThreadID().toLong())));
+            Long cpuTimeThreadAdd = threadMXBean.getThreadCpuTime(key.toLong());
+            Long cpuTimeSystemAdd = System.nanoTime();
+            if (cpuTimeThreadAdd > cpuTimeSystemAdd) {
+                System.out.println(String.format("Find abnormal in refresh, cpu time thread add: %d, cpu time system add: %d", cpuTimeThreadAdd, cpuTimeSystemAdd));
+            }
+            usedSystemTimeAtomic.addAndGet(value.refreshCPUTimeThread(cpuTimeThreadAdd));
+            totalSystemTimeAtomic.addAndGet(value.refreshCPUTimeSystem(cpuTimeSystemAdd));
         });
         Long usedSystemTimeTmp = usedSystemTimeAtomic.get();
         this.usedSystemTimeDecay =  (long) ((Double) Settings.getSetting("resource_usage_decay") * this.usedSystemTimeDecay + 
         (usedSystemTimeTmp - this.usedSystemTime));
         this.totalSystemTime = totalSystemTimeAtomic.get();
         this.usedSystemTime = usedSystemTimeTmp;
+        
+        this.currentGCTime = (Long) refreshInfo.getOrDefault("current_gc_time", this.currentGCTime);
     }
 
     @Override
@@ -167,28 +184,21 @@ public class CPUResource extends Resource {
                 this.usedSystemTimeDecay);
     }
 
-    // This is exactly the same method as JVMHeapResource
-    // TODO: Don't right the same code twice
-    private Long getTotalGCTime() {
-        Long totalGCTime = 0L;
-        for (GarbageCollectorMXBean gcMXBean : this.gcMXBeans) {
-            totalGCTime += gcMXBean.getCollectionTime();
-        }
-        return totalGCTime;
-    }
-
     class CPUDataPoint {
+
+        private final Long startSystemTime;
+
+        private final Long startThreadTime;
 
         private Long cpuTimeSystem;
 
         private Long cpuTimeThread;
 
-        private final ID threadID;
-
-        public CPUDataPoint(Long cpuTimeSystem, Long cpuTimeThread, ID threadID) {
+        public CPUDataPoint(Long cpuTimeSystem, Long cpuTimeThread) {
+            this.startSystemTime = cpuTimeSystem;
+            this.startThreadTime = cpuTimeThread;
             this.cpuTimeSystem = cpuTimeSystem;
             this.cpuTimeThread = cpuTimeThread;
-            this.threadID = threadID;
         }
 
         public Long getCPUTimeSystem() {
@@ -217,8 +227,12 @@ public class CPUResource extends Resource {
             return addValue;
         }
 
-        public ID getThreadID() {
-            return this.threadID;
+        public Long getStartSystemTime() {
+            return this.startSystemTime;
+        }
+
+        public Long getStartThreadTime() {
+            return this.startThreadTime;
         }
     }
 }
