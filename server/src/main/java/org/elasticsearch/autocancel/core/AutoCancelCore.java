@@ -353,7 +353,10 @@ public class AutoCancelCore {
                 "cancellable_action", request -> this.cancellableAction(request),
                 "cancellable_start_time_nano", request -> this.cancellableStartTimeNano(request),
                 "cancellable_start_time", request -> this.cancellableStartTime(request),
-                "update_group_resource", request -> this.updateGroupResource(request));
+                "cancellable_exit_time_nano", request -> this.cancellableExitTimeNano(request),
+                "cancellable_exit_time", request -> this.cancellableExitTime(request),
+                "update_group_resource", request -> this.updateGroupResource(request),
+                "update_group_work", request -> this.updateGroupWork(request));
 
         public ParamHandlers() {
 
@@ -415,6 +418,28 @@ public class AutoCancelCore {
             }
         }
 
+        private void cancellableExitTime(OperationRequest request) {
+            Cancellable cancellable = cancellables.get(request.getCancellableID());
+            if (cancellable.isRoot()) {
+                // This is a root cancellable
+                // Parameter cancellable_start_time is useful only if this cancellable is a root cancellable
+                // TODO: Add a warning if this is not a root cancellable
+                Long exitTime = (Long) request.getParams().get("cancellable_exit_time");
+                rootCancellableToCancellableGroup.get(cancellable.getID()).setExitTime(exitTime);
+            }
+        }
+
+        private void cancellableExitTimeNano(OperationRequest request) {
+            Cancellable cancellable = cancellables.get(request.getCancellableID());
+            if (cancellable.isRoot()) {
+                // This is a root cancellable
+                // Parameter cancellable_start_time_nano is useful only if this cancellable is a root cancellable
+                // TODO: Add a warning if this is not a root cancellable
+                Long exitTimeNano = (Long) request.getParams().get("cancellable_exit_time_nano");
+                rootCancellableToCancellableGroup.get(cancellable.getID()).setExitTimeNano(exitTimeNano);
+            }
+        }
+
         @SuppressWarnings("unchecked")
         private void updateGroupResource(OperationRequest request) {
             Cancellable cancellable = cancellables.get(request.getCancellableID());
@@ -439,6 +464,20 @@ public class AutoCancelCore {
                 }
             } else {
                 // System.out.println("Can't find cancellable for cid " + request.getCancellableID());
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        private void updateGroupWork(OperationRequest request) {
+            try {
+                Cancellable cancellable = cancellables.get(request.getCancellableID());
+                if (cancellable.isRoot()) {
+                    Map<String, Object> workUpdateInfo = (Map<String, Object>) request.getParams().get("update_group_work");
+                    rootCancellableToCancellableGroup.get(cancellable.getID()).updateWork(workUpdateInfo);
+                }
+            }
+            catch (NullPointerException e) {
+                System.out.println(String.format("Dereference to null pointer at %s", e.getMessage()));
             }
         }
     }

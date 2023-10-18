@@ -1,5 +1,5 @@
-root_dir=/home/ubuntu/AutocancelProject
-user_name=ubuntu
+root_dir=/home/eason/elasticsearch_proj
+user_name=eason
 
 docker compose -f $root_dir/autocancel_exp/cluster/single_node.yml down && \
 sudo chown -R $user_name:$user_name $root_dir/elasticsearch/build/distribution/local/elasticsearch-8.9.0-SNAPSHOT && \

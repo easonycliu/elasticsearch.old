@@ -63,6 +63,35 @@ public class AutoCancelInfoCenter {
         return cancellableGroupResourceUsage;
     }
 
+    public Map<CancellableID, Map<ResourceName, Long>> getCancellableGroupUsage() {
+        Map<CancellableID, Map<ResourceName, Long>> cancellableGroupUsage = new HashMap<CancellableID, Map<ResourceName, Long>>();
+        for (Map.Entry<CancellableID, CancellableGroup> entry : this.rootCancellableToCancellableGroup.entrySet()) {
+            Set<ResourceName> resourceNames = entry.getValue().getResourceNames();
+            Map<ResourceName, Long> resourceUsage = new HashMap<ResourceName, Long>();
+            for (ResourceName resourceName : resourceNames) {
+                resourceUsage.put(resourceName, entry.getValue().getResourceUsage(resourceName));
+            }
+            cancellableGroupUsage.put(entry.getKey(), resourceUsage);
+        }
+        return cancellableGroupUsage;
+    }
+
+    public Map<CancellableID, Long> getCancellableGroupRemainTime() {
+        Map<CancellableID, Long> cancellableGroupRemainTime = new HashMap<CancellableID, Long>();
+        for (Map.Entry<CancellableID, CancellableGroup> entry : this.rootCancellableToCancellableGroup.entrySet()) {
+            cancellableGroupRemainTime.put(entry.getKey(), entry.getValue().predictRemainTime());
+        }
+        return cancellableGroupRemainTime;
+    }
+
+    public Map<CancellableID, Long> getCancellableGroupRemainTimeNano() {
+        Map<CancellableID, Long> cancellableGroupRemainTimeNano = new HashMap<CancellableID, Long>();
+        for (Map.Entry<CancellableID, CancellableGroup> entry : this.rootCancellableToCancellableGroup.entrySet()) {
+            cancellableGroupRemainTimeNano.put(entry.getKey(), entry.getValue().predictRemainTimeNano());
+        }
+        return cancellableGroupRemainTimeNano;
+    }
+
     public Boolean isCancellable(CancellableID cid) {
         Boolean isCancellable = false;
         if (cid != null) {

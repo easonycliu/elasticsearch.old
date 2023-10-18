@@ -1,5 +1,6 @@
 package org.elasticsearch.autocancel.app.elasticsearch;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -93,5 +94,17 @@ public class TaskTracker {
         else {
             Logger.systemTrace("Cannot found corresponding cancellable from runnable");
         }
+    }
+
+    public void addTaskWork(Long work) {
+        this.mainManager.updateCancellableGroupWork(Map.of(
+            "add_work", work
+        ));
+    }
+
+    public void finishTaskWork(Long work) {
+        this.mainManager.updateCancellableGroupWork(Map.of(
+            "finish_work", work
+        ));
     }
 }

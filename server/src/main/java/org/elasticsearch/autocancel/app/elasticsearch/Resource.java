@@ -23,7 +23,7 @@ public class Resource {
     public void startCPUUsing(String name) {
         Long cpuTimeSystem = System.nanoTime();
         Long cpuTimeThread = threadMXBean.getCurrentThreadCpuTime();
-        this.mainManager.updateCancellableGroup(
+        this.mainManager.updateCancellableGroupResource(
             ResourceType.CPU, 
             name, 
             Map.of(
@@ -38,7 +38,7 @@ public class Resource {
     public void endCPUUsing(String name) {
         Long cpuTimeThread = threadMXBean.getCurrentThreadCpuTime();
         Long cpuTimeSystem = System.nanoTime();
-        this.mainManager.updateCancellableGroup(
+        this.mainManager.updateCancellableGroupResource(
             ResourceType.CPU, 
             name, 
             Map.of(
@@ -51,7 +51,7 @@ public class Resource {
     }
     
     public void addMemoryUsage(String name, Long evictTime, Long totalMemory, Long usingMemory, Long reuseMemory) {
-        this.mainManager.updateCancellableGroup(
+        this.mainManager.updateCancellableGroupResource(
             ResourceType.MEMORY, 
             name, 
             Map.of(
@@ -64,7 +64,7 @@ public class Resource {
     }
 
     public void startQueueEvent(String name, QueueEvent event) {
-        this.mainManager.updateCancellableGroup(
+        this.mainManager.updateCancellableGroupResource(
             ResourceType.QUEUE, 
             name, 
             Map.of(
@@ -76,7 +76,7 @@ public class Resource {
     }
 
     public void endQueueEvent(String name, QueueEvent event) {
-        this.mainManager.updateCancellableGroup(
+        this.mainManager.updateCancellableGroupResource(
             ResourceType.QUEUE, 
             name, 
             Map.of(

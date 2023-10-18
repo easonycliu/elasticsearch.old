@@ -86,6 +86,26 @@ public class AutoCancel {
         }
     }
 
+    public static void addTaskWork(Long work) {
+        if (AutoCancel.started) {
+            AutoCancel.taskTracker.addTaskWork(work);
+        }
+        else if (warnNotStarted) {
+            Logger.systemWarn("You should start lib AutoCancel first.");
+            AutoCancel.warnNotStarted = false;
+        }
+    }
+
+    public static void finishTaskWork(Long work) {
+        if (AutoCancel.started) {
+            AutoCancel.taskTracker.finishTaskWork(work);
+        }
+        else if (warnNotStarted) {
+            Logger.systemWarn("You should start lib AutoCancel first.");
+            AutoCancel.warnNotStarted = false;
+        }
+    }
+
     public static void startCPUUsing(String name) {
         if (AutoCancel.started) {
             AutoCancel.resourceTracker.startCPUUsing(name);
@@ -106,7 +126,7 @@ public class AutoCancel {
         }
     }
 
-    public static void addMemoryUsage(String name, Long evictTime, Long usingMemory, Long totalMemory, Long reuseMemory) {
+    public static void addMemoryUsage(String name, Long evictTime, Long totalMemory, Long usingMemory, Long reuseMemory) {
         if (AutoCancel.started) {
             AutoCancel.resourceTracker.addMemoryUsage(name, evictTime, totalMemory, usingMemory, reuseMemory);
         }

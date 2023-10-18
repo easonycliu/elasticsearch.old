@@ -33,8 +33,10 @@ public class EvictableMemoryResource extends MemoryResource {
     public Double getSlowdown(Map<String, Object> slowdownInfo) {
         Double slowdown = 0.0;
         Long startTimeNano = (Long) slowdownInfo.get("start_time_nano");
-        if (startTimeNano != null) {
-            slowdown = Double.valueOf(this.totalEvictTime) / (this.currentTimeNano - startTimeNano);
+        Long exitTimeNano = (Long) slowdownInfo.get("exit_time_nano");
+        if (startTimeNano != null && exitTimeNano != null) {
+            Long endTime = exitTimeNano.equals(0L) ? this.currentTimeNano : exitTimeNano;
+            slowdown = Double.valueOf(this.totalEvictTime) / (endTime - startTimeNano);
         }
         return slowdown;
     }
@@ -46,7 +48,8 @@ public class EvictableMemoryResource extends MemoryResource {
         ID cid = (ID) resourceUpdateInfo.get("cancellable_id");
         if (cid != null) {
             this.cancellableIDSet.add(cid);
-            this.totalEvictTime += (Long) resourceUpdateInfo.getOrDefault("evict_time", 0L);
+            Long evictTime = (Long) resourceUpdateInfo.getOrDefault("evict_time", 0L);
+            this.totalEvictTime += evictTime;
             super.setResourceUpdateInfo(resourceUpdateInfo);
         }
     }
