@@ -14,7 +14,7 @@ public class Control {
 
     public void cancel(CancellableID cid) {
         if (cid.isValid()) {
-            // this.canceller.accept(cid.toLong(), "Auto Cancel Library");
+            this.canceller.accept(cid.toLong(), "Auto Cancel Library");
         }
     }
 }

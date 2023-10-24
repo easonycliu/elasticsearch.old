@@ -3,6 +3,7 @@ package org.elasticsearch.autocancel.core.policy;
 import java.util.Map;
 
 import org.elasticsearch.autocancel.utils.Policy;
+import org.elasticsearch.autocancel.utils.Settings;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
 
@@ -39,8 +40,8 @@ public class BasePolicy extends Policy {
             for (Map.Entry<ResourceName, Double> entry : resourceContentionLevel.entrySet()) {
                 System.out.println(entry.getKey() + "'s contention level is " + entry.getValue());
             }
-            Map<CancellableID, Long> cancellableGroupResourceResourceUsage = Policy.infoCenter.getCancellableGroupResourceUsage(resourceName);
-            Map.Entry<CancellableID, Long> maxResourceUsage = cancellableGroupResourceResourceUsage
+            Map<CancellableID, Double> cancellableGroupResourceMeasure = BasePolicy.getCancellableGroupResourceMeasure(resourceName);
+            Map.Entry<CancellableID, Double> maxResourceUsage = cancellableGroupResourceMeasure
                                                                     .entrySet()
                                                                     .stream()
                                                                     .max(Map.Entry.comparingByValue()).orElse(null);
@@ -61,5 +62,23 @@ public class BasePolicy extends Policy {
         }
 
         return target;
+    }
+
+    public static Map<CancellableID, Double> getCancellableGroupResourceMeasure(ResourceName resourceName) {
+        if ((Boolean) Settings.getSetting("predict_progress")) {
+            return Policy.infoCenter.getCancellableGroupResourceBenefit(resourceName);
+        }
+        else {
+            return Policy.infoCenter.getUnifiedCancellableGroupResourceUsage(resourceName);
+        }
+    }
+
+    public static Map<CancellableID, Map<ResourceName, Double>> getCancellableGroupMeasure() {
+        if ((Boolean) Settings.getSetting("predict_progress")) {
+            return Policy.infoCenter.getCancellableGroupBenefit();
+        }
+        else {
+            return Policy.infoCenter.getUnifiedCancellableGroupUsage();
+        }
     }
 }

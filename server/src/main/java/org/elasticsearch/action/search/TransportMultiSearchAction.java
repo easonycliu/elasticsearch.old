@@ -23,6 +23,7 @@ import org.elasticsearch.common.util.concurrent.EsExecutors;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.TransportService;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -95,6 +96,7 @@ public class TransportMultiSearchAction extends HandledTransportAction<MultiSear
         final AtomicArray<MultiSearchResponse.Item> responses = new AtomicArray<>(numRequests);
         final AtomicInteger responseCounter = new AtomicInteger(numRequests);
         int numConcurrentSearches = Math.min(numRequests, maxConcurrentSearches);
+        AutoCancel.addTaskWork((long) numRequests);
         for (int i = 0; i < numConcurrentSearches; i++) {
             executeSearch(searchRequestSlots, responses, responseCounter, listener, relativeStartTime);
         }
@@ -160,6 +162,7 @@ public class TransportMultiSearchAction extends HandledTransportAction<MultiSear
             }
 
             private void handleResponse(final int responseSlot, final MultiSearchResponse.Item item) {
+                AutoCancel.finishTaskWork(1L);
                 responses.set(responseSlot, item);
                 if (responseCounter.decrementAndGet() == 0) {
                     assert requests.isEmpty();

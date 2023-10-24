@@ -28,6 +28,7 @@ import org.elasticsearch.action.support.replication.TransportWriteAction;
 import org.elasticsearch.action.update.UpdateHelper;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 import org.elasticsearch.tasks.TaskCancelledException;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.ClusterStateObserver;
@@ -262,24 +263,30 @@ public class TransportShardBulkAction extends TransportWriteAction<BulkShardRequ
             @Override
             protected void doRun() throws Exception {
                 Integer iter = 0;
+                AutoCancel.addTaskWork((long) context.getBulkShardRequest().items().length);
                 while (context.hasMoreOperationsToExecute()) {
-                    if (executeBulkItemRequest(
-                        context,
-                        updateHelper,
-                        nowInMillisSupplier,
-                        mappingUpdater,
-                        waitForMappingUpdate,
-                        ActionListener.wrap(v -> executor.execute(this), this::onRejection)
-                    ) == false) {
-                        // We are waiting for a mapping update on another thread, that will invoke this action again once its done
-                        // so we just break out here.
-                        return;
+                    try {
+                        if (executeBulkItemRequest(
+                            context,
+                            updateHelper,
+                            nowInMillisSupplier,
+                            mappingUpdater,
+                            waitForMappingUpdate,
+                            ActionListener.wrap(v -> executor.execute(this), this::onRejection)
+                        ) == false) {
+                            // We are waiting for a mapping update on another thread, that will invoke this action again once its done
+                            // so we just break out here.
+                            return;
+                        }
+                        if (isCanceled != null && isCanceled.get()) {
+                            System.out.println("Breaking out from performOnPrimary with " + isCanceled.get().toString() + " at iter " + iter.toString());
+                            throw new TaskCancelledException(String.format("Task cancelled after executing %d bulk request", iter.toString()));
+                        }
+                        assert context.isInitial(); // either completed and moved to next or reset
                     }
-                    if (isCanceled != null && isCanceled.get()) {
-                        System.out.println("Breaking out from performOnPrimary with " + isCanceled.get().toString() + " at iter " + iter.toString());
-                        throw new TaskCancelledException(String.format("Task cancelled after executing %d bulk request", iter.toString()));
+                    finally {
+                        AutoCancel.finishTaskWork(1L);
                     }
-                    assert context.isInitial(); // either completed and moved to next or reset
                 }
                 primary.getBulkOperationListener().afterBulk(request.totalSizeInBytes(), System.nanoTime() - startBulkTime);
                 // We're done, there's no more operations to execute so we resolve the wrapped listener

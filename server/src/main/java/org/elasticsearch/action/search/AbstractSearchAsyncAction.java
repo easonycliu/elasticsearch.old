@@ -21,6 +21,7 @@ import org.elasticsearch.action.OriginalIndices;
 import org.elasticsearch.action.ShardOperationFailedException;
 import org.elasticsearch.action.search.TransportSearchAction.SearchTimeProvider;
 import org.elasticsearch.action.support.TransportActions;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.routing.GroupShardsIterator;
 import org.elasticsearch.common.util.concurrent.AbstractRunnable;
@@ -255,6 +256,7 @@ abstract class AbstractSearchAsyncAction<Result extends SearchPhaseResult> exten
                     );
                 }
             }
+            AutoCancel.addTaskWork((long) shardsIts.size());
             for (int i = 0; i < shardsIts.size(); i++) {
                 final SearchShardIterator shardRoutings = shardsIts.get(i);
                 assert shardRoutings.skip() == false;
@@ -461,6 +463,7 @@ abstract class AbstractSearchAsyncAction<Result extends SearchPhaseResult> exten
                     clusterState.version()
                 );
             }
+            AutoCancel.finishTaskWork(1L);
             executePhase(nextPhase);
         }
     }

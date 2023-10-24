@@ -471,10 +471,8 @@ public class AutoCancelCore {
         private void updateGroupWork(OperationRequest request) {
             try {
                 Cancellable cancellable = cancellables.get(request.getCancellableID());
-                if (cancellable.isRoot()) {
-                    Map<String, Object> workUpdateInfo = (Map<String, Object>) request.getParams().get("update_group_work");
-                    rootCancellableToCancellableGroup.get(cancellable.getID()).updateWork(workUpdateInfo);
-                }
+                Map<String, Object> workUpdateInfo = (Map<String, Object>) request.getParams().get("update_group_work");
+                rootCancellableToCancellableGroup.get(cancellable.getRootID()).updateWork(workUpdateInfo);
             }
             catch (NullPointerException e) {
                 System.out.println(String.format("Dereference to null pointer at %s", e.getMessage()));
