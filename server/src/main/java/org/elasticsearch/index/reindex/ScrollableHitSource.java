@@ -15,6 +15,7 @@ import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.search.ShardSearchFailure;
+import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.bytes.BytesReference;
 import org.elasticsearch.common.io.stream.StreamInput;
@@ -92,6 +93,10 @@ public abstract class ScrollableHitSource {
 
     private void onResponse(Response response) {
         logger.trace("scroll returned [{}] documents with a scroll id of [{}]", response.getHits().size(), response.getScrollId());
+        if (!this.hasScroll()) {
+            AutoCancel.addTaskWork(response.getTotalHits() * 100);
+        }
+        AutoCancel.finishTaskWork((long) response.getHits().size() * 100);
         setScroll(response.getScrollId());
         onResponse.accept(new AsyncResponse() {
             private AtomicBoolean alreadyDone = new AtomicBoolean();

@@ -463,7 +463,6 @@ abstract class AbstractSearchAsyncAction<Result extends SearchPhaseResult> exten
                     clusterState.version()
                 );
             }
-            AutoCancel.finishTaskWork(1L);
             executePhase(nextPhase);
         }
     }
@@ -598,6 +597,7 @@ abstract class AbstractSearchAsyncAction<Result extends SearchPhaseResult> exten
         // if (logger.isDebugEnabled()) {
         //     logger.debug("Get result from shard");
         // }
+        AutoCancel.finishTaskWork(1L);
         hasShardResponse.set(true);
         if (logger.isTraceEnabled()) {
             logger.trace("got first-phase result from {}", result != null ? result.getSearchShardTarget() : null);
