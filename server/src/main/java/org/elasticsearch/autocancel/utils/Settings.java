@@ -14,7 +14,7 @@ public class Settings {
         Map.entry("skip_first_ms", 60000L),
         Map.entry("save_history_ms", 0L),
         Map.entry("resource_usage_decay", 0.8),
-        Map.entry("default_policy", "multi_objective_policy"),
+        Map.entry("default_policy", "base_policy"),
         Map.entry("predict_progress", true),
         Map.entry(
             "monitor_physical_resources", 
