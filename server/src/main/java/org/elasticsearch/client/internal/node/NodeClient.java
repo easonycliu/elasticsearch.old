@@ -24,6 +24,7 @@ import org.elasticsearch.tasks.TaskManager;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.RemoteClusterService;
 import org.elasticsearch.transport.Transport;
+import org.elasticsearch.rest.action.RestActionListener;
 
 import java.util.List;
 import java.util.Map;
@@ -109,6 +110,9 @@ public class NodeClient extends AbstractClient {
         Request request,
         ActionListener<Response> listener
     ) {
+        if (request.getRestRequest() == null && listener instanceof RestActionListener) {
+            request.setRestRequest(((RestActionListener) listener).getRestRequest());
+        }
         return taskManager.registerAndExecute(
             "transport",
             transportAction(action),

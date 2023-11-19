@@ -323,6 +323,7 @@ import org.elasticsearch.core.Nullable;
 import org.elasticsearch.tasks.TaskId;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.xcontent.XContentType;
+import org.elasticsearch.rest.action.RestActionListener;
 
 import java.util.Map;
 
@@ -376,6 +377,9 @@ public abstract class AbstractClient implements Client {
         ActionListener<Response> listener
     ) {
         try {
+            if (listener instanceof RestActionListener) {
+                request.setRestRequest(((RestActionListener) listener).getRestRequest());
+            }
             doExecute(action, request, listener);
         } catch (Exception e) {
             assert false : new AssertionError(e);

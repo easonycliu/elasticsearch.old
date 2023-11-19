@@ -11,13 +11,17 @@ package org.elasticsearch.action;
 import org.elasticsearch.common.io.stream.StreamInput;
 import org.elasticsearch.common.io.stream.StreamOutput;
 import org.elasticsearch.transport.TransportRequest;
+import org.elasticsearch.rest.RestRequest;
 
 import java.io.IOException;
 
 public abstract class ActionRequest extends TransportRequest {
 
+    private RestRequest restRequest;
+
     public ActionRequest() {
         super();
+        this.restRequest = null;
         // this does not set the listenerThreaded API, if needed, its up to the caller to set it
         // since most times, we actually want it to not be threaded...
         // this.listenerThreaded = request.listenerThreaded();
@@ -25,6 +29,7 @@ public abstract class ActionRequest extends TransportRequest {
 
     public ActionRequest(StreamInput in) throws IOException {
         super(in);
+        this.restRequest = null;
     }
 
     public abstract ActionRequestValidationException validate();
@@ -39,5 +44,13 @@ public abstract class ActionRequest extends TransportRequest {
     @Override
     public void writeTo(StreamOutput out) throws IOException {
         super.writeTo(out);
+    }
+
+    public void setRestRequest(RestRequest restRequest) {
+        this.restRequest = restRequest;
+    }
+
+    public RestRequest getRestRequest() {
+        return this.restRequest;
     }
 }
