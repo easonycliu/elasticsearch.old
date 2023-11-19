@@ -7,7 +7,6 @@ package org.elasticsearch.autocancel.manager;
 
 import org.elasticsearch.autocancel.infrastructure.AbstractInfrastructure;
 import org.elasticsearch.autocancel.infrastructure.jvm.JavaThreadStatusReader;
-import org.elasticsearch.autocancel.infrastructure.linux.LinuxThreadStatusReader;
 import org.elasticsearch.autocancel.utils.Settings;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
@@ -24,8 +23,8 @@ public class InfrastructureManager {
     public InfrastructureManager() {
         this.version = new AtomicInteger();
         this.infrastructures = Map.of(
-                "JVM", new JavaThreadStatusReader(),
-                "Linux", new LinuxThreadStatusReader());
+                "JVM", new JavaThreadStatusReader()
+        );
     }
 
     public Map<String, Object> getSpecifiedResourceLatest(JavaThreadID jid, ResourceName resourceName) {

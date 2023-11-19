@@ -57,6 +57,7 @@ public class CPUTimeInfo {
         return this.cpuTime - this.previousCPUTime;
     }
 
+    @SuppressWarnings("BoxedPrimitiveEquality")
     public Boolean comparable(CPUTimeInfo cpuTimeInfo) {
         return this.previousVersion == cpuTimeInfo.getPreviousVersion() && this.version == cpuTimeInfo.getVersion();
     }

@@ -66,7 +66,10 @@ public class JavaMemoryReader extends ResourceReader {
 
         // update all working threads
         long[] threads = this.sunThreadMXBean.getAllThreadIds();
-        TreeSet<Long> threadSet = new TreeSet<Long>(Arrays.stream(threads).boxed().toList());
+        TreeSet<Long> threadSet = new TreeSet<Long>();
+        for (long thread : threads) {
+            threadSet.add(thread);
+        }
 
         this.javaThreadHeapUsing.replaceAll((key, value) -> {
             if (threadSet.contains(key.unwrap())) {

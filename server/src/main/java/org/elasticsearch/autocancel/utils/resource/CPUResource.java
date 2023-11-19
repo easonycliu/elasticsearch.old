@@ -109,42 +109,54 @@ public class CPUResource extends Resource {
             this.cpuUsageThreads.add(cpuUsageThread);
         }
 
-        if (
-            cpuTimeSystem != null &&
-            cpuTimeThread != null &&
-            threadID != null &&
-            start != null
-        ) {
-            if (start) {
-                if (this.cpuDataPoints.put(threadID, new CPUDataPoint(cpuTimeSystem, cpuTimeThread)) != null) {
-                    Logger.systemWarn("Different runnables on the same thread simutanously");
-                }
-            }
-            else {
-                CPUDataPoint cpuDataPoint = this.cpuDataPoints.remove(threadID);
-                if (cpuDataPoint != null) {
-                    Long prevCPUTimeSystem = cpuDataPoint.getCPUTimeSystem();
-                    Long prevCPUTimeThread = cpuDataPoint.getCPUTimeThread();
-                    Long startTimeSystem = cpuDataPoint.getStartSystemTime();
-                    Long startTimeThread = cpuDataPoint.getStartThreadTime();
-                    this.totalSystemTime += cpuTimeSystem - prevCPUTimeSystem;
-                    this.usedSystemTime += cpuTimeThread - prevCPUTimeThread;
-                    if (cpuTimeThread - startTimeThread > cpuTimeSystem - startTimeSystem) {
-                        System.out.println(String.format("Find abnormal metrics in setResourceUpdateInfo, thread used system time: %d, thread total system time: %d", cpuTimeThread - startTimeThread, cpuTimeSystem - startTimeSystem));
-                    }
-                }
-                else {
-                    Logger.systemWarn(String.format("Unmatched start - end events in cpu resource"));
-                }
+        if (start == null) {
+            if (
+                cpuTimeSystem != null &&
+                cpuTimeThread != null
+            ) {
+                this.totalSystemTime += cpuTimeSystem;
+                this.usedSystemTime += cpuTimeThread;
+                this.usedSystemTimeDecay =  (long) ((Double) Settings.getSetting("resource_usage_decay") * this.usedSystemTimeDecay + cpuTimeThread);
             }
         }
         else {
-            Logger.systemWarn(String.format("Is null for cpu_time_system: %b, cpu_time_thread: %b, thread_id: %b, start: %b", 
-                cpuTimeSystem == null, 
-                cpuTimeThread == null, 
-                threadID == null,
-                start == null));
+            if (
+                cpuTimeSystem != null &&
+                cpuTimeThread != null &&
+                threadID != null
+            ) {
+                if (start) {
+                    if (this.cpuDataPoints.put(threadID, new CPUDataPoint(cpuTimeSystem, cpuTimeThread)) != null) {
+                        Logger.systemWarn("Different runnables on the same thread simutanously");
+                    }
+                }
+                else {
+                    CPUDataPoint cpuDataPoint = this.cpuDataPoints.remove(threadID);
+                    if (cpuDataPoint != null) {
+                        Long prevCPUTimeSystem = cpuDataPoint.getCPUTimeSystem();
+                        Long prevCPUTimeThread = cpuDataPoint.getCPUTimeThread();
+                        Long startTimeSystem = cpuDataPoint.getStartSystemTime();
+                        Long startTimeThread = cpuDataPoint.getStartThreadTime();
+                        this.totalSystemTime += cpuTimeSystem - prevCPUTimeSystem;
+                        this.usedSystemTime += cpuTimeThread - prevCPUTimeThread;
+                        if (cpuTimeThread - startTimeThread > cpuTimeSystem - startTimeSystem) {
+                            System.out.println(String.format("Find abnormal metrics in setResourceUpdateInfo, thread used system time: %d, thread total system time: %d", cpuTimeThread - startTimeThread, cpuTimeSystem - startTimeSystem));
+                        }
+                    }
+                    else {
+                        Logger.systemWarn(String.format("Unmatched start - end events in cpu resource"));
+                    }
+                }
+            }
+            else {
+                Logger.systemWarn(String.format("Is null for cpu_time_system: %b, cpu_time_thread: %b, thread_id: %b, start: %b", 
+                    cpuTimeSystem == null, 
+                    cpuTimeThread == null, 
+                    threadID == null));
+            }
         }
+        
+        
     }
 
     @Override

@@ -1,8 +1,9 @@
-package org.elasticsearch.autocancel.app.elasticsearch;
+package org.elasticsearch.autocancel.api;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 import org.elasticsearch.autocancel.manager.MainManager;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
@@ -14,49 +15,52 @@ public class TaskTracker {
 
     private ConcurrentMap<Runnable, CancellableID> queueCancellable;
 
-    private Log log;
+    private ConcurrentMap<CancellableID, TaskInfo> taskMap;
 
-    public TaskTracker(MainManager mainManager) {
+    private Function<Object, TaskInfo> taskInfoFunction;
+
+    public TaskTracker(MainManager mainManager, Function<Object, TaskInfo> taskInfoFunction) {
         this.mainManager = mainManager;
-
         this.queueCancellable = new ConcurrentHashMap<Runnable, CancellableID>();
-
-        this.log = new Log(this.mainManager);
+        this.taskMap = new ConcurrentHashMap<CancellableID, TaskInfo>();
+        this.taskInfoFunction = taskInfoFunction;
     }
 
     public void stop() {
-        this.log.stop();
     }
 
-    public void onTaskCreate(Object task, Boolean isCancellable) throws AssertionError {        
-        TaskWrapper wrappedTask = new TaskWrapper(task);
+    public void onTaskCreate(Object task) throws AssertionError {
+        TaskInfo taskInfo = this.taskInfoFunction.apply(task);
+        if (taskInfo != null) {
+            this.taskMap.put(taskInfo.getTaskID(), taskInfo);
 
-        CancellableID parentCancellableID = wrappedTask.getParentTaskID();
+            this.mainManager.createCancellableIDOnCurrentJavaThreadID(
+                taskInfo.getTaskID(),
+                taskInfo.getIsCancellable(), 
+                taskInfo.getName(), 
+                taskInfo.getAction(), 
+                taskInfo.getParentTaskID(), 
+                taskInfo.getStartTimeNano(),
+                taskInfo.getStartTime()
+            );
 
-        this.mainManager.createCancellableIDOnCurrentJavaThreadID(
-            wrappedTask.getTaskID(),
-            isCancellable, 
-            task.toString(), 
-            wrappedTask.getAction(), 
-            parentCancellableID, 
-            wrappedTask.getStartTimeNano(),
-            wrappedTask.getStartTime()
-        );
-
-        Logger.systemTrace("Created " + task.toString());
+            Logger.systemTrace("Created " + task.toString());
+        }
     }
 
     public void onTaskExit(Object task) throws AssertionError {
-        TaskWrapper wrappedTask = new TaskWrapper(task);
-        CancellableID cid = wrappedTask.getTaskID();
+        TaskInfo taskInfo = this.taskInfoFunction.apply(task);
+        if (taskInfo != null) {
+            this.taskMap.remove(taskInfo.getTaskID(), taskInfo);
 
-        Logger.systemTrace("Exit " + task.toString());
+            Logger.systemTrace("Exit " + task.toString());
 
-        if (cid.isValid()) {
-            this.mainManager.destoryCancellableIDOnCurrentJavaThreadID(cid);
-        }
-        else {
-            Logger.systemWarn(String.format("Error parsing %s", task.toString()));
+            if (taskInfo.getTaskID().isValid()) {
+                this.mainManager.destoryCancellableIDOnCurrentJavaThreadID(taskInfo.getTaskID());
+            }
+            else {
+                Logger.systemWarn(String.format("Error parsing %s", task.toString()));
+            }
         }
     }
 
@@ -106,5 +110,9 @@ public class TaskTracker {
         this.mainManager.updateCancellableGroupWork(Map.of(
             "finish_work", work
         ));
+    }
+
+    public TaskInfo getTaskInfo(CancellableID cid) {
+        return this.taskMap.get(cid);
     }
 }

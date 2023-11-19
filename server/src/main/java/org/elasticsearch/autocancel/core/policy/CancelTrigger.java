@@ -14,7 +14,7 @@ public class CancelTrigger {
 
     private static final Long ONE_CYCLE_MILLI = 1000L;
 
-    private static final Long MAX_CONTINUOUS_ABNORMAL_CYCLE = 5L;
+    private static final Long MAX_CONTINUOUS_ABNORMAL_CYCLE = 3L;
 
     private static final Long PAST_PERFORMANCE_REF_CYCLE = 30L;
 

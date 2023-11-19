@@ -21,7 +21,7 @@ import org.elasticsearch.action.OriginalIndices;
 import org.elasticsearch.action.ShardOperationFailedException;
 import org.elasticsearch.action.search.TransportSearchAction.SearchTimeProvider;
 import org.elasticsearch.action.support.TransportActions;
-import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
+import org.elasticsearch.autocancel.api.AutoCancel;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.routing.GroupShardsIterator;
 import org.elasticsearch.common.util.concurrent.AbstractRunnable;

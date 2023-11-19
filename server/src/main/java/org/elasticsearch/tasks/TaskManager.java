@@ -38,7 +38,7 @@ import org.elasticsearch.transport.TcpTransportChannel;
 import org.elasticsearch.transport.Transport;
 import org.elasticsearch.transport.TransportChannel;
 import org.elasticsearch.transport.TransportService;
-import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
+import org.elasticsearch.autocancel.api.AutoCancel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -145,7 +145,7 @@ public class TaskManager implements ClusterStateApplier {
             }
         }
         Task task = request.createTask(taskIdGenerator.incrementAndGet(), type, action, request.getParentTask(), headers);
-        AutoCancel.onTaskCreate(task, task instanceof CancellableTask);
+        AutoCancel.onTaskCreate(task);
         // if (task.getAction().contains("bulk")) {
         //     System.out.println(request.getClass().toString() + " " + task.toString() + " cancellable: " + (task instanceof CancellableTask));
         // }

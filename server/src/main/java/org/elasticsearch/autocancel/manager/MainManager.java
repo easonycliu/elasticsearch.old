@@ -9,8 +9,7 @@
 
 package org.elasticsearch.autocancel.manager;
 
-import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
-import org.elasticsearch.autocancel.app.elasticsearch.Log;
+import org.elasticsearch.autocancel.api.AutoCancel;
 import org.elasticsearch.autocancel.core.AutoCancelCore;
 import org.elasticsearch.autocancel.core.AutoCancelCoreHolder;
 import org.elasticsearch.autocancel.core.AutoCancelInfoCenter;
@@ -42,8 +41,6 @@ import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Map;
-
-import net.openhft.affinity.AffinityLock;
 
 public class MainManager {
 
@@ -80,28 +77,26 @@ public class MainManager {
                 if (!exitWhenSleep) {
                     System.out.println("Autocancel core start");
                     AutoCancel.doStart();
-                    try (AffinityLock lock = AffinityLock.acquireLock(Runtime.getRuntime().availableProcessors() - 1)) {
-                        AutoCancelCore autoCancelCore = AutoCancelCoreHolder.getAutoCancelCore();
-                        autoCancelCore.initialize(MainManager.this);
-                        Policy actualPolicy = ((policy != null) ? policy : Policy.getPolicyBySetting());
-                        while (!Thread.interrupted()) {
-                            try {
-                                autoCancelCore.startOneLoop();
+                    AutoCancelCore autoCancelCore = AutoCancelCoreHolder.getAutoCancelCore();
+                    autoCancelCore.initialize(MainManager.this);
+                    Policy actualPolicy = ((policy != null) ? policy : Policy.getPolicyBySetting());
+                    while (!Thread.interrupted()) {
+                        try {
+                            autoCancelCore.startOneLoop();
 
-                                if (actualPolicy.needCancellation()) {
-                                    CancellableID targetCID = actualPolicy.getCancelTarget();
-                                    if (targetCID.isValid()) {
-                                        AutoCancel.cancel(targetCID);
-                                    }
+                            if (actualPolicy.needCancellation()) {
+                                CancellableID targetCID = actualPolicy.getCancelTarget();
+                                if (targetCID.isValid()) {
+                                    AutoCancel.cancel(targetCID);
                                 }
-
-                                Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
-                            } catch (InterruptedException e) {
-                                break;
                             }
+
+                            Thread.sleep((Long) Settings.getSetting("core_update_cycle_ms"));
+                        } catch (InterruptedException e) {
+                            break;
                         }
-                        autoCancelCore.stop();
                     }
+                    autoCancelCore.stop();
                 }
             }
         };
@@ -167,6 +162,8 @@ public class MainManager {
     public void createCancellableIDOnCurrentJavaThreadID(CancellableID cid, Boolean isCancellable, String name, String action,
             CancellableID parentID, Long startTimeNano, Long startTime) {
         JavaThreadID jid = new JavaThreadID(Thread.currentThread().getId());
+        // System.out.println(String.format("Create cancellable with %d, %d, %s, %d, %d, %d",
+        // cid.toLong(), parentID.toLong(), name, action, ))
         this.createCancellable(cid, jid, isCancellable, name, action, parentID, startTimeNano, startTime);
     }
 

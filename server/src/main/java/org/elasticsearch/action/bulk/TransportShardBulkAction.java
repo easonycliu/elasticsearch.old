@@ -28,7 +28,7 @@ import org.elasticsearch.action.support.replication.TransportWriteAction;
 import org.elasticsearch.action.update.UpdateHelper;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
-import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
+import org.elasticsearch.autocancel.api.AutoCancel;
 import org.elasticsearch.tasks.TaskCancelledException;
 import org.elasticsearch.cluster.ClusterState;
 import org.elasticsearch.cluster.ClusterStateObserver;

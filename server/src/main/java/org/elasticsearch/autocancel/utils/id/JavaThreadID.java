@@ -22,8 +22,8 @@ public class JavaThreadID implements ID {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof JavaThreadID jid) {
-            return this.toLong().equals(jid.toLong());
+        if (o instanceof JavaThreadID) {
+            return this.toLong().equals(((JavaThreadID) o).toLong());
         }
         return false;
     }

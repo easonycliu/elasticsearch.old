@@ -22,8 +22,8 @@ public class CancellableID implements ID {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof CancellableID cid) {
-            return this.toLong().equals(cid.toLong());
+        if (o instanceof CancellableID) {
+            return this.toLong().equals(((CancellableID) o).toLong());
         }
         return false;
     }

@@ -220,7 +220,8 @@ import org.elasticsearch.upgrades.SystemIndexMigrationExecutor;
 import org.elasticsearch.usage.UsageService;
 import org.elasticsearch.watcher.ResourceWatcherService;
 import org.elasticsearch.xcontent.NamedXContentRegistry;
-import org.elasticsearch.autocancel.app.elasticsearch.AutoCancel;
+import org.elasticsearch.autocancel.api.AutoCancel;
+import org.elasticsearch.autocancel.api.TaskInfo;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -1187,12 +1188,30 @@ public class Node implements Closeable {
             actionModule.initRestHandlers(() -> clusterService.state().nodesIfRecovered());
             logger.info("initialized");
 
-            AutoCancel.start((taskID, reason) -> {
-                CancellableTask task = taskManager.getCancellableTask(taskID);
-                if (task != null) {
-                    taskManager.cancelTaskAndDescendants(task, reason, false, ActionListener.noop());
-                } 
-            });
+            AutoCancel.start(
+                (task) -> {
+                    TaskInfo taskInfo = null;
+                    if (task instanceof Task) {
+                        Task esTask = (Task) task;
+                        taskInfo = new TaskInfo(
+                            esTask,
+                            esTask.getId(),
+                            esTask.getParentTaskId().getId(),
+                            esTask.getAction(),
+                            esTask.getStartTime(),
+                            esTask.getStartTimeNanos(),
+                            esTask instanceof CancellableTask,
+                            esTask.toString()
+                        );
+                    }
+                    return taskInfo;
+                },
+                (task) -> {
+                    if (task instanceof CancellableTask) {
+                        taskManager.cancelTaskAndDescendants((CancellableTask) task, "AutoCancel Lib", false, ActionListener.noop());
+                    }
+                }
+            );
 
             success = true;
         } catch (IOException ex) {

@@ -65,7 +65,7 @@ public class BasePolicy extends Policy {
     }
 
     public static Map<CancellableID, Double> getCancellableGroupResourceMeasure(ResourceName resourceName) {
-        if ((Boolean) Settings.getSetting("predict_progress")) {
+        if (Boolean.valueOf((String) Settings.getSetting("predict_progress"))) {
             return Policy.infoCenter.getCancellableGroupResourceBenefit(resourceName);
         }
         else {
@@ -74,7 +74,7 @@ public class BasePolicy extends Policy {
     }
 
     public static Map<CancellableID, Map<ResourceName, Double>> getCancellableGroupMeasure() {
-        if ((Boolean) Settings.getSetting("predict_progress")) {
+        if (Boolean.valueOf((String) Settings.getSetting("predict_progress"))) {
             return Policy.infoCenter.getCancellableGroupBenefit();
         }
         else {

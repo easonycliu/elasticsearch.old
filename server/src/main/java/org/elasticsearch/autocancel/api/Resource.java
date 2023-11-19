@@ -1,4 +1,4 @@
-package org.elasticsearch.autocancel.app.elasticsearch;
+package org.elasticsearch.autocancel.api;
 
 import org.elasticsearch.autocancel.manager.MainManager;
 import org.elasticsearch.autocancel.utils.id.JavaThreadID;
