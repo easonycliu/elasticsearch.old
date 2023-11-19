@@ -15,4 +15,13 @@ public class Control {
             this.canceller.accept(task);
         }
     }
+
+    public void retry(TaskInfo taskInfo) {
+        if (taskInfo.hasRequestInfo()) {
+
+        }
+        else {
+            System.out.println(String.format("Cannot retry unsupported task %s", taskInfo.getName()));
+        }
+    }
 }

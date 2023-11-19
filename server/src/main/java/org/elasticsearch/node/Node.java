@@ -188,6 +188,7 @@ import org.elasticsearch.reservedstate.ReservedClusterStateHandlerProvider;
 import org.elasticsearch.reservedstate.action.ReservedClusterSettingsAction;
 import org.elasticsearch.reservedstate.service.FileSettingsService;
 import org.elasticsearch.rest.RestController;
+import org.elasticsearch.rest.RestRequest;
 import org.elasticsearch.script.ScriptContext;
 import org.elasticsearch.script.ScriptEngine;
 import org.elasticsearch.script.ScriptModule;
@@ -1189,10 +1190,18 @@ public class Node implements Closeable {
             logger.info("initialized");
 
             AutoCancel.start(
-                (task) -> {
+                (task, request) -> {
                     TaskInfo taskInfo = null;
-                    if (task instanceof Task) {
-                        Task esTask = (Task) task;
+                    if (task instanceof Task esTask) {
+                        TaskInfo.RequestInfo requestInfo = null;
+                        if (request != null && request instanceof RestRequest restRequest) {
+                            requestInfo = new TaskInfo.RequestInfo(
+                                restRequest.path(),
+                                restRequest.getHeaders(),
+                                restRequest.params(),
+                                restRequest.getHttpRequest().content().utf8ToString()
+                            );
+                        }
                         taskInfo = new TaskInfo(
                             esTask,
                             esTask.getId(),
@@ -1201,7 +1210,8 @@ public class Node implements Closeable {
                             esTask.getStartTime(),
                             esTask.getStartTimeNanos(),
                             esTask instanceof CancellableTask,
-                            esTask.toString()
+                            esTask.toString(),
+                            requestInfo
                         );
                     }
                     return taskInfo;

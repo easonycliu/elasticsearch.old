@@ -76,6 +76,7 @@ public class MainManager {
                 }
                 if (!exitWhenSleep) {
                     System.out.println("Autocancel core start");
+                    System.out.println(String.format("Policy: %s, Predict: %s", Settings.getSetting("default_policy"), Settings.getSetting("predict_progress")));
                     AutoCancel.doStart();
                     AutoCancelCore autoCancelCore = AutoCancelCoreHolder.getAutoCancelCore();
                     autoCancelCore.initialize(MainManager.this);
@@ -162,8 +163,6 @@ public class MainManager {
     public void createCancellableIDOnCurrentJavaThreadID(CancellableID cid, Boolean isCancellable, String name, String action,
             CancellableID parentID, Long startTimeNano, Long startTime) {
         JavaThreadID jid = new JavaThreadID(Thread.currentThread().getId());
-        // System.out.println(String.format("Create cancellable with %d, %d, %s, %d, %d, %d",
-        // cid.toLong(), parentID.toLong(), name, action, ))
         this.createCancellable(cid, jid, isCancellable, name, action, parentID, startTimeNano, startTime);
     }
 

@@ -145,7 +145,12 @@ public class TaskManager implements ClusterStateApplier {
             }
         }
         Task task = request.createTask(taskIdGenerator.incrementAndGet(), type, action, request.getParentTask(), headers);
-        AutoCancel.onTaskCreate(task);
+        if (request instanceof ActionRequest) {
+            AutoCancel.onTaskCreate(task, ((ActionRequest) request).getRestRequest());
+        }
+        else {
+            AutoCancel.onTaskCreate(task, null);
+        }
         // if (task.getAction().contains("bulk")) {
         //     System.out.println(request.getClass().toString() + " " + task.toString() + " cancellable: " + (task instanceof CancellableTask));
         // }
@@ -196,6 +201,13 @@ public class TaskManager implements ClusterStateApplier {
         try (var ignored = threadPool.getThreadContext().newTraceContext()) {
             final Task task;
             try {
+                // if (request.getRestRequest() != null) {
+                //     Map<String, String> params = request.getRestRequest().params();
+                //     Map<String, List<String>> headers = request.getRestRequest().getHeaders();
+                //     headers.forEach((key, value) -> System.out.println(String.format("Headers: Key: %s, Value: %s", key, value.toString())));
+                //     params.forEach((key, value) -> System.out.println(String.format("Params: Key: %s, Value: %s", key, value)));
+                //     System.out.println(request.getRestRequest().getHttpRequest().content().utf8ToString());
+                // }
                 task = register(type, action.actionName, request);
             } catch (TaskCancelledException e) {
                 Releasables.close(unregisterChildNode);

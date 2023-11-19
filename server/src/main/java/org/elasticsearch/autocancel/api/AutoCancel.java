@@ -5,8 +5,8 @@ import org.elasticsearch.autocancel.utils.id.CancellableID;
 import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.utils.resource.QueueEvent;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class AutoCancel {
     
@@ -22,7 +22,7 @@ public class AutoCancel {
 
     private static Control controller = null;
 
-    public static void start(Function<Object, TaskInfo> taskInfoFunction, Consumer<Object> canceller) {
+    public static void start(BiFunction<Object, Object, TaskInfo> taskInfoFunction, Consumer<Object> canceller) {
         AutoCancel.mainManager.start(null);
         AutoCancel.taskTracker = new TaskTracker(mainManager, taskInfoFunction);
         AutoCancel.controller = new Control(canceller);
@@ -38,9 +38,9 @@ public class AutoCancel {
         AutoCancel.mainManager.stop();
     }
 
-    public static void onTaskCreate(Object task) {
+    public static void onTaskCreate(Object task, Object request) {
         if (AutoCancel.started) {
-            AutoCancel.taskTracker.onTaskCreate(task);
+            AutoCancel.taskTracker.onTaskCreate(task, request);
         }
         else if (warnNotStarted) {
             Logger.systemWarn("You should start lib AutoCancel first.");

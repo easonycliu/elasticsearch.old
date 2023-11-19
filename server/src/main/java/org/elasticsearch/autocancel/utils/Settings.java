@@ -39,7 +39,7 @@ public class Settings {
     }
 
     private static String getFromJVMOrDefault(String key, String defaultSetting) {
-        String setting = System.getProperty("default.policy");
+        String setting = System.getProperty(key);
         if (setting == null) {
             setting = defaultSetting;
         }
