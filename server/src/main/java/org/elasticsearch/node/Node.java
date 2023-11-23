@@ -1207,8 +1207,8 @@ public class Node implements Closeable {
                             esTask.getId(),
                             esTask.getParentTaskId().getId(),
                             esTask.getAction(),
-                            esTask.getStartTime(),
                             esTask.getStartTimeNanos(),
+                            esTask.getStartTime(),
                             esTask instanceof CancellableTask,
                             esTask.toString(),
                             requestInfo

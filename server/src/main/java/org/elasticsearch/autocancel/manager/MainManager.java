@@ -17,6 +17,7 @@ import org.elasticsearch.autocancel.core.utils.OperationMethod;
 import org.elasticsearch.autocancel.core.utils.OperationRequest;
 import org.elasticsearch.autocancel.utils.Policy;
 import org.elasticsearch.autocancel.core.policy.BasePolicy;
+import org.elasticsearch.autocancel.core.policy.CancelLogger;
 import org.elasticsearch.autocancel.utils.ReleasableLock;
 import org.elasticsearch.autocancel.utils.Settings;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
@@ -77,6 +78,7 @@ public class MainManager {
                 if (!exitWhenSleep) {
                     System.out.println("Autocancel core start");
                     System.out.println(String.format("Policy: %s, Predict: %s", Settings.getSetting("default_policy"), Settings.getSetting("predict_progress")));
+                    CancelLogger.logExperimentHeader();
                     AutoCancel.doStart();
                     AutoCancelCore autoCancelCore = AutoCancelCoreHolder.getAutoCancelCore();
                     autoCancelCore.initialize(MainManager.this);
