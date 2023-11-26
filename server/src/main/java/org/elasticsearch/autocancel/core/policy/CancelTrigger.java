@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 public class CancelTrigger {
     private static final Double ABNORMAL_PERFORMANCE_DROP_PROTION = 0.5;
 
-    private static final Double ABNORMAL_PERFORMANCE_DROP_ABSOLUTE = 300.0;
+    private static final Double ABNORMAL_PERFORMANCE_DROP_ABSOLUTE = 200.0;
 
     private static final Double RECOVER_TO_ABNORMAL_DROP_RATIO = 0.6;
 
@@ -115,7 +115,7 @@ public class CancelTrigger {
                     this.continuousAbnormalCycles = 0L;
                 }
                 System.out.println(String.format("Finished tasks: %f, Abnormal: %b", filteredFinishedTaskNumber, abnormal));
-                CancelLogger.logExperimentInfo(Double.valueOf(finishedTaskNumber), need, this.isRecovered(Double.valueOf(finishedTaskNumber)));
+                CancelLogger.logExperimentInfo(Double.valueOf(lastCyclePerformance), need, this.isRecovered(Double.valueOf(lastCyclePerformance)));
             }
         }
         
