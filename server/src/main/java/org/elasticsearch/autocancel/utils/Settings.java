@@ -7,11 +7,11 @@ public class Settings {
     
     private final static Map<String, Object> settings = Map.ofEntries(
         Map.entry("path_to_logs", "/tmp/autocancel"),
-        Map.entry("core_update_cycle_ms", 100L),
+        Map.entry("core_update_cycle_ms", Long.valueOf(Settings.getFromJVMOrDefault("update.interval", "100"))),
         Map.entry("max_child_cancellable_level", 1000),
         Map.entry("skip_first_ms", 30000L),
         Map.entry("save_history_ms", 0L),
-        Map.entry("resource_usage_decay", 0.8),
+        Map.entry("resource_usage_decay", 0.9),
         Map.entry("default_policy", Settings.getFromJVMOrDefault("default.policy", "base_policy")),
         Map.entry("predict_progress", Settings.getFromJVMOrDefault("predict.progress", "false")),
         Map.entry(
@@ -36,7 +36,7 @@ public class Settings {
         return Settings.settings.get(name);
     }
 
-    private static String getFromJVMOrDefault(String key, String defaultSetting) {
+    public static String getFromJVMOrDefault(String key, String defaultSetting) {
         String setting = System.getProperty(key);
         if (setting == null) {
             setting = defaultSetting;

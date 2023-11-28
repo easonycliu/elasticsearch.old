@@ -51,6 +51,7 @@ public class CancelLogger {
     public static void logExperimentInfo(Double throughput, Boolean cancel, Boolean recover) {
         try {
             CancelLogger.writer.append(String.format("%d,%f,%b,%b\n", CancelLogger.experimentTime, throughput, cancel, recover));
+            CancelLogger.writer.flush();
         }
         catch (Exception e) {
             System.out.println(e.getMessage());

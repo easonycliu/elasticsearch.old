@@ -26,6 +26,9 @@ public class MOOPolicy extends Policy {
         Map<CancellableID, Map<ResourceName, Double>> cancellableGroupMeasure = BasePolicy.getCancellableGroupMeasure();
         Map<ResourceName, Double> weight = Policy.infoCenter.getContentionLevel();
         for (Map.Entry<ResourceName, Double> entry : weight.entrySet()) {
+            if (entry.getKey().toString().contains("CPU")) {
+                weight.put(entry.getKey(), entry.getValue() / 3);
+            }
             System.out.println(entry.getKey() + "'s contention level is " + entry.getValue());
         }
         Map<CancellableID, Double> weightedSum = new HashMap<CancellableID, Double>();

@@ -1,5 +1,7 @@
 package org.elasticsearch.autocancel.core.policy;
 
+import org.elasticsearch.autocancel.utils.Settings;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -8,9 +10,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class CancelTrigger {
-    private static final Double ABNORMAL_PERFORMANCE_DROP_PROTION = 0.5;
+    private static final Double ABNORMAL_PERFORMANCE_DROP_PORTION = Double.valueOf(Settings.getFromJVMOrDefault("abnormal.portion", "0.5"));
 
-    private static final Double ABNORMAL_PERFORMANCE_DROP_ABSOLUTE = 200.0;
+    private static final Double ABNORMAL_PERFORMANCE_DROP_ABSOLUTE = Double.valueOf(Settings.getFromJVMOrDefault("abnormal.absolute", "200"));
 
     private static final Double RECOVER_TO_ABNORMAL_DROP_RATIO = 0.6;
 
@@ -56,7 +58,7 @@ public class CancelTrigger {
     public Boolean isAbnormal(Double throughput) {
         Boolean abnormal = false;
         Double normalThroughput = this.cycleMaxThroughputQueue.mean((element) -> Double.valueOf(element.getThroughput()));
-        if (normalThroughput * (1.0 - CancelTrigger.ABNORMAL_PERFORMANCE_DROP_PROTION) > throughput) {
+        if (normalThroughput * (1.0 - CancelTrigger.ABNORMAL_PERFORMANCE_DROP_PORTION) > throughput) {
             abnormal = true;
         }
         if (normalThroughput - CancelTrigger.ABNORMAL_PERFORMANCE_DROP_ABSOLUTE > throughput) {
@@ -69,7 +71,7 @@ public class CancelTrigger {
         Boolean recovered = false;
         Double normalThroughput = this.globalMaxThroughputQueue.mean((element) -> Double.valueOf(element.getThroughput()));
         if (
-            normalThroughput * (1.0 - CancelTrigger.ABNORMAL_PERFORMANCE_DROP_PROTION * CancelTrigger.RECOVER_TO_ABNORMAL_DROP_RATIO) < throughput &&
+            normalThroughput * (1.0 - CancelTrigger.ABNORMAL_PERFORMANCE_DROP_PORTION * CancelTrigger.RECOVER_TO_ABNORMAL_DROP_RATIO) < throughput &&
             normalThroughput - CancelTrigger.ABNORMAL_PERFORMANCE_DROP_ABSOLUTE * CancelTrigger.RECOVER_TO_ABNORMAL_DROP_RATIO < throughput
         ) {
             recovered = true;
@@ -85,13 +87,13 @@ public class CancelTrigger {
                 this.averageFilter.clear();
                 this.performanceBuffer.clear();
                 this.continuousAbnormalCycles = 0L;
-                // this.cycleMaxThroughputQueue.clear();
-                // this.globalMaxThroughputQueue.clear();
 
                 this.performanceBuffer.lastCyclePerformance(System.currentTimeMillis(), finishedTaskNumber);
                 CancelLogger.experimentStart();
             }
             else {
+                this.cycleMaxThroughputQueue.clear();
+                this.globalMaxThroughputQueue.clear();
                 CancelLogger.experimentStop();
             }
         }
