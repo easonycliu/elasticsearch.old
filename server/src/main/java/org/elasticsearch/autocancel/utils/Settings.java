@@ -17,7 +17,7 @@ public class Settings {
         Map.entry(
             "monitor_physical_resources", 
             Map.of(
-                "CPU", "JVM",
+                // "CPU", "JVM",
                 "MEMORY", "JVM"
             )
         ),
@@ -27,6 +27,7 @@ public class Settings {
                 "indices:data/read/search",
                 "indices:data/write/bulk",
                 "indices:data/write/index"
+                // "/query"
             )
         )
     );

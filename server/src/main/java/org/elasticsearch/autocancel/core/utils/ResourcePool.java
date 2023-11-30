@@ -3,6 +3,8 @@ package org.elasticsearch.autocancel.core.utils;
 import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.utils.resource.Resource;
 import org.elasticsearch.autocancel.utils.resource.ResourceName;
+import org.elasticsearch.autocancel.utils.resource.ResourceType;
+import org.elasticsearch.autocancel.utils.Settings;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -25,6 +27,13 @@ public class ResourcePool {
         } else {
             Logger.systemWarn(
                     "Resource " + resource.getResourceName().toString() + " has added to resource pool, skip");
+        }
+    }
+
+    public void addBuiltinResource() {
+        for (Map.Entry<?, ?> entry : ((Map<?, ?>) Settings.getSetting("monitor_physical_resources")).entrySet()) {
+            this.addResource(Resource.createResource(ResourceType.valueOf((String) entry.getKey()), 
+            ResourceName.valueOf((String) entry.getKey())));
         }
     }
 

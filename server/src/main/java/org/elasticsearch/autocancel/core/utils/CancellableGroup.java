@@ -45,8 +45,7 @@ public class CancellableGroup {
         this.resourcePool = new ResourcePool(false);
 
         // These are "built-in" monitored resources
-        this.resourcePool.addResource(Resource.createResource(ResourceType.CPU, ResourceName.CPU));
-        this.resourcePool.addResource(Resource.createResource(ResourceType.MEMORY, ResourceName.MEMORY));
+        this.resourcePool.addBuiltinResource();
 
         this.progressTracker = new Progress();
 

@@ -1,7 +1,9 @@
 package org.elasticsearch.autocancel.core.policy;
 
 import java.io.FileWriter;
+
 import java.nio.file.Paths;
+import java.nio.charset.Charset;
 
 import org.elasticsearch.autocancel.utils.Settings;
 
@@ -18,7 +20,7 @@ public class CancelLogger {
     static {
         FileWriter tmpWriter = null;
         try {
-            tmpWriter = new FileWriter(String.format("%s.csv", Paths.get(CancelLogger.rootPath, System.getProperty("autocancel.log")).toString()));
+            tmpWriter = new FileWriter(String.format("%s.csv", Paths.get(CancelLogger.rootPath, System.getProperty("autocancel.log")).toString()), Charset.forName("UTF-8"));
         }
         catch (Exception e) {
             System.out.println(e.getMessage());

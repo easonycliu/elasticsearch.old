@@ -51,8 +51,7 @@ public class AutoCancelCore {
         this.performanceMetrix = new Performance();
         this.resourcePool = new ResourcePool(true);
 
-        this.resourcePool.addResource(Resource.createResource(ResourceType.CPU, ResourceName.CPU));
-        this.resourcePool.addResource(Resource.createResource(ResourceType.MEMORY, ResourceName.MEMORY));
+        this.resourcePool.addBuiltinResource();
 
         this.infoCenter = new AutoCancelInfoCenter(this.rootCancellableToCancellableGroup,
                 this.cancellables,
@@ -70,8 +69,7 @@ public class AutoCancelCore {
         this.performanceMetrix = new Performance();
         this.resourcePool = new ResourcePool(true);
 
-        this.resourcePool.addResource(Resource.createResource(ResourceType.CPU, ResourceName.CPU));
-        this.resourcePool.addResource(Resource.createResource(ResourceType.MEMORY, ResourceName.MEMORY));
+        this.resourcePool.addBuiltinResource();
 
         this.infoCenter = new AutoCancelInfoCenter(this.rootCancellableToCancellableGroup,
                 this.cancellables,

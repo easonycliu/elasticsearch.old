@@ -22,6 +22,7 @@ public class MOOPolicy extends Policy {
     }
 
     @Override
+    @SuppressWarnings("ModifyCollectionInEnhancedForLoop")
     public CancellableID getCancelTarget() {
         Map<CancellableID, Map<ResourceName, Double>> cancellableGroupMeasure = BasePolicy.getCancellableGroupMeasure();
         Map<ResourceName, Double> weight = Policy.infoCenter.getContentionLevel();

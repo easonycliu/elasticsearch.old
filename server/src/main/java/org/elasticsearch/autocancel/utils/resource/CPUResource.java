@@ -114,9 +114,9 @@ public class CPUResource extends Resource {
                 cpuTimeSystem != null &&
                 cpuTimeThread != null
             ) {
-                // this.totalSystemTime += cpuTimeSystem;
-                // this.usedSystemTime += cpuTimeThread;
-                // this.usedSystemTimeDecay =  (long) ((Double) Settings.getSetting("resource_usage_decay") * this.usedSystemTimeDecay + cpuTimeThread);
+                this.totalSystemTime += cpuTimeSystem;
+                this.usedSystemTime += cpuTimeThread;
+                this.usedSystemTimeDecay =  (long) ((Double) Settings.getSetting("resource_usage_decay") * this.usedSystemTimeDecay + cpuTimeThread);
             }
         }
         else {
