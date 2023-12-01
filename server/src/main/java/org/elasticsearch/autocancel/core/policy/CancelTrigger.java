@@ -14,7 +14,9 @@ public class CancelTrigger {
 
     private static final Double ABNORMAL_PERFORMANCE_DROP_ABSOLUTE = Double.valueOf(Settings.getFromJVMOrDefault("abnormal.absolute", "200"));
 
-    private static final Double RECOVER_TO_ABNORMAL_DROP_RATIO = 0.6;
+    // private static final Double RECOVER_TO_ABNORMAL_DROP_RATIO = 0.6;
+    private static final Double RECOVER_PERFORMANCE_DROP_PORTION = 0.3;
+    private static final Double RECOVER_PERFORMANCE_DROP_ABSOLUTE = 120.0;
 
     private static final Long ONE_CYCLE_MILLI = 1000L;
 
@@ -71,8 +73,8 @@ public class CancelTrigger {
         Boolean recovered = false;
         Double normalThroughput = this.globalMaxThroughputQueue.mean((element) -> Double.valueOf(element.getThroughput()));
         if (
-            normalThroughput * (1.0 - CancelTrigger.ABNORMAL_PERFORMANCE_DROP_PORTION * CancelTrigger.RECOVER_TO_ABNORMAL_DROP_RATIO) < throughput &&
-            normalThroughput - CancelTrigger.ABNORMAL_PERFORMANCE_DROP_ABSOLUTE * CancelTrigger.RECOVER_TO_ABNORMAL_DROP_RATIO < throughput
+            normalThroughput * (1.0 - CancelTrigger.RECOVER_PERFORMANCE_DROP_PORTION) < throughput &&
+            normalThroughput - CancelTrigger.RECOVER_PERFORMANCE_DROP_ABSOLUTE < throughput
         ) {
             recovered = true;
         }

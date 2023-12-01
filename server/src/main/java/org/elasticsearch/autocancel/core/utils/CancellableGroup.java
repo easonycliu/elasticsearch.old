@@ -100,7 +100,7 @@ public class CancellableGroup {
     public void updateWork(Map<String, Object> workUpdateInfo) {
         if (!this.isExit()) {
             this.progressTracker.setWorkUpdateInfo(workUpdateInfo);
-            // if (this.root.getAction().equals("indices:data/read/msearch") || this.root.getAction().equals("indices:data/write/bulk") || this.root.getAction().equals("indices:data/read/search") || this.root.getAction().equals("indices:data/write/update/byquery")) {
+            // if (this.root.getAction().equals("indices:data/read/msearch") || this.root.getAction().equals("indices:data/write/bulk") || this.root.getAction().equals("indices:data/read/search") || this.root.getAction().equals("indices:data/write/update/byquery") || this.root.getAction().equals("/query")) {
             //     System.out.println(String.format("Predict %s exit time %s", this.root.getID().toString(), System.currentTimeMillis() + this.predictRemainTime()));
             // }
         }
@@ -162,7 +162,7 @@ public class CancellableGroup {
     public void setExitTime(Long exitTime) {
         assert this.exitTime == 0L : "Exit time has been set, don't set twice";
         this.exitTime = exitTime;
-        // if (this.root.getAction().equals("indices:data/read/msearch") || this.root.getAction().equals("indices:data/write/bulk") || this.root.getAction().equals("indices:data/read/search") || this.root.getAction().equals("indices:data/write/update/byquery")) {
+        // if (this.root.getAction().equals("indices:data/read/msearch") || this.root.getAction().equals("indices:data/write/bulk") || this.root.getAction().equals("indices:data/read/search") || this.root.getAction().equals("indices:data/write/update/byquery") || this.root.getAction().equals("/query")) {
         //     System.out.println(String.format("Real %s exit time %s", this.root.getID().toString(), this.exitTime));
         // }
     }

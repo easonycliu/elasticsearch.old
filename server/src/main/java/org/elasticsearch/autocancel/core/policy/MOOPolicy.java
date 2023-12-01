@@ -60,6 +60,7 @@ public class MOOPolicy extends Policy {
             for (Map.Entry<ResourceName, Double> entry : cancellableGroupMeasure.get(target).entrySet()) {
                 System.out.println(entry.getKey() + "'s unified usage is " + entry.getValue());
             }
+            System.out.println(String.format("%s's remain time is %d", target.toString(), Policy.infoCenter.getCancellableGroupRemainTime().get(target)));
             weightedSum.remove(target);
             Map.Entry<CancellableID, Double> secondWeightedSum = weightedSum
                                                             .entrySet()
@@ -70,6 +71,7 @@ public class MOOPolicy extends Policy {
                 for (Map.Entry<ResourceName, Double> entry : cancellableGroupMeasure.get(secondWeightedSum.getKey()).entrySet()) {
                     System.out.println("Second weighted cancellable's " + entry.getKey() + "'s unified usage is " + entry.getValue());
                 }
+                System.out.println(String.format("Second %s's remain time is %d", secondWeightedSum.getKey().toString(), Policy.infoCenter.getCancellableGroupRemainTime().get(secondWeightedSum.getKey())));
             }
         }
 
