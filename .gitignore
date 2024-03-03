@@ -73,3 +73,5 @@ checkstyle_ide.xml
 buildSrc
 benchmarks/bin
 log.tmp
+
+.factorypath
