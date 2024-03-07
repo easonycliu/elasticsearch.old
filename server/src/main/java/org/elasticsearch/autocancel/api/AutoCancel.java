@@ -6,6 +6,7 @@ import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.utils.resource.QueueEvent;
 import org.elasticsearch.autocancel.utils.Settings;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -23,6 +24,8 @@ public class AutoCancel {
 
     private static Control controller = null;
 
+	private static BiConsumer<Object, Object> requestSender = null;
+
     public static void start(BiFunction<Object, Object, TaskInfo> taskInfoFunction, Consumer<Object> canceller) {
         if (Settings.getFromJVMOrDefault("autocancel.start", "true").equals("true")) {
             AutoCancel.mainManager.start(null);
@@ -30,6 +33,20 @@ public class AutoCancel {
             AutoCancel.controller = new Control(canceller);
         }
     }
+
+	public static void setRequestSender(BiConsumer<Object, Object> requestSender) {
+		if (AutoCancel.requestSender == null) {
+			AutoCancel.requestSender = requestSender;
+			System.out.println("Request sender set");
+		}
+	}
+
+	public static void reexecuteRequest(Object request, Object channel) {
+		if (AutoCancel.requestSender != null) {
+			AutoCancel.requestSender.accept(request, channel);
+			System.out.println(String.format("Reexecute request %s", request.toString()));
+		}
+	}
 
     public static void doStart() {
         started = true;
