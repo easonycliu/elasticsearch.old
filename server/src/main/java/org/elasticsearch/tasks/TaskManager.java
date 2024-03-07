@@ -219,6 +219,18 @@ public class TaskManager implements ClusterStateApplier {
                     try {
                         release();
                     } finally {
+						if (task instanceof CancellableTask) {
+							final CancellableTask cancellableTask = (CancellableTask) task;
+							if (cancellableTask.isCancelled()) {
+								System.out.println(String.format("Task of request %s has been cancelled", request.getClass().getName()));
+								try {
+									Thread.sleep(60000);
+								}
+								catch (Exception innerException) {
+									System.out.println(innerException.toString());
+								}
+							}
+						}
                         taskListener.onResponse(response);
                     }
                 }
@@ -231,6 +243,18 @@ public class TaskManager implements ClusterStateApplier {
                         }
                         release();
                     } finally {
+						if (task instanceof CancellableTask) {
+							final CancellableTask cancellableTask = (CancellableTask) task;
+							if (cancellableTask.isCancelled()) {
+								System.out.println(String.format("Task of request %s has been cancelled", request.getClass().getName()));
+								try {
+									Thread.sleep(60000);
+								}
+								catch (Exception innerException) {
+									System.out.println(innerException.toString());
+								}
+							}
+						}
                         taskListener.onFailure(e);
                     }
                 }
