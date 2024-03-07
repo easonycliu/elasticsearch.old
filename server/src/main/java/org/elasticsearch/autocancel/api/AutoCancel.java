@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public class AutoCancel {
-    
+
     private static Boolean started = false;
 
     private static MainManager mainManager = new MainManager();
@@ -43,8 +43,8 @@ public class AutoCancel {
 
 	public static void reexecuteRequest(Object request, Object channel) {
 		if (AutoCancel.requestSender != null) {
-			AutoCancel.requestSender.accept(request, channel);
 			System.out.println(String.format("Reexecute request %s", request.toString()));
+			AutoCancel.requestSender.accept(request, channel);
 		}
 	}
 

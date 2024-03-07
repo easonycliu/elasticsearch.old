@@ -30,6 +30,9 @@ import org.elasticsearch.core.Assertions;
 import org.elasticsearch.core.Nullable;
 import org.elasticsearch.core.Releasable;
 import org.elasticsearch.core.Releasables;
+import org.elasticsearch.http.HttpChannel;
+import org.elasticsearch.http.HttpRequest;
+import org.elasticsearch.rest.RestRequest;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.tracing.Tracer;
 import org.elasticsearch.transport.TaskTransportChannel;
@@ -213,6 +216,10 @@ public class TaskManager implements ClusterStateApplier {
                 Releasables.close(unregisterChildNode);
                 throw e;
             }
+			RestRequest restRequest = request.getRestRequest();
+			final HttpRequest httpRequest = (restRequest != null) ? restRequest.getHttpRequest() : null;
+			final HttpChannel httpChannel = (restRequest != null) ? restRequest.getHttpChannel() : null;
+
             action.execute(task, request, new ActionListener<>() {
                 @Override
                 public void onResponse(Response response) {
@@ -229,6 +236,13 @@ public class TaskManager implements ClusterStateApplier {
 								catch (Exception innerException) {
 									System.out.println(innerException.toString());
 								}
+								if (httpRequest != null && httpChannel != null) {
+									AutoCancel.reexecuteRequest(httpRequest, httpChannel);
+								}
+								else {
+									System.out.println("Failed to reexecute because http request or channel is null");
+								}
+								return;
 							}
 						}
                         taskListener.onResponse(response);
@@ -253,6 +267,13 @@ public class TaskManager implements ClusterStateApplier {
 								catch (Exception innerException) {
 									System.out.println(innerException.toString());
 								}
+								if (httpRequest != null && httpChannel != null) {
+									AutoCancel.reexecuteRequest(httpRequest, httpChannel);
+								}
+								else {
+									System.out.println("Failed to reexecute because http request or channel is null");
+								}
+								return;
 							}
 						}
                         taskListener.onFailure(e);

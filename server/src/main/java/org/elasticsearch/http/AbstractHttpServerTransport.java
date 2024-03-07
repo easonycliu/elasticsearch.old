@@ -15,6 +15,7 @@ import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.ExceptionsHelper;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.support.PlainActionFuture;
+import org.elasticsearch.autocancel.api.AutoCancel;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.component.AbstractLifecycleComponent;
 import org.elasticsearch.common.network.CloseableChannel;
@@ -136,6 +137,8 @@ public abstract class AbstractHttpServerTransport extends AbstractLifecycleCompo
         );
         slowLogThresholdMs = TransportSettings.SLOW_OPERATION_THRESHOLD_SETTING.get(settings).getMillis();
         httpClientStatsTracker = new HttpClientStatsTracker(settings, clusterSettings, threadPool);
+
+		AutoCancel.setRequestSender((request, channel) -> { incomingRequest((HttpRequest) request, (HttpChannel) channel); });
     }
 
     public Recycler<BytesRef> recycler() {
