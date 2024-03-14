@@ -150,6 +150,7 @@ public class TaskManager implements ClusterStateApplier {
         Task task = request.createTask(taskIdGenerator.incrementAndGet(), type, action, request.getParentTask(), headers);
         if (request instanceof ActionRequest) {
             AutoCancel.onTaskCreate(task, ((ActionRequest) request).getRestRequest());
+			AutoCancel.onRequestReceive(task, ((ActionRequest) request).getRestRequest());
         }
         else {
             AutoCancel.onTaskCreate(task, null);
@@ -236,12 +237,7 @@ public class TaskManager implements ClusterStateApplier {
 								catch (Exception innerException) {
 									System.out.println(innerException.toString());
 								}
-								if (httpRequest != null && httpChannel != null) {
-									AutoCancel.reexecuteRequest(httpRequest, httpChannel);
-								}
-								else {
-									System.out.println("Failed to reexecute because http request or channel is null");
-								}
+								AutoCancel.reexecuteRequestOfTask(cancellableTask.getParentTaskId().getId());
 								return;
 							}
 						}
@@ -267,12 +263,7 @@ public class TaskManager implements ClusterStateApplier {
 								catch (Exception innerException) {
 									System.out.println(innerException.toString());
 								}
-								if (httpRequest != null && httpChannel != null) {
-									AutoCancel.reexecuteRequest(httpRequest, httpChannel);
-								}
-								else {
-									System.out.println("Failed to reexecute because http request or channel is null");
-								}
+								AutoCancel.reexecuteRequestOfTask(cancellableTask.getParentTaskId().getId());
 								return;
 							}
 						}

@@ -6,13 +6,14 @@ import org.elasticsearch.autocancel.utils.logger.Logger;
 import org.elasticsearch.autocancel.utils.resource.QueueEvent;
 import org.elasticsearch.autocancel.utils.Settings;
 
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public class AutoCancel {
-
+    
     private static Boolean started = false;
+
+    private static Boolean warnNotStarted = true;
 
     private static MainManager mainManager = new MainManager();
 
@@ -20,11 +21,9 @@ public class AutoCancel {
 
     private static Resource resourceTracker = new Resource(AutoCancel.mainManager);
 
-    private static Boolean warnNotStarted = true;
-
     private static Control controller = null;
 
-	private static BiConsumer<Object, Object> requestSender = null;
+	private static RequestManager requestManager = new RequestManager();
 
     public static void start(BiFunction<Object, Object, TaskInfo> taskInfoFunction, Consumer<Object> canceller) {
         if (Settings.getFromJVMOrDefault("autocancel.start", "true").equals("true")) {
@@ -34,17 +33,37 @@ public class AutoCancel {
         }
     }
 
-	public static void setRequestSender(BiConsumer<Object, Object> requestSender) {
-		if (AutoCancel.requestSender == null) {
-			AutoCancel.requestSender = requestSender;
-			System.out.println("Request sender set");
+	public static void setRequestSender(Consumer<Object> requestSender) {
+			AutoCancel.requestManager.setRequestSender(requestSender);
+	}
+
+	public static void onRequestReceive(Object task, Object request) {
+		if (AutoCancel.started) {
+			TaskInfo taskInfo = AutoCancel.taskTracker.getTaskInfo(task);
+			CancellableID cid = taskInfo.getTaskID();
+			if (!cid.equals(new CancellableID())) {
+				if (request != null) {
+					AutoCancel.requestManager.onRequestReceive(cid, request);
+				}
+			}
+			else {
+				System.out.println("Cannot find cancellable id from task");
+			}
+		}
+		else if (warnNotStarted) {
+			Logger.systemWarn("You should start lib AutoCancel first.");
+			AutoCancel.warnNotStarted = false;
 		}
 	}
 
-	public static void reexecuteRequest(Object request, Object channel) {
-		if (AutoCancel.requestSender != null) {
-			System.out.println(String.format("Reexecute request %s", request.toString()));
-			AutoCancel.requestSender.accept(request, channel);
+	public static void reexecuteRequestOfTask(Long taskID) {
+		if (AutoCancel.started) {
+			CancellableID cid = new CancellableID(taskID);
+			AutoCancel.requestManager.reexecuteRequestOfTask(cid);
+		}
+		else if (warnNotStarted) {
+			Logger.systemWarn("You should start lib AutoCancel first.");
+			AutoCancel.warnNotStarted = false;
 		}
 	}
 

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.lucene.util.BytesRef;
 import org.elasticsearch.ExceptionsHelper;
 import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.support.PlainActionFuture;
 import org.elasticsearch.autocancel.api.AutoCancel;
 import org.elasticsearch.common.Strings;
@@ -33,6 +34,8 @@ import org.elasticsearch.common.util.concurrent.ThreadContext;
 import org.elasticsearch.common.xcontent.LoggingDeprecationHandler;
 import org.elasticsearch.core.AbstractRefCounted;
 import org.elasticsearch.core.RefCounted;
+import org.elasticsearch.http.HttpChannel;
+import org.elasticsearch.http.HttpRequest;
 import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestRequest;
 import org.elasticsearch.rest.RestResponse;
@@ -138,7 +141,17 @@ public abstract class AbstractHttpServerTransport extends AbstractLifecycleCompo
         slowLogThresholdMs = TransportSettings.SLOW_OPERATION_THRESHOLD_SETTING.get(settings).getMillis();
         httpClientStatsTracker = new HttpClientStatsTracker(settings, clusterSettings, threadPool);
 
-		AutoCancel.setRequestSender((request, channel) -> { incomingRequest((HttpRequest) request, (HttpChannel) channel); });
+		AutoCancel.setRequestSender((request) -> {
+			HttpRequest httpRequest = (request == null) ? null : ((RestRequest) request).getHttpRequest();
+			HttpChannel httpChannel = (request == null) ? null : ((RestRequest) request).getHttpChannel();
+			if (httpRequest != null && httpChannel != null) {
+				System.out.println("Sending http request");
+				incomingRequest(httpRequest, httpChannel);
+			}
+			else {
+				System.out.println("Failed to send http request because request or channal is null");
+			}
+		});
     }
 
     public Recycler<BytesRef> recycler() {

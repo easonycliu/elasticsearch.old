@@ -115,4 +115,8 @@ public class TaskTracker {
     public TaskInfo getTaskInfo(CancellableID cid) {
         return this.taskMap.get(cid);
     }
+
+	public TaskInfo getTaskInfo(Object task) {
+		return this.taskInfoFunction.apply(task, null);
+	}
 }
