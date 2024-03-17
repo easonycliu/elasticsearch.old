@@ -1,73 +1,73 @@
 package org.elasticsearch.autocancel.utils.id;
 
 public class IDInfo<ObjectID extends ID> {
-    
-    private Long timestamp;
+	private Long timestamp;
 
-    private Status status;
+	private Status status;
 
-    private ObjectID id;
+	private ObjectID id;
 
-    public IDInfo(Long timestamp, Status status, ObjectID id) {
-        this.timestamp = timestamp;
-        this.id = id;
-        
-        this.status = status;
-    }
+	public IDInfo(Long timestamp, Status status, ObjectID id) {
+		this.timestamp = timestamp;
+		this.id = id;
 
-    public IDInfo(Status status, ObjectID id) {
-        this.timestamp = System.nanoTime();
-        this.id = id;
+		this.status = status;
+	}
 
-        this.status = status;
-    }
+	public IDInfo(Status status, ObjectID id) {
+		this.timestamp = System.nanoTime();
+		this.id = id;
 
-    @Override
-    public String toString() {
-        return String.format("Time: %s. Status: %s. ID: %s", this.timestamp.toString(),
-        this.status.toString(), this.id.toString());
-    }
+		this.status = status;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        return this.id.getClass() == ((IDInfo<?>)o).getID().getClass() && 
-        this.id.equals(((IDInfo<?>)o).getID());
-    }
+	@Override
+	public String toString() {
+		return String.format(
+				"Time: %s. Status: %s. ID: %s", this.timestamp.toString(), this.status.toString(), this.id.toString());
+	}
 
-    @Override
-    public int hashCode() {
-        return this.id.hashCode();
-    }
+	@Override
+	public boolean equals(Object o) {
+		return this.id.getClass() == ((IDInfo<?>) o).getID().getClass() && this.id.equals(((IDInfo<?>) o).getID());
+	}
 
-    public Long getStartTime() {
-        return this.timestamp;
-    }
+	@Override
+	public int hashCode() {
+		return this.id.hashCode();
+	}
 
-    public ObjectID getID() {
-        return this.id;
-    }
+	public Long getStartTime() {
+		return this.timestamp;
+	}
 
-    public Boolean isExit() {
-        return this.status.equals(Status.EXIT);
-    }
+	public ObjectID getID() {
+		return this.id;
+	}
 
-    public Boolean isRun() {
-        return this.status.equals(Status.RUN);
-    }
+	public Boolean isExit() {
+		return this.status.equals(Status.EXIT);
+	}
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+	public Boolean isRun() {
+		return this.status.equals(Status.RUN);
+	}
 
-    public Status getStatus() {
-        return this.status;
-    }
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 
-    public void exit() {
-        this.status = Status.EXIT;
-    }
+	public Status getStatus() {
+		return this.status;
+	}
 
-    public enum Status {
-        RUN, QUEUE, EXIT;
-    }
+	public void exit() {
+		this.status = Status.EXIT;
+	}
+
+	public enum Status {
+		RUN,
+		QUEUE,
+		EXIT;
+	}
 }

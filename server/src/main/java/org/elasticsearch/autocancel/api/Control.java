@@ -3,27 +3,24 @@ package org.elasticsearch.autocancel.api;
 import java.util.function.Consumer;
 
 public class Control {
+	private final Consumer<Object> canceller;
 
-    private final Consumer<Object> canceller;
+	public Control(Consumer<Object> canceller) {
+		this.canceller = canceller;
+	}
 
-    public Control(Consumer<Object> canceller) {
-        this.canceller = canceller;
-    }
+	public void cancel(Object task) {
+		if (task != null) {
+			if (System.getProperty("cancel.enable").equals("true")) {
+				this.canceller.accept(task);
+			}
+		}
+	}
 
-    public void cancel(Object task) {
-        if (task != null) {
-            if (System.getProperty("cancel.enable").equals("true")) {
-                this.canceller.accept(task);
-            }
-        }
-    }
-
-    public void retry(TaskInfo taskInfo) {
-        if (taskInfo.hasRequestInfo()) {
-
-        }
-        else {
-            System.out.println(String.format("Cannot retry unsupported task %s", taskInfo.getName()));
-        }
-    }
+	public void retry(TaskInfo taskInfo) {
+		if (taskInfo.hasRequestInfo()) {
+		} else {
+			System.out.println(String.format("Cannot retry unsupported task %s", taskInfo.getName()));
+		}
+	}
 }

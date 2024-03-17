@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import org.elasticsearch.autocancel.utils.id.CancellableID;
 
 public class RequestManager {
-
 	private Consumer<Object> requestSender;
 
 	private ConcurrentMap<CancellableID, Object> requestMap;
@@ -35,5 +34,4 @@ public class RequestManager {
 			this.requestSender.accept(request);
 		}
 	}
-
 }

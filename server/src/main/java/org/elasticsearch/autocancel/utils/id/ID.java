@@ -1,13 +1,13 @@
 package org.elasticsearch.autocancel.utils.id;
 
 public interface ID {
-    public String toString();
+	public String toString();
 
-    public boolean equals(Object o);
+	public boolean equals(Object o);
 
-    public int hashCode();
+	public int hashCode();
 
-    public Boolean isValid();
+	public Boolean isValid();
 
-    public Long toLong();
+	public Long toLong();
 }
