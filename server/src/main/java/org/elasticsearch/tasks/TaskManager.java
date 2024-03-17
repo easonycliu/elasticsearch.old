@@ -241,7 +241,9 @@ public class TaskManager implements ClusterStateApplier {
 						// 		return;
 						// 	}
 						// }
-						if (!(task instanceof CancellableTask cancellableTask && cancellableTask.isCancelled())) {
+						if (!(task.getParentTaskId().equals(TaskId.EMPTY_TASK_ID)
+									&& task instanceof CancellableTask cancellableTask
+									&& cancellableTask.isCancelled())) {
 							taskListener.onResponse(response);
 						}
 						else {
@@ -272,7 +274,9 @@ public class TaskManager implements ClusterStateApplier {
 						// 		return;
 						// 	}
 						// }
-						if (!(task instanceof CancellableTask cancellableTask && cancellableTask.isCancelled())) {
+						if (!(task.getParentTaskId().equals(TaskId.EMPTY_TASK_ID)
+									&& task instanceof CancellableTask cancellableTask
+									&& cancellableTask.isCancelled())) {
 							taskListener.onFailure(e);
 						}
 						else {

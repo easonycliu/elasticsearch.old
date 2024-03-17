@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -86,6 +87,14 @@ public class MainManager {
 					while (!Thread.interrupted()) {
 						try {
 							autoCancelCore.startOneLoop();
+
+							Vector<CancellableID> toBeReexecutedRootCancellableIDs =
+									autoCancelCore.scheduleCancellableGroups();
+							if (toBeReexecutedRootCancellableIDs.size() > 0) {
+								for (CancellableID toBeReexecutedRootCancellableID : toBeReexecutedRootCancellableIDs) {
+									AutoCancel.reexecuteRequestOfTask(toBeReexecutedRootCancellableID);
+								}
+							}
 
 							if (actualPolicy.needCancellation()) {
 								CancellableID targetCID = actualPolicy.getCancelTarget();

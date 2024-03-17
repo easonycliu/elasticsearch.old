@@ -8,6 +8,7 @@ public class Settings {
 			Map.entry("core_update_cycle_ms", Long.valueOf(Settings.getFromJVMOrDefault("update.interval", "100"))),
 			Map.entry("max_child_cancellable_level", 1000), Map.entry("skip_first_ms", 30000L),
 			Map.entry("save_history_ms", 0L), Map.entry("resource_usage_decay", 0.9),
+			Map.entry("reexecute_after_ms", 60000L),
 			Map.entry("default_policy", Settings.getFromJVMOrDefault("default.policy", "base_policy")),
 			Map.entry("predict_progress", Settings.getFromJVMOrDefault("predict.progress", "false")),
 			Map.entry("monitor_physical_resources",

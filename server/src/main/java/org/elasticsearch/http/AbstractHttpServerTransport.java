@@ -142,15 +142,21 @@ public abstract class AbstractHttpServerTransport extends AbstractLifecycleCompo
         httpClientStatsTracker = new HttpClientStatsTracker(settings, clusterSettings, threadPool);
 
 		AutoCancel.setRequestSender((request) -> {
-			HttpRequest httpRequest = (request == null) ? null : ((RestRequest) request).getHttpRequest();
-			HttpChannel httpChannel = (request == null) ? null : ((RestRequest) request).getHttpChannel();
-			if (httpRequest != null && httpChannel != null) {
-				System.out.println("Sending http request");
-				incomingRequest(httpRequest, httpChannel);
-			}
-			else {
-				System.out.println("Failed to send http request because request or channal is null");
-			}
+			Thread reexecutionThread = new Thread() {
+				@Override
+				public void run() {
+					HttpRequest httpRequest = (request == null) ? null : ((RestRequest) request).getHttpRequest();
+					HttpChannel httpChannel = (request == null) ? null : ((RestRequest) request).getHttpChannel();
+					if (httpRequest != null && httpChannel != null) {
+						System.out.println("Sending http request");
+						incomingRequest(httpRequest, httpChannel);
+					}
+					else {
+						System.out.println("Failed to send http request because request or channal is null");
+					}
+				}
+			};
+			reexecutionThread.run();
 		});
     }
 

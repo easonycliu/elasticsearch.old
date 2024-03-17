@@ -53,9 +53,8 @@ public class AutoCancel {
 		}
 	}
 
-	public static void reexecuteRequestOfTask(Long taskID) {
+	public static void reexecuteRequestOfTask(CancellableID cid) {
 		if (AutoCancel.started) {
-			CancellableID cid = new CancellableID(taskID);
 			AutoCancel.requestManager.reexecuteRequestOfTask(cid);
 		} else if (warnNotStarted) {
 			Logger.systemWarn("You should start lib AutoCancel first.");

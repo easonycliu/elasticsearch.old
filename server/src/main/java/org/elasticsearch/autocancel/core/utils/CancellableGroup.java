@@ -38,6 +38,10 @@ public class CancellableGroup {
 
 	private Long exitTimeNano;
 
+	private Long cancelTime;
+
+	private Long cancelTimeNano;
+
 	public CancellableGroup(Cancellable root) {
 		root.setLevel(0);
 		this.root = root;
@@ -61,9 +65,13 @@ public class CancellableGroup {
 
 		this.startTimeNano = 0L;
 
-		this.exitTime = 0L;
+		this.exitTime = Long.MAX_VALUE;
 
-		this.exitTimeNano = 0L;
+		this.exitTimeNano = Long.MAX_VALUE;
+
+		this.cancelTime = Long.MAX_VALUE;
+
+		this.cancelTimeNano = Long.MAX_VALUE;
 	}
 
 	public void exit() {
@@ -75,13 +83,18 @@ public class CancellableGroup {
 	}
 
 	public Boolean isCancelled() {
-		return (this.isCanceled == null) ? false : this.isCanceled.get();
+		Boolean cancelled = (this.isCanceled == null) ? false : this.isCanceled.get();
+		if (cancelled) {
+			this.cancelTime = (this.cancelTime.equals(Long.MAX_VALUE)) ? System.currentTimeMillis() : this.cancelTime;
+			this.cancelTimeNano =
+					(this.cancelTimeNano.equals(Long.MAX_VALUE)) ? System.nanoTime() : this.cancelTimeNano;
+		}
+		return cancelled;
 	}
 
 	public Boolean isExpired() {
 		Boolean expired = false;
-		if (!this.exitTimeNano.equals(0L)
-				&& System.nanoTime() - this.exitTimeNano > ((Long) Settings.getSetting("save_history_ms") * 1000000)) {
+		if (System.nanoTime() - this.getExitTimeNano() > ((Long) Settings.getSetting("save_history_ms") * 1000000)) {
 			expired = true;
 		}
 		return expired;
@@ -124,7 +137,7 @@ public class CancellableGroup {
 	public Double getResourceSlowdown(ResourceName resourceName) {
 		Double slowdown = 0.0;
 		Map<String, Object> cancellableGroupLevelInfo = Map.of("start_time", this.startTime, "start_time_nano",
-				this.startTimeNano, "exit_time", this.exitTime, "exit_time_nano", this.exitTimeNano);
+				this.startTimeNano, "exit_time", this.getExitTime(), "exit_time_nano", this.getExitTimeNano());
 		slowdown = this.resourcePool.getSlowdown(resourceName, cancellableGroupLevelInfo);
 		// System.out.println(String.format("%s has slowdown %f on resource %s",
 		// this.root.toString(), slowdown, resourceName));
@@ -172,12 +185,11 @@ public class CancellableGroup {
 	}
 
 	public Long getExitTime() {
-		assert this.exitTime != 0L;
 		return this.exitTime;
 	}
 
 	public void setExitTime(Long exitTime) {
-		assert this.exitTime == 0L : "Exit time has been set, don't set twice";
+		assert this.exitTime.equals(Long.MAX_VALUE) : "Exit time has been set, don't set twice";
 		this.exitTime = exitTime;
 		// if (this.root.getAction().equals("indices:data/read/msearch") ||
 		// this.root.getAction().equals("indices:data/write/bulk") ||
@@ -190,13 +202,20 @@ public class CancellableGroup {
 	}
 
 	public Long getExitTimeNano() {
-		assert this.exitTimeNano != 0L;
 		return this.exitTimeNano;
 	}
 
 	public void setExitTimeNano(Long exitTimeNano) {
-		assert this.exitTimeNano == 0L : "Exit time nano has been set, don't set twice";
+		assert this.exitTimeNano.equals(Long.MAX_VALUE) : "Exit time nano has been set, don't set twice";
 		this.exitTimeNano = exitTimeNano;
+	}
+
+	public Long getCancelTime() {
+		return this.cancelTime;
+	}
+
+	public Long getCancelTimeNano() {
+		return this.cancelTimeNano;
 	}
 
 	public void putCancellable(Cancellable cancellable) {

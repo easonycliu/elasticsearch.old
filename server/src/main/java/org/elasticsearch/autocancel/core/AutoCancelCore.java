@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -33,6 +34,8 @@ public class AutoCancelCore {
 
 	private Map<CancellableID, Cancellable> cancellables;
 
+	private Map<CancellableID, CancellableGroup> toBeReexecutedCancellableGroups;
+
 	private ResourcePool resourcePool;
 
 	private Performance performanceMetrix;
@@ -46,6 +49,7 @@ public class AutoCancelCore {
 	public AutoCancelCore(MainManager mainManager) {
 		this.cancellables = new HashMap<CancellableID, Cancellable>();
 		this.rootCancellableToCancellableGroup = new HashMap<CancellableID, CancellableGroup>();
+		this.toBeReexecutedCancellableGroups = new HashMap<CancellableID, CancellableGroup>();
 		this.requestParser = new RequestParser();
 		this.logger = new Logger("corerequest");
 		this.performanceMetrix = new Performance();
@@ -62,6 +66,7 @@ public class AutoCancelCore {
 	public AutoCancelCore() {
 		this.cancellables = new HashMap<CancellableID, Cancellable>();
 		this.rootCancellableToCancellableGroup = new HashMap<CancellableID, CancellableGroup>();
+		this.toBeReexecutedCancellableGroups = new HashMap<CancellableID, CancellableGroup>();
 		this.requestParser = new RequestParser();
 		this.logger = new Logger("corerequest");
 		this.performanceMetrix = new Performance();
@@ -153,9 +158,34 @@ public class AutoCancelCore {
 		}
 	}
 
+	public Vector<CancellableID> scheduleCancellableGroups() {
+		Vector<CancellableID> toBeReexecutedRootCancellableIDs = new Vector<CancellableID>();
+		Vector<CancellableID> toBeRemovedReexecutionCancellableGroups = new Vector<CancellableID>();
+		for (Map.Entry<CancellableID, CancellableGroup> toBeReexecutedCancellableGroup :
+				this.toBeReexecutedCancellableGroups.entrySet()) {
+			assert toBeReexecutedCancellableGroup.getValue().isCancelled()
+				: "Should get cancelled before adding into to be reexecuted group";
+			if (System.nanoTime() - toBeReexecutedCancellableGroup.getValue().getCancelTimeNano()
+					> ((Long) Settings.getSetting("reexecute_after_ms") * 1000000)) {
+				toBeReexecutedRootCancellableIDs.add(toBeReexecutedCancellableGroup.getKey());
+				toBeRemovedReexecutionCancellableGroups.add(toBeReexecutedCancellableGroup.getKey());
+			}
+		}
+
+		for (CancellableID toBeRemovedReexecutionCancellableGroup : toBeRemovedReexecutionCancellableGroups) {
+			this.toBeReexecutedCancellableGroups.remove(toBeRemovedReexecutionCancellableGroup);
+		}
+
+		return toBeReexecutedRootCancellableIDs;
+	}
+
 	private void refreshCancellableGroups(Map<String, Object> refreshInfo) {
 		List<CancellableGroup> toBeRemovedCancellableGroups = new ArrayList<CancellableGroup>();
 		for (Map.Entry<CancellableID, CancellableGroup> entry : this.rootCancellableToCancellableGroup.entrySet()) {
+			if (entry.getValue().isCancelled() && !this.toBeReexecutedCancellableGroups.containsKey(entry.getKey())) {
+				this.toBeReexecutedCancellableGroups.put(entry.getKey(), entry.getValue());
+			}
+
 			if (entry.getValue().isExit()) {
 				toBeRemovedCancellableGroups.add(entry.getValue());
 				continue;

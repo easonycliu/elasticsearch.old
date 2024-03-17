@@ -34,7 +34,7 @@ public class EvictableMemoryResource extends MemoryResource {
 		Long startTimeNano = (Long) slowdownInfo.get("start_time_nano");
 		Long exitTimeNano = (Long) slowdownInfo.get("exit_time_nano");
 		if (startTimeNano != null && exitTimeNano != null) {
-			Long endTime = exitTimeNano.equals(0L) ? this.currentTimeNano : exitTimeNano;
+			Long endTime = Long.min(this.currentTimeNano, exitTimeNano);
 			slowdown = Double.valueOf(this.totalEvictTime) / (endTime - startTimeNano);
 		}
 		return slowdown;
