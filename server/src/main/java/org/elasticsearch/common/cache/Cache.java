@@ -10,7 +10,7 @@ package org.elasticsearch.common.cache;
 
 import org.elasticsearch.common.util.concurrent.ReleasableLock;
 import org.elasticsearch.core.Tuple;
-import org.elasticsearch.autocancel.api.AutoCancel;
+import autocancel.api.AutoCancel;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;

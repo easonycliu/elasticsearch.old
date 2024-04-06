@@ -41,7 +41,7 @@ import org.elasticsearch.transport.TcpTransportChannel;
 import org.elasticsearch.transport.Transport;
 import org.elasticsearch.transport.TransportChannel;
 import org.elasticsearch.transport.TransportService;
-import org.elasticsearch.autocancel.api.AutoCancel;
+import autocancel.api.AutoCancel;
 
 import java.io.IOException;
 import java.util.ArrayList;

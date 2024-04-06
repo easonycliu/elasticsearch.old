@@ -94,7 +94,7 @@ import org.elasticsearch.index.translog.TranslogDeletionPolicy;
 import org.elasticsearch.index.translog.TranslogStats;
 import org.elasticsearch.search.suggest.completion.CompletionStats;
 import org.elasticsearch.threadpool.ThreadPool;
-import org.elasticsearch.autocancel.api.AutoCancel;
+import autocancel.api.AutoCancel;
 
 import java.io.Closeable;
 import java.io.IOException;

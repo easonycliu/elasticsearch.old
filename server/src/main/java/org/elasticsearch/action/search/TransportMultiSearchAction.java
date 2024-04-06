@@ -23,7 +23,7 @@ import org.elasticsearch.common.util.concurrent.EsExecutors;
 import org.elasticsearch.tasks.Task;
 import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.TransportService;
-import org.elasticsearch.autocancel.api.AutoCancel;
+import autocancel.api.AutoCancel;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -221,8 +221,8 @@ import org.elasticsearch.upgrades.SystemIndexMigrationExecutor;
 import org.elasticsearch.usage.UsageService;
 import org.elasticsearch.watcher.ResourceWatcherService;
 import org.elasticsearch.xcontent.NamedXContentRegistry;
-import org.elasticsearch.autocancel.api.AutoCancel;
-import org.elasticsearch.autocancel.api.TaskInfo;
+import autocancel.api.AutoCancel;
+import autocancel.api.TaskInfo;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;

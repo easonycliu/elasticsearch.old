@@ -83,6 +83,8 @@ dependencies {
     exclude group: 'org.elasticsearch', module: 'server'
   }
 
+  implementation group: 'ignore', name: 'toysandbox', version: '0.0.1'
+  implementation group: 'ignore', name: 'autocancel', version: '0.0.1'
 }
 
 tasks.named("forbiddenPatterns").configure {
