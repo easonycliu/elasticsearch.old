@@ -75,3 +75,8 @@ benchmarks/bin
 log.tmp
 
 .factorypath
+
+/localRepo/*
+!.gitkeep
+
+/gradle/verification-metadata.xml
