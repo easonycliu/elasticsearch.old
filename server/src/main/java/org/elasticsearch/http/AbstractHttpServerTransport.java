@@ -16,7 +16,6 @@ import org.elasticsearch.ExceptionsHelper;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.support.PlainActionFuture;
-import autocancel.api.AutoCancel;
 import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.component.AbstractLifecycleComponent;
 import org.elasticsearch.common.network.CloseableChannel;
@@ -56,10 +55,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+
+import autocancel.api.AutoCancel;
+import toysandbox.ToySandbox;
 
 import static org.elasticsearch.core.Strings.format;
 import static org.elasticsearch.http.HttpTransportSettings.SETTING_HTTP_BIND_HOST;
@@ -373,7 +376,12 @@ public abstract class AbstractHttpServerTransport extends AbstractLifecycleCompo
     public void incomingRequest(final HttpRequest httpRequest, final HttpChannel httpChannel) {
         httpClientStatsTracker.updateClientStats(httpRequest, httpChannel);
         final long startTime = threadPool.rawRelativeTimeInMillis();
+		final Map<String, List<String>> headers = httpRequest.getHeaders();
+		for (Map.Entry<String, List<String>> header : headers.entrySet()) {
+			System.out.println(String.format("Request header %s=%s", header.getKey(), header.getValue().toString()));
+		}
         try {
+			ToySandbox.onRequestReceive(httpRequest);
             handleIncomingRequest(httpRequest, httpChannel, httpRequest.getInboundException());
         } finally {
             final long took = threadPool.rawRelativeTimeInMillis() - startTime;
@@ -390,6 +398,7 @@ public abstract class AbstractHttpServerTransport extends AbstractLifecycleCompo
                     logThreshold
                 );
             }
+			ToySandbox.onResponseSend(httpRequest);
         }
     }
 

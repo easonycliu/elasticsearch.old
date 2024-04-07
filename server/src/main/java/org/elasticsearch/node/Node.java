@@ -119,6 +119,7 @@ import org.elasticsearch.health.node.ShardsCapacityHealthIndicatorService;
 import org.elasticsearch.health.node.selection.HealthNodeTaskExecutor;
 import org.elasticsearch.health.stats.HealthApiStats;
 import org.elasticsearch.http.HttpServerTransport;
+import org.elasticsearch.http.HttpRequest;
 import org.elasticsearch.index.IndexSettingProvider;
 import org.elasticsearch.index.IndexSettingProviders;
 import org.elasticsearch.index.IndexSettings;
@@ -221,8 +222,6 @@ import org.elasticsearch.upgrades.SystemIndexMigrationExecutor;
 import org.elasticsearch.usage.UsageService;
 import org.elasticsearch.watcher.ResourceWatcherService;
 import org.elasticsearch.xcontent.NamedXContentRegistry;
-import autocancel.api.AutoCancel;
-import autocancel.api.TaskInfo;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -254,6 +253,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.net.ssl.SNIHostName;
+
+import toysandbox.ToySandbox;
+import toysandbox.RequestInfo;
+import autocancel.api.AutoCancel;
+import autocancel.api.TaskInfo;
 
 import static java.util.stream.Collectors.toList;
 import static org.elasticsearch.common.util.CollectionUtils.concatLists;
@@ -1223,6 +1227,19 @@ public class Node implements Closeable {
                     }
                 }
             );
+
+			ToySandbox.start((request) -> {
+				final String requestType;
+				if (request instanceof HttpRequest httpRequest) {
+					final Map<String, List<String>> headers = httpRequest.getHeaders();
+					List<String> agents = headers.get("User-Agent");
+					requestType = (agents != null && agents.toString().contains("curl")) ? "abnormal" : "normal";
+				}
+				else {
+					requestType = "normal";
+				}
+				return new RequestInfo(requestType);
+			});
 
             success = true;
         } catch (IOException ex) {
