@@ -376,10 +376,6 @@ public abstract class AbstractHttpServerTransport extends AbstractLifecycleCompo
     public void incomingRequest(final HttpRequest httpRequest, final HttpChannel httpChannel) {
         httpClientStatsTracker.updateClientStats(httpRequest, httpChannel);
         final long startTime = threadPool.rawRelativeTimeInMillis();
-		final Map<String, List<String>> headers = httpRequest.getHeaders();
-		for (Map.Entry<String, List<String>> header : headers.entrySet()) {
-			System.out.println(String.format("Request header %s=%s", header.getKey(), header.getValue().toString()));
-		}
         try {
 			ToySandbox.onRequestReceive(httpRequest);
             handleIncomingRequest(httpRequest, httpChannel, httpRequest.getInboundException());
